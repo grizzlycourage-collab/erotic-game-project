@@ -1,261 +1,596 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Erotická Žrebovacia Hra (18+)</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- PDF.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    </script>
-    <style>
-        .page-shadow {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Kompas tela · Erotická PDF Hra</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#070410;--card:#120a1e;--card2:#1a0e2a;--border:#2a1a44;
+--text:#f0e6ff;--muted:#7a6a9a;--accent:#e11d6e;--accent2:#f59e0b;
+--gold:#ffb800;--jade:#10b981;--purple:#a855f7;--glow:rgba(225,29,110,.18)}
+html,body{height:100%}
+body{background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;
+color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:14px;
+-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.app{max-width:840px;width:100%;background:linear-gradient(180deg,var(--card2),var(--card));
+border-radius:18px;border:1px solid var(--border);padding:24px 20px 18px;
+box-shadow:0 30px 100px rgba(0,0,0,.85);position:relative;overflow:hidden;margin:auto}
+.app::before{content:'';position:absolute;inset:0;pointer-events:none;
+background:radial-gradient(circle at 15% 5%,rgba(225,29,110,.10),transparent 40%),
+radial-gradient(circle at 85% 95%,rgba(168,85,247,.10),transparent 40%)}
+.app>*{position:relative;z-index:1}
+
+/* Modal pre vek 18+ a heslo */
+#authModal{position:fixed;inset:0;z-index:9999;background:rgba(7,4,16,0.95);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-box{background:var(--card);border:1px solid rgba(225,29,110,0.4);border-radius:20px;padding:24px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.9)}
+
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.logo h1{font-size:1.5rem;font-weight:800;
+background:linear-gradient(135deg,var(--accent2),var(--accent),var(--purple));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo span{display:block;font-size:.6rem;color:var(--muted);letter-spacing:3px;
+text-transform:uppercase;-webkit-text-fill-color:var(--muted);margin-top:2px}
+.lang-selector{display:flex;gap:3px;background:rgba(255,255,255,.04);
+border-radius:30px;padding:3px;border:1px solid var(--border)}
+.lang-selector button{background:transparent;border:none;color:var(--muted);
+padding:4px 9px;border-radius:30px;font-size:.62rem;font-weight:700;cursor:pointer;
+transition:.25s;text-transform:uppercase}
+.lang-selector button.active{background:var(--accent);color:#fff;box-shadow:0 0 18px var(--glow)}
+
+.live-bar{
+background:linear-gradient(90deg,rgba(225,29,110,.18),rgba(168,85,247,.12),rgba(245,158,11,.15));
+border:1px solid var(--border);border-radius:12px;padding:8px 12px;margin-bottom:12px;
+display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.62rem;letter-spacing:1.5px}
+.live-bar .lbitem{display:flex;align-items:center;gap:5px;color:#e2d8f0}
+.live-bar .lb-lbl{color:var(--muted);font-size:.55rem;text-transform:uppercase}
+.live-bar .lb-val{color:var(--gold);font-weight:800}
+.live-bar .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent2);
+box-shadow:0 0 10px var(--accent2);animation:lp 1.6s ease-in-out infinite}
+@keyframes lp{50%{opacity:.3;transform:scale(.7)}}
+
+.info-box{background:linear-gradient(135deg,rgba(225,29,110,.08),rgba(168,85,247,.04));
+border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;
+padding:12px 16px;margin-bottom:16px;font-size:.8rem;line-height:1.6;color:#e2d8f0}
+.info-box strong{color:var(--accent2);text-transform:uppercase;letter-spacing:1px;
+display:block;margin-bottom:3px;font-size:.68rem}
+
+.person-block{background:rgba(255,255,255,.02);border:1px solid var(--border);
+border-radius:12px;padding:14px 14px 6px;margin-bottom:12px;position:relative;overflow:hidden}
+.person-block::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+background:linear-gradient(180deg,var(--accent),var(--purple))}
+.person-block[data-p="B"]::before{background:linear-gradient(180deg,var(--purple),var(--accent2))}
+.person-title{font-size:.7rem;font-weight:800;text-transform:uppercase;
+letter-spacing:2px;color:var(--accent);margin-bottom:8px}
+.person-block[data-p="B"] .person-title{color:var(--purple)}
+
+.form-group{margin-bottom:10px}
+.form-group label{display:block;font-size:.58rem;text-transform:uppercase;
+letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;font-weight:600}
+.form-group input{width:100%;padding:10px 12px;background:#0a0518;
+border:1px solid var(--border);border-radius:10px;color:var(--text);
+font-size:.90rem;transition:.3s;outline:none}
+.form-group input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.form-group input::placeholder{color:var(--muted);opacity:.4}
+
+.date-row{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:6px}
+.date-row select{padding:9px 6px;background:#0a0518;border:1px solid var(--border);
+border-radius:10px;color:var(--text);font-size:.85rem;outline:none;
+appearance:none;-webkit-appearance:none;cursor:pointer}
+.date-row select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+
+.polarity{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:4px}
+.polarity button{padding:8px 3px;border:1px solid var(--border);background:#0a0518;
+color:var(--muted);font-size:.68rem;font-weight:700;border-radius:9px;
+cursor:pointer;transition:.25s}
+.polarity button.active{background:linear-gradient(135deg,var(--accent),var(--purple));
+border-color:transparent;color:#fff;box-shadow:0 0 18px var(--glow)}
+
+.btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--purple),var(--accent2));
+background-size:200% 200%;border:none;border-radius:11px;color:#fff;font-size:.95rem;
+font-weight:800;letter-spacing:2px;cursor:pointer;transition:.3s;text-transform:uppercase;
+margin-top:6px;box-shadow:0 0 36px var(--glow);animation:sg 6s ease infinite}
+@keyframes sg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.btn-primary:hover{transform:scale(1.01);box-shadow:0 0 55px var(--glow)}
+
+.results{display:none;margin-top:10px}
+.results.active{display:block;animation:fi .6s ease}
+@keyframes fi{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+
+.section{background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.01));
+border:1px solid var(--border);border-radius:14px;padding:18px 18px 16px;margin-bottom:12px;
+border-left:4px solid var(--accent)}
+.section.s-accent2{border-left-color:var(--accent2)}
+.section.s-gold{border-left-color:var(--gold)}
+.section.s-purple{border-left-color:var(--purple)}
+.section.s-jade{border-left-color:var(--jade)}
+
+.section .head{display:flex;justify-content:space-between;align-items:flex-start;
+margin-bottom:8px;gap:8px;flex-wrap:wrap}
+.section .head h3{font-size:.82rem;font-weight:800;letter-spacing:1.4px;
+text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.section.s-accent2 .head h3{color:var(--accent2)}
+.section.s-gold .head h3{color:var(--gold)}
+.section.s-purple .head h3{color:var(--purple)}
+.section.s-jade .head h3{color:var(--jade)}
+.section p{font-size:.92rem;line-height:1.8;color:#d8d0e8;margin-bottom:9px}
+.section p:last-child{margin-bottom:0}
+.section .hl{color:var(--accent2);font-weight:700}
+.section .hl2{color:var(--accent);font-weight:700}
+.section .hl3{color:var(--purple);font-weight:700}
+.section .hl4{color:var(--gold);font-weight:700}
+.section .hl5{color:var(--jade);font-weight:700}
+
+/* Sekcia hry s PDF (zoštíhlená, responzívna, zameraná na foto) */
+.game-box{background:linear-gradient(135deg,rgba(225,29,110,0.05),rgba(168,85,247,0.05));border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px}
+.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center}
+@media(max-width:700px){.game-grid{grid-template-columns:1fr}}
+.pdf-viewer-container{background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--border);display:flex;justify-content:center;align-items:center;position:relative;min-height:320px;max-height:420px}
+canvas#pdfCanvas{display:block;max-width:100%;height:auto}
+.turn-badge{background:rgba(225,29,110,0.15);border:1px solid var(--accent);color:var(--accent);padding:8px 12px;border-radius:10px;text-align:center;font-weight:800;font-size:.85rem;margin-bottom:10px;letter-spacing:1px}
+
+.action-row{display:flex;gap:8px;margin-top:10px}
+.btn-act{flex:1;padding:11px;border-radius:11px;font-size:.72rem;font-weight:800;
+letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:.25s;border:1px solid var(--border)}
+.btn-refresh{background:rgba(225,29,110,.10);color:var(--accent);border-color:rgba(225,29,110,.4)}
+.btn-refresh:hover{background:rgba(225,29,110,.2)}
+.btn-restart{background:transparent;color:var(--muted)}
+.btn-restart:hover{border-color:var(--accent);color:#fff}
+
+.footer{margin-top:18px;padding-top:10px;border-top:1px solid var(--border);
+text-align:center;font-size:.52rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.footer strong{color:var(--accent2);font-weight:600}
+.deco{font-family:ui-monospace,monospace;font-size:.7rem;color:var(--accent2);
+opacity:.3;letter-spacing:8px;text-align:center;margin:4px 0 10px}
+</style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 selection:bg-rose-500 selection:text-white">
+<body>
 
-    <!-- Age Verification / Password Modal Overlay -->
-    <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-rose-500/30 rounded-3xl p-8 max-w-md w-full shadow-2xl shadow-rose-950/50 text-center">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-rose-500/10 text-rose-500 mb-4 text-2xl font-bold border border-rose-500/20">
-                🔞
-            </div>
-            <h2 class="text-2xl font-black text-rose-400 mb-2">Vstupné overenie (18+)</h2>
-            <p class="text-sm text-slate-400 mb-6">Tento obsah je určený výhradne pre osoby staršie ako 18 rokov. Pre vstup zadajte heslo.</p>
-            
-            <div class="space-y-4 text-left">
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Heslo:</label>
-                    <input type="password" id="passwordInput" placeholder="Zadajte heslo..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-rose-500 transition">
-                </div>
-                
-                <div class="flex items-center gap-2">
-                    <input type="checkbox" id="ageCheck" class="w-4 h-4 rounded border-slate-700 text-rose-600 focus:ring-rose-500 bg-slate-950 cursor-pointer">
-                    <label for="ageCheck" class="text-sm text-slate-300 cursor-pointer">Mám 18 rokov alebo viac</label>
-                </div>
+<!-- Modálne okno pre overenie 18+ a heslo -->
+<div id="authModal">
+  <div class="modal-box">
+    <div style="font-size:2.5rem;margin-bottom:8px">🔞</div>
+    <h2 style="color:var(--accent);font-size:1.3rem;margin-bottom:6px">Vstupné overenie (18+)</h2>
+    <p style="color:var(--muted);font-size:0.8rem;margin-bottom:16px">Tento obsah je prísne chránený. Zadajte heslo pre vstup do hry.</p>
+    <input type="password" id="accessPassword" placeholder="Zadajte heslo (EROTIC)..." style="width:100%;padding:10px;background:#070410;border:1px solid var(--border);border-radius:10px;color:#fff;margin-bottom:12px;outline:none;text-align:center">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;justify-content:center">
+      <input type="checkbox" id="ageCheck" style="accent-color:var(--accent);width:16px;height:16px">
+      <label for="ageCheck" style="font-size:0.75px;color:var(--text);cursor:pointer">Mám 18 rokov alebo viac</label>
+    </div>
+    <button id="authBtn" style="width:100%;padding:11px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Vstúpiť do hry</button>
+    <div id="authErr" style="color:#ef4444;font-size:0.75rem;margin-top:8px;display:none">Nesprávne heslo alebo nezaškrtnutý vek!</div>
+  </div>
+</div>
 
-                <p id="errorMessage" class="text-xs text-rose-500 font-medium hidden">Nesprávne heslo alebo nie je potvrdený vek (18+)!</p>
+<div class="app" id="app">
+  <div class="header">
+    <div class="logo">
+      <h1 id="appTitle">Kompas tela</h1>
+      <span id="subBrand">The Human Maintenance · Erotická Matrica</span>
+    </div>
+    <div class="lang-selector" id="langSel">
+      <button class="active" data-l="sk">SK</button>
+      <button data-l="en">EN</button>
+      <button data-l="cz">CZ</button>
+    </div>
+  </div>
 
-                <button id="loginBtn" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-rose-900/30 transition transform active:scale-95">
-                    Vstúpiť do hry
-                </button>
-            </div>
+  <div class="live-bar">
+    <div class="lbitem"><span class="pulse"></span><span class="lb-lbl">Teraz</span><span class="lb-val" id="lbClock">--:--</span></div>
+    <div class="lbitem"><span class="lb-lbl">Planéta dňa</span><span class="lb-val" id="lbDay">—</span></div>
+    <div class="lbitem"><span class="lb-lbl">Planétová hodina</span><span class="lb-val" id="lbHour">—</span></div>
+    <div class="lbitem"><span class="lb-lbl">Mesiac</span><span class="lb-val" id="lbMoon">—</span></div>
+  </div>
+
+  <div class="info-box">
+    <strong id="infoTitle">🜂 Živý kompas tela & Erotická matrica</strong>
+    <p id="infoText">Zadajte údaje oboch osôb. Algoritmus prepojí váš planetárny čas, mená a narodenie, vygeneruje unikátne rituály a odomkne interaktívnu erotickú hru s výberom polôh.</p>
+  </div>
+
+  <div class="form-section" id="formSection">
+    <div class="person-block" data-p="A">
+      <div class="person-title" id="lblPA">🜂 Osoba A (Ona / On)</div>
+      <div class="form-group">
+        <label id="lblNA">Celé meno a priezvisko</label>
+        <input type="text" id="nameA" placeholder="napr. Július Kováč">
+      </div>
+      <div class="form-group">
+        <label id="lblBA">Dátum narodenia</label>
+        <div class="date-row">
+          <select id="dayA"><option value="">Deň</option></select>
+          <select id="monA">
+            <option value="">Mes.</option>
+            <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+            <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
+            <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
+            <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
+          </select>
+          <select id="yearA"><option value="">Rok</option></select>
         </div>
+      </div>
+      <div class="form-group">
+        <label id="lblPolA">Telesná polarita</label>
+        <div class="polarity" data-p="A">
+          <button class="active" data-g="m">⚔ Muž</button>
+          <button data-g="f">⚘ Žena</button>
+          <button data-g="x">⚧ Iná</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Header -->
-    <header class="w-full max-w-5xl text-center py-4 border-b border-slate-800 mb-6">
-        <h1 class="text-3xl font-extrabold tracking-wider text-rose-400">PDF Erotická Žrebovacia Hra</h1>
-        <p class="text-sm text-slate-400 mt-1">Prvých 7 strán je vynechaných. Hra a listovanie prebiehajú od 8. strany ďalej.</p>
-    </header>
+    <div class="person-block" data-p="B">
+      <div class="person-title" id="lblPB">🜄 Osoba B (Ona / On)</div>
+      <div class="form-group">
+        <label id="lblNB">Celé meno a priezvisko</label>
+        <input type="text" id="nameB" placeholder="napr. Jana Kováčová">
+      </div>
+      <div class="form-group">
+        <label id="lblBB">Dátum narodenia</label>
+        <div class="date-row">
+          <select id="dayB"><option value="">Deň</option></select>
+          <select id="monB">
+            <option value="">Mes.</option>
+            <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+            <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
+            <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
+            <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
+          </select>
+          <select id="yearB"><option value="">Rok</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label id="lblPolB">Telesná polarita</label>
+        <div class="polarity" data-p="B">
+          <button data-g="m">⚔ Muž</button>
+          <button class="active" data-g="f">⚘ Žena</button>
+          <button data-g="x">⚧ Iná</button>
+        </div>
+      </div>
+    </div>
 
-    <!-- Main Container -->
-    <main class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6 flex-grow">
-        
-        <!-- Left Panel: Controls & Game Settings -->
-        <div class="bg-slate-900 p-6 rounded-2xl shadow-xl flex flex-col justify-between border border-slate-800">
-            <div>
-                <h2 class="text-xl font-bold text-rose-300 mb-4 flex items-center gap-2">
-                    <span>🔥</span> Ovládanie hry
-                </h2>
-                
-                <!-- File Input -->
-                <div class="mb-5">
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Vybrať PDF súbor:</label>
-                    <input type="file" id="pdfUpload" accept="application/pdf" class="block w-full text-sm text-slate-400
-                        file:mr-4 file:py-2 file:px-4
-                        file:rounded-full file:border-0
-                        file:text-sm file:font-semibold
-                        file:bg-rose-600 file:text-white
-                        hover:file:bg-rose-500 cursor-pointer transition">
-                </div>
+    <button class="btn-primary" id="btnRun">🜂 Odhaliť telesný kompas a spustiť hru 🜄</button>
+  </div>
 
-                <!-- Navigation Controls -->
-                <div class="mb-5 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Listovanie (od 8. strany)</h3>
-                    <div class="flex items-center justify-between mb-2">
-                        <button id="prevPage" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-sm font-medium transition disabled:opacity-50">◀ Predchádzajúca</button>
-                        <span id="pageInfo" class="text-sm font-semibold text-slate-200">Strana - / -</span>
-                        <button id="nextPage" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-sm font-medium transition disabled:opacity-50">Ďalšia ▶</button>
-                    </div>
-                </div>
+  <div class="results" id="results">
+    <div class="deco">⸎ ⸎ ⸎</div>
+    <div id="out"></div>
+    
+    <!-- Integrácia PDF Erotickej Hry s maticovým prepojením -->
+    <div class="game-box">
+      <div class="head" style="margin-bottom:10px">
+        <h3 style="color:var(--accent);font-size:0.9rem;font-weight:800;letter-spacing:1px">🔥 Interaktívna žrebovacia hra polôh (od 8. strany)</h3>
+      </div>
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Nahrať PDF súbor (napr. 365 Sex Moves):</label>
+        <input type="file" id="pdfUpload" accept="application/pdf" style="font-size:0.8rem;color:var(--text);width:100%">
+      </div>
 
-                <!-- Game / Lottery Mode -->
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-rose-400 mb-3">Hra 1: Žrebovanie strán</h3>
-                    <p class="text-xs text-slate-400 mb-3">Náhodné žrebovanie hociktorého listu od 8. strany do konca PDF.</p>
-                    <button id="drawBtn" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition transform active:scale-95 disabled:opacity-50" disabled>
-                        🎲 Spustiť žrebovanie strany!
-                    </button>
-                </div>
-            </div>
-
-            <!-- Result Box -->
-            <div id="resultBox" class="mt-6 bg-rose-500/10 border border-rose-500/30 rounded-xl p-4 text-center hidden">
-                <span class="block text-xs uppercase tracking-wider text-rose-400 font-semibold mb-1">Výsledok žrebovania</span>
-                <span id="resultText" class="text-2xl font-black text-rose-300 animate-pulse">-</span>
-            </div>
+      <div class="game-grid">
+        <div>
+          <div id="turnBadge" class="turn-badge">Na ťahu: Načítava sa...</div>
+          <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;text-align:center" id="pageInfo">Strana: - / -</div>
+          
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button id="drawBtn" class="btn-primary" style="margin-top:0;padding:12px;font-size:0.85rem" disabled>🎲 Vylosovať novú stranu</button>
+            <button id="autoToggleBtn" class="btn-act btn-refresh" style="width:100%;padding:10px">⏱ Automatický režim (každé 4 min): VYP</button>
+          </div>
         </div>
 
-        <!-- Right Panel: PDF Viewer / Canvas -->
-        <div class="md:col-span-2 bg-slate-900 p-6 rounded-2xl shadow-xl flex flex-col items-center justify-center border border-slate-800 relative overflow-hidden">
-            <div id="placeholder" class="text-center text-slate-400 py-20">
-                <svg class="w-16 h-16 mx-auto mb-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                <p class="text-lg font-medium">Zatiaľ nie je nahraté žiadne PDF.</p>
-                <p class="text-sm text-slate-500 mt-1">Po overení hesla nahrajte PDF dokument.</p>
-            </div>
-            
-            <div id="viewerContainer" class="hidden flex flex-col items-center w-full h-full overflow-auto">
-                <div class="page-shadow bg-white rounded-lg overflow-hidden border border-slate-700">
-                    <canvas id="pdfCanvas"></canvas>
-                </div>
-            </div>
+        <div class="pdf-viewer-container" id="viewerWrapper">
+          <div id="placeholderText" style="color:var(--muted);font-size:0.8rem;text-align:center;padding:20px">Nahrajte PDF pre zobrazenie polohy</div>
+          <canvas id="pdfCanvas" style="display:none"></canvas>
         </div>
-    </main>
+      </div>
+    </div>
 
-    <!-- Footer -->
-    <footer class="w-full max-w-5xl text-center py-4 text-xs text-slate-500 border-t border-slate-800 mt-6">
-        PDF Erotická Žrebovacia Hra &copy; 2026 | Všetky práva vyhradené (18+)
-    </footer>
+    <div class="action-row" style="margin-top:14px">
+      <button class="btn-act btn-refresh" id="btnRefresh">🎲 Pretrasť matrice</button>
+      <button class="btn-act btn-restart" id="btnRestart">↺ Nový pár</button>
+    </div>
+  </div>
 
-    <!-- App Logic JS -->
-    <script>
-        // Authentication Logic
-        document.getElementById('loginBtn').addEventListener('click', function() {
-            const pass = document.getElementById('passwordInput').value.trim();
-            const ageChecked = document.getElementById('ageCheck').checked;
-            const errEl = document.getElementById('errorMessage');
+  <div class="footer"><strong>Grizzly Courage</strong> · The Human Maintenance · Ad Aeternum</div>
+</div>
 
-            if (pass === 'EROTIC' && ageChecked) {
-                document.getElementById('authModal').classList.add('hidden');
-            } else {
-                errEl.classList.remove('hidden');
-            }
-        });
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
 
-        // PDF & Game Logic
-        let pdfDoc = null;
-        let pageNum = 8; // Start at page 8 since first 7 are skipped
-        let minPage = 8;
-        let pageRendering = false;
-        let pageNumPending = null;
-        let scale = 1.2;
-        
-        const canvas = document.getElementById('pdfCanvas');
-        const ctx = canvas.getContext('2d');
+/* --- ZVUKOVÝ SYNTEZÁTOR (Web Audio API) --- */
+let audioCtx = null;
+function initAudio(){
+  if(!audioCtx){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+}
+function playTone(freq, type, duration){
+  try{
+    initAudio();
+    if(!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  }catch(e){}
+}
+function soundClick(){ playTone(440, 'sine', 0.08); }
+function soundDrawTick(){ playTone(600, 'triangle', 0.05); }
+function soundWin(){
+  playTone(523.25, 'sine', 0.15);
+  setTimeout(()=>playTone(659.25, 'sine', 0.15), 150);
+  setTimeout(()=>playTone(783.99, 'sine', 0.3), 300);
+}
 
-        document.getElementById('pdfUpload').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file && file.type === 'application/pdf') {
-                const fileReader = new FileReader();
-                fileReader.onload = function() {
-                    const typedarray = new Uint8Array(this.result);
-                    pdfjsLib.getDocument(typedarray).promise.then(function(pdfDoc_) {
-                        pdfDoc = pdfDoc_;
-                        
-                        if (pdfDoc.numPages < 8) {
-                            alert('Upozornenie: PDF má menej ako 8 strán! Dokument potrebuje aspoň 8 strán, aby sa prvých 7 vynechalo.');
-                            return;
-                        }
+/* --- AUTORIZÁCIA 18+ --- */
+$('authBtn').addEventListener('click', ()=>{
+  const pass = $('accessPassword').value.trim();
+  const age = $('ageCheck').checked;
+  if(pass === 'EROTIC' && age){
+    soundWin();
+    $('authModal').style.display = 'none';
+  } else {
+    soundClick();
+    $('authErr').style.display = 'block';
+  }
+});
 
-                        pageNum = 8; // Always start at page 8
-                        document.getElementById('placeholder').classList.add('hidden');
-                        document.getElementById('viewerContainer').classList.remove('hidden');
-                        document.getElementById('drawBtn').removeAttribute('disabled');
-                        renderPage(pageNum);
-                    }).catch(error => {
-                        alert('Chyba pri načítaní PDF: ' + error.message);
-                    });
-                };
-                fileReader.readAsArrayBuffer(file);
-            }
-        });
+/* --- POPULÁCIA FORMULÁROV (Dátumy) --- */
+for(let i=1;i<=31;i++){
+  $('dayA').innerHTML+=`<option value="${i}">${i}</option>`;
+  $('dayB').innerHTML+=`<option value="${i}">${i}</option>`;
+}
+for(let y=1950;y<=2010;y++){
+  $('yearA').innerHTML+=`<option value="${y}">${y}</option>`;
+  $('yearB').innerHTML+=`<option value="${y}">${y}</option>`;
+}
 
-        function renderPage(num) {
-            pageRendering = true;
-            pdfDoc.getPage(num).then(function(page) {
-                const viewport = page.getViewport({ scale: scale });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+/* --- POLARITA PREPÍNAČE --- */
+document.querySelectorAll('.polarity').forEach(el=>{
+  el.addEventListener('click', e=>{
+    if(e.target.tagName==='BUTTON'){
+      soundClick();
+      el.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+      e.target.classList.add('active');
+    }
+  });
+});
 
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport: viewport
-                };
-                const renderTask = page.render(renderContext);
+/* --- LIVE LIŠTA ČASU A PLANÉT --- */
+const CHALDEAN=['Saturn','Jupiter','Mars','Slnko','Venuša','Merkúr','Mesiac'];
+const DAY_RULER_IDX=[3,6,2,5,1,4,0];
 
-                renderTask.promise.then(function() {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
-                });
-            });
-            document.getElementById('pageInfo').textContent = `Strana ${num} / ${pdfDoc.numPages}`;
-            updateButtons();
+function updateLiveBar(){
+  const now=new Date();
+  $('lbClock').textContent=`${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  const dayIdx=DAY_RULER_IDX[now.getDay()];
+  $('lbDay').textContent=CHALDEAN[dayIdx];
+  const hour=now.getHours()+now.getMinutes()/60;
+  const sinceSunrise=(hour-6+24)%24;
+  const hourIdx=Math.floor(sinceSunrise);
+  const planetIdx=(dayIdx+hourIdx)%7;
+  $('lbHour').textContent=CHALDEAN[planetIdx];
+  const moonP=getMoonPhase(now);
+  $('lbMoon').textContent=moonName(moonP).e+' '+moonName(moonP).n;
+}
+setInterval(updateLiveBar,1000);
+updateLiveBar();
+
+function getMoonPhase(date){
+  const synodic=29.530588853;
+  const known=Date.UTC(2000,0,6,18,14,0);
+  const days=(date.getTime()-known)/(1000*60*60*24);
+  let p=(days%synodic)/synodic;
+  if(p<0)p+=1;
+  return p;
+}
+function moonName(p){
+  if(p<0.03)return{n:'Nov',e:'🌑'};
+  if(p<0.22)return{n:'Dorastajúci',e:'🌒'};
+  if(p<0.28)return{n:'1. Štvrť',e:'🌓'};
+  if(p<0.47)return{n:'Dorastajúci',e:'🌔'};
+  if(p<0.53)return{n:'Spln',e:'🌕'};
+  if(p<0.72)return{n:'Cúvajúci',e:'🌖'};
+  if(p<0.78)return{n:'Posl. Štvrť',e:'🌗'};
+  return{n:'Cúvajúci kosáčik',e:'🌘'};
+}
+
+/* --- HASH A PRNG PRE JEDINEČNÉ MATRICE --- */
+function hash32(str){
+  let h=2166136261>>>0;
+  for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}
+  return h>>>0;
+}
+function mulberry32(a){
+  return function(){
+    a|=0; a=a+0x6D2B79F5|0;
+    let t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return((t^t>>>14)>>>0)/4294967296;
+  };
+}
+const pick=(rng,arr)=>arr[Math.floor(rng()*arr.length)];
+
+const P_ATTRACT=[
+  'Tvoja prvá reakcia na tohto človeka nebola racionálna. Bola to <span class="hl2">prachová reakcia</span> – telo odpovedalo skôr než hlava.',
+  'Keď ste sa prvý raz dotkli, niečo v tebe povedalo <em>toto už poznám</em>. Bunková pamäť nezabúda.',
+  'Medzi vami je napätie, ktoré sa nedá vytrénovať. Buď tam je, alebo nie. A u vás <span class="hl4">je</span>.',
+  'Vzduch okolo vás zhustne, keď ste v jednej miestnosti. Elektromagnetické pole vašich tiel rezonuje.',
+  'Prvý kontakt očí trval dlhšie, než je obvyklé. Oboch vás to zarazilo a hlboko pritiahlo.'
+];
+const P_CHEM=[
+  'Sexuálna chémia medzi vami je <span class="hl">elektrická</span> – telá sa hľadajú, keď sa mysle hádajú.',
+  'Vaša chémia je <span class="hl">tekutá</span> – pomalá, hlboká, nie je to o výkone, je to o plynutí.',
+  'Chémia je <span class="hl">ohnivá</span> – rýchla, divoká, predohra je krátka a vyvrcholenie explozívne.'
+];
+const P_RITUAL=[
+  'babylonskej <em>Ištarinej komnaty</em> – svetlo sviečok, vône kadidla, pomalé zvodné dotyky.',
+  'tantrických škôl <em>Kašmíru</em> – dlhá predohra, vnímanie dychu a spoločné pulzovanie.',
+  'taoistických <em>Údolí jantáru</em> – pomalý dotyk, cirkulácia energie bez ponáhľania.'
+];
+
+/* --- HLAVNÉ SPUSTENIE VÝPOČTU --- */
+$('btnRun').addEventListener('click', ()=>{
+  soundClick();
+  const nA=$('nameA').value.trim()||'Osoba A';
+  const nB=$('nameB').value.trim()||'Osoba B';
+  const dA=$('dayA').value+$('monA').value+$('yearA').value;
+  const dB=$('dayB').value+$('monB').value+$('yearB').value;
+  
+  const seed=hash32(nA+nB+dA+dB+Date.now().toString().slice(0,8));
+  const rng=mulberry32(seed);
+
+  const out=`
+    <div class="section">
+      <div class="head"><h3>🜂 Prvotná príťažlivosť tiel</h3><span class="hl">${nA} & ${nB}</span></div>
+      <p>${pick(rng,P_ATTRACT)}</p>
+      <p>${pick(rng,P_ATTRACT)}</p>
+    </div>
+    <div class="section s-accent2">
+      <div class="head"><h3>🜄 Sexuálna chémia & Rezonancia</h3><span class="hl2">Telesná matrica</span></div>
+      <p>${pick(rng,P_CHEM)}</p>
+    </div>
+    <div class="section s-purple">
+      <div class="head"><h3>🜁 Odporúčaný rituál predohry</h3><span class="hl3">Staroveká prax</span></div>
+      <p>Inšpirujte sa tradíciou ${pick(rng,P_RITUAL)}. Dnes večer venujte aspoň 30 minút dotykom bez ponáhľania.</p>
+    </div>
+  `;
+
+  $('out').innerHTML=out;
+  $('formSection').style.display='none';$('results').classList.add('active');
+  window.scrollTo({top:200, behavior:'smooth'});
+});
+
+$('btnRestart').addEventListener('click', ()=>{
+  soundClick();
+  $('results').classList.remove('active');$('formSection').style.display='block';
+});
+
+$('btnRefresh').addEventListener('click', ()=>{
+  soundClick();
+  $('btnRun').click();
+});
+
+/* --- PDF LOGIKA & HRA S OREZOM NA FOTO + ONA / ON + 4 MIN AUTOMAT --- */
+let pdfDoc = null;
+let pageNum = 8; // Začína od 8. strany
+let scale = 1.3;
+let pageRendering = false;
+let pageNumPending = null;
+let currentTurn = 'Ona'; // Alternovanie Ona / On
+let autoInterval = null;
+let isAutoRunning = false;
+
+const canvas = document.getElementById('pdfCanvas');
+const ctx = canvas.getContext('2d');
+
+$('pdfUpload').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if(file && file.type==='application/pdf'){
+    soundClick();
+    const reader = new FileReader();
+    reader.onload = function(){
+      const typedarray = new Uint8Array(this.result);
+      pdfjsLib.getDocument(typedarray).promise.then(doc=>{
+        pdfDoc = doc;
+        if(pdfDoc.numPages < 8){
+          alert('PDF musí mať aspoň 8 strán!');
+          return;
         }
+        pageNum = 8;
+        $('placeholderText').style.display = 'none';
+        canvas.style.display = 'block';
+        $('drawBtn').removeAttribute('disabled');
+        renderPage(pageNum);
+        updateTurnBadge();
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  }
+});
 
-        function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
-            }
-        }
+function updateTurnBadge(){
+  $('turnBadge').textContent = `Na ťahu: ${currentTurn} (stlačiť tlačidlo)`;
+}
 
-        function onPrevPage() {
-            if (pageNum <= minPage) return;
-            pageNum--;
-            queueRenderPage(pageNum);
-        }
+function renderPage(num){
+  pageRendering = true;
+  pdfDoc.getPage(num).then(page=>{
+    const viewport = page.getViewport({ scale: scale });
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
 
-        function onNextPage() {
-            if (!pdfDoc || pageNum >= pdfDoc.numPages) return;
-            pageNum++;
-            queueRenderPage(pageNum);
-        }
+    const renderContext = {
+      canvasContext: ctx,
+      viewport: viewport
+    };
+    
+    page.render(renderContext).promise.then(()=>{
+      pageRendering = false;
+      if(pageNumPending !== null){
+        renderPage(pageNumPending);
+        pageNumPending = null;
+      }
+    });
+  });
+  $('pageInfo').textContent = `Strana: ${num} / ${pdfDoc.numPages}`;
+}
 
-        document.getElementById('prevPage').addEventListener('click', onPrevPage);
-        document.getElementById('nextPage').addEventListener('click', onNextPage);
+function executeDraw(){
+  if(!pdfDoc) return;
+  soundDrawTick();
+  
+  let counter = 0;
+  const maxCount = 12;
+  const interval = setInterval(()=>{
+    counter++;
+    let tempPage = Math.floor(Math.random() * (pdfDoc.numPages - 7)) + 8;
+    $('pageInfo').textContent = `Žrebujem stranu ${tempPage}...`;
+    soundDrawTick();
+    if(counter >= maxCount){
+      clearInterval(interval);
+      pageNum = Math.floor(Math.random() * (pdfDoc.numPages - 7)) + 8;
+      renderPage(pageNum);
+      soundWin();
+      
+      // Prehodenie kola Ona <-> On
+      currentTurn = (currentTurn === 'Ona') ? 'On' : 'Ona';
+      updateTurnBadge();
+    }
+  }, 70);
+}
 
-        function updateButtons() {
-            document.getElementById('prevPage').disabled = pageNum <= minPage;
-            document.getElementById('nextPage').disabled = !pdfDoc || pageNum >= pdfDoc.numPages;
-        }
+$('drawBtn').addEventListener('click', executeDraw);
 
-        // Game 1: Random drawing of any page from 8 to numPages
-        document.getElementById('drawBtn').addEventListener('click', function() {
-            if (!pdfDoc) return;
-            const resultBox = document.getElementById('resultBox');
-            const resultText = document.getElementById('resultText');
-            
-            resultBox.classList.remove('hidden');
-            resultText.textContent = "Žrebujem stranu...";
+// Automatický režim každé 4 minúty (240000 ms)
+$('autoToggleBtn').addEventListener('click', ()=>{
+  soundClick();
+  isAutoRunning = !isAutoRunning;
+  if(isAutoRunning){
+    $('autoToggleBtn').textContent = '⏱ Automatický režim (každé 4 min): ZAP';
+    $('autoToggleBtn').style.background = 'var(--jade)';$('autoToggleBtn').style.color = '#fff';
+    autoInterval = setInterval(executeDraw, 4 * 60 * 1000);
+  } else {
+    $('autoToggleBtn').textContent = '⏱ Automatický režim (každé 4 min): VYP';
+    $('autoToggleBtn').style.background = '';$('autoToggleBtn').style.color = '';
+    clearInterval(autoInterval);
+  }
+});
 
-            let counter = 0;
-            const maxCount = 15;
-            const interval = setInterval(() => {
-                counter++;
-                let randomTemp = Math.floor(Math.random() * (pdfDoc.numPages - 7)) + 8;
-                resultText.textContent = `Strana ${randomTemp}`;
-
-                if (counter >= maxCount) {
-                    clearInterval(interval);
-                    let finalPage = Math.floor(Math.random() * (pdfDoc.numPages - 7)) + 8;
-                    pageNum = finalPage;
-                    queueRenderPage(pageNum);
-                    resultText.textContent = `🔥 Vylosovaná strana: ${finalPage}`;
-                }
-            }, 80);
-        });
-    </script>
+</script>
+<!-- PDF.js knižnica pre vykresľovanie PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
 </body>
 </html>
