@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Erotická Žrebovacia Hra (18+)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+    <style>
+        .page-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 selection:bg-rose-500 selection:text-white">
+
+    <!-- Age Verification / Password Modal Overlay -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-rose-500/30 rounded-3xl p-8 max-w-md w-full shadow-2xl shadow-rose-950/50 text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-rose-500/10 text-rose-500 mb-4 text-2xl font-bold border border-rose-500/20">
+                🔞
+            </div>
+            <h2 class="text-2xl font-black text-rose-400 mb-2">Vstupné overenie (18+)</h2>
+            <p class="text-sm text-slate-400 mb-6">Tento obsah je určený výhradne pre osoby staršie ako 18 rokov. Pre vstup zadajte heslo.</p>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Heslo:</label>
+                    <input type="password" id="passwordInput" placeholder="Zadajte heslo..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-rose-500 transition">
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" id="ageCheck" class="w-4 h-4 rounded border-slate-700 text-rose-600 focus:ring-rose-500 bg-slate-950 cursor-pointer">
+                    <label for="ageCheck" class="text-sm text-slate-300 cursor-pointer">Mám 18 rokov alebo viac</label>
+                </div>
+
+                <p id="errorMessage" class="text-xs text-rose-500 font-medium hidden">Nesprávne heslo alebo nie je potvrdený vek (18+)!</p>
+
+                <button id="loginBtn" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-rose-900/30 transition transform active:scale-95">
+                    Vstúpiť do hry
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="w-full max-w-5xl text-center py-4 border-b border-slate-800 mb-6">
+        <h1 class="text-3xl font-extrabold tracking-wider text-rose-400">PDF Erotická Žrebovacia Hra</h1>
+        <p class="text-sm text-slate-400 mt-1">Prvých 7 strán je vynechaných. Hra a listovanie prebiehajú od 8. strany ďalej.</p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6 flex-grow">
+        
+        <!-- Left Panel: Controls & Game Settings -->
+        <div class="bg-slate-900 p-6 rounded-2xl shadow-xl flex flex-col justify-between border border-slate-800">
+            <div>
+                <h2 class="text-xl font-bold text-rose-300 mb-4 flex items-center gap-2">
+                    <span>🔥</span> Ovládanie hry
+                </h2>
+                
+                <!-- File Input -->
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Vybrať PDF súbor:</label>
+                    <input type="file" id="pdfUpload" accept="application/pdf" class="block w-full text-sm text-slate-400
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-rose-600 file:text-white
+                        hover:file:bg-rose-500 cursor-pointer transition">
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="mb-5 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Listovanie (od 8. strany)</h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <button id="prevPage" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-sm font-medium transition disabled:opacity-50">◀ Predchádzajúca</button>
+                        <span id="pageInfo" class="text-sm font-semibold text-slate-200">Strana - / -</span>
+                        <button id="nextPage" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-sm font-medium transition disabled:opacity-50">Ďalšia ▶</button>
+                    </div>
+                </div>
+
+                <!-- Game / Lottery Mode -->
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-rose-400 mb-3">Hra 1: Žrebovanie strán</h3>
+                    <p class="text-xs text-slate-400 mb-3">Náhodné žrebovanie hociktorého listu od 8. strany do konca PDF.</p>
+                    <button id="drawBtn" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition transform active:scale-95 disabled:opacity-50" disabled>
+                        🎲 Spustiť žrebovanie strany!
+                    </button>
+                </div>
+            </div>
+
+            <!-- Result Box -->
+            <div id="resultBox" class="mt-6 bg-rose-500/10 border border-rose-500/30 rounded-xl p-4 text-center hidden">
+                <span class="block text-xs uppercase tracking-wider text-rose-400 font-semibold mb-1">Výsledok žrebovania</span>
+                <span id="resultText" class="text-2xl font-black text-rose-300 animate-pulse">-</span>
+            </div>
+        </div>
+
+        <!-- Right Panel: PDF Viewer / Canvas -->
+        <div class="md:col-span-2 bg-slate-900 p-6 rounded-2xl shadow-xl flex flex-col items-center justify-center border border-slate-800 relative overflow-hidden">
+            <div id="placeholder" class="text-center text-slate-400 py-20">
+                <svg class="w-16 h-16 mx-auto mb-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                <p class="text-lg font-medium">Zatiaľ nie je nahraté žiadne PDF.</p>
+                <p class="text-sm text-slate-500 mt-1">Po overení hesla nahrajte PDF dokument.</p>
+            </div>
+            
+            <div id="viewerContainer" class="hidden flex flex-col items-center w-full h-full overflow-auto">
+                <div class="page-shadow bg-white rounded-lg overflow-hidden border border-slate-700">
+                    <canvas id="pdfCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-5xl text-center py-4 text-xs text-slate-500 border-t border-slate-800 mt-6">
+        PDF Erotická Žrebovacia Hra &copy; 2026 | Všetky práva vyhradené (18+)
+    </footer>
+
+    <!-- App Logic JS -->
+    <script>
+        // Authentication Logic
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            const pass = document.getElementById('passwordInput').value.trim();
+            const ageChecked = document.getElementById('ageCheck').checked;
+            const errEl = document.getElementById('errorMessage');
+
+            if (pass === 'EROTIC' && ageChecked) {
+                document.getElementById('authModal').classList.add('hidden');
+            } else {
+                errEl.classList.remove('hidden');
+            }
+        });
+
+        // PDF & Game Logic
+        let pdfDoc = null;
+        let pageNum = 8; // Start at page 8 since first 7 are skipped
+        let minPage = 8;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.2;
+        
+        const canvas = document.getElementById('pdfCanvas');
+        const ctx = canvas.getContext('2d');
+
+        document.getElementById('pdfUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                const fileReader = new FileReader();
+                fileReader.onload = function() {
+                    const typedarray = new Uint8Array(this.result);
+                    pdfjsLib.getDocument(typedarray).promise.then(function(pdfDoc_) {
+                        pdfDoc = pdfDoc_;
+                        
+                        if (pdfDoc.numPages < 8) {
+                            alert('Upozornenie: PDF má menej ako 8 strán! Dokument potrebuje aspoň 8 strán, aby sa prvých 7 vynechalo.');
+                            return;
+                        }
+
+                        pageNum = 8; // Always start at page 8
+                        document.getElementById('placeholder').classList.add('hidden');
+                        document.getElementById('viewerContainer').classList.remove('hidden');
+                        document.getElementById('drawBtn').removeAttribute('disabled');
+                        renderPage(pageNum);
+                    }).catch(error => {
+                        alert('Chyba pri načítaní PDF: ' + error.message);
+                    });
+                };
+                fileReader.readAsArrayBuffer(file);
+            }
+        });
+
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(function(page) {
+                const viewport = page.getViewport({ scale: scale });
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                const renderTask = page.render(renderContext);
+
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+            document.getElementById('pageInfo').textContent = `Strana ${num} / ${pdfDoc.numPages}`;
+            updateButtons();
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        function onPrevPage() {
+            if (pageNum <= minPage) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+
+        function onNextPage() {
+            if (!pdfDoc || pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+
+        document.getElementById('prevPage').addEventListener('click', onPrevPage);
+        document.getElementById('nextPage').addEventListener('click', onNextPage);
+
+        function updateButtons() {
+            document.getElementById('prevPage').disabled = pageNum <= minPage;
+            document.getElementById('nextPage').disabled = !pdfDoc || pageNum >= pdfDoc.numPages;
+        }
+
+        // Game 1: Random drawing of any page from 8 to numPages
+        document.getElementById('drawBtn').addEventListener('click', function() {
+            if (!pdfDoc) return;
+            const resultBox = document.getElementById('resultBox');
+            const resultText = document.getElementById('resultText');
+            
+            resultBox.classList.remove('hidden');
+            resultText.textContent = "Žrebujem stranu...";
+
+            let counter = 0;
+            const maxCount = 15;
+            const interval = setInterval(() => {
+                counter++;
+                let randomTemp = Math.floor(Math.random() * (pdfDoc.numPages - 7)) + 8;
+                resultText.textContent = `Strana ${randomTemp}`;
+
+                if (counter >= maxCount) {
+                    clearInterval(interval);
+                    let finalPage = Math.floor(Math.random() * (pdfDoc.numPages - 7)) + 8;
+                    pageNum = finalPage;
+                    queueRenderPage(pageNum);
+                    resultText.textContent = `🔥 Vylosovaná strana: ${finalPage}`;
+                }
+            }, 80);
+        });
+    </script>
+</body>
+</html>
