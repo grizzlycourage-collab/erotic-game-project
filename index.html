@@ -22,7 +22,7 @@ background:radial-gradient(circle at 15% 5%,rgba(225,29,110,.10),transparent 40%
 radial-gradient(circle at 85% 95%,rgba(168,85,247,.10),transparent 40%)}
 .app>*{position:relative;z-index:1}
 
-/* Modal pre vek 18+ a heslo */
+/* Modal pre vek 18+ a číselné heslo 0007 */
 #authModal{position:fixed;inset:0;z-index:9999;background:rgba(7,4,16,0.95);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px}
 .modal-box{background:var(--card);border:1px solid rgba(225,29,110,0.4);border-radius:20px;padding:24px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.9)}
 
@@ -123,7 +123,7 @@ text-transform:uppercase;color:var(--accent);margin-bottom:2px}
 .section .hl4{color:var(--gold);font-weight:700}
 .section .hl5{color:var(--jade);font-weight:700}
 
-/* Sekcia hry s PDF (zoštíhlená, responzívna, zameraná na foto) */
+/* Sekcia hry s PDF */
 .game-box{background:linear-gradient(135deg,rgba(225,29,110,0.05),rgba(168,85,247,0.05));border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px}
 .game-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center}
 @media(max-width:700px){.game-grid{grid-template-columns:1fr}}
@@ -148,19 +148,19 @@ opacity:.3;letter-spacing:8px;text-align:center;margin:4px 0 10px}
 </head>
 <body>
 
-<!-- Modálne okno pre overenie 18+ a heslo -->
+<!-- Modálne okno pre overenie 18+ a číselné heslo 0007 -->
 <div id="authModal">
   <div class="modal-box">
     <div style="font-size:2.5rem;margin-bottom:8px">🔞</div>
     <h2 style="color:var(--accent);font-size:1.3rem;margin-bottom:6px">Vstupné overenie (18+)</h2>
-    <p style="color:var(--muted);font-size:0.8rem;margin-bottom:16px">Tento obsah je prísne chránený. Zadajte heslo pre vstup do hry.</p>
-    <input type="password" id="accessPassword" placeholder="Zadajte heslo (EROTIC)..." style="width:100%;padding:10px;background:#070410;border:1px solid var(--border);border-radius:10px;color:#fff;margin-bottom:12px;outline:none;text-align:center">
+    <p style="color:var(--muted);font-size:0.8rem;margin-bottom:16px">Tento obsah je prísne chránený. Zadajte štvorciferné číselné heslo.</p>
+    <input type="password" id="accessPassword" maxlength="4" placeholder="Zadajte heslo (0007)..." style="width:100%;padding:10px;background:#070410;border:1px solid var(--border);border-radius:10px;color:#fff;margin-bottom:12px;outline:none;text-align:center;font-size:1.2rem;letter-spacing:4px">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;justify-content:center">
       <input type="checkbox" id="ageCheck" style="accent-color:var(--accent);width:16px;height:16px">
-      <label for="ageCheck" style="font-size:0.75px;color:var(--text);cursor:pointer">Mám 18 rokov alebo viac</label>
+      <label for="ageCheck" style="font-size:0.75rem;color:var(--text);cursor:pointer">Mám 18 rokov alebo viac</label>
     </div>
     <button id="authBtn" style="width:100%;padding:11px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Vstúpiť do hry</button>
-    <div id="authErr" style="color:#ef4444;font-size:0.75rem;margin-top:8px;display:none">Nesprávne heslo alebo nezaškrtnutý vek!</div>
+    <div id="authErr" style="color:#ef4444;font-size:0.75rem;margin-top:8px;display:none">Nesprávne heslo (skúste 0007) alebo nezaškrtnutý vek!</div>
   </div>
 </div>
 
@@ -331,11 +331,11 @@ function soundWin(){
   setTimeout(()=>playTone(783.99, 'sine', 0.3), 300);
 }
 
-/* --- AUTORIZÁCIA 18+ --- */
+/* --- AUTORIZÁCIA 18+ (Heslo 0007) --- */
 $('authBtn').addEventListener('click', ()=>{
   const pass = $('accessPassword').value.trim();
   const age = $('ageCheck').checked;
-  if(pass === 'EROTIC' && age){
+  if(pass === '0007' && age){
     soundWin();
     $('authModal').style.display = 'none';
   } else {
