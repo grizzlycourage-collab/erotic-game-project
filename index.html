@@ -31,7 +31,7 @@ body{
   max-width:840px;margin:0 auto;
 }
 
-/* ========== TOP BAR ========== */
+/* TOP BAR */
 .topbar{
   flex-shrink:0;
   padding:8px 12px 6px;
@@ -70,7 +70,7 @@ body{
 }
 @keyframes lp{50%{opacity:.3;transform:scale(.7)}}
 
-/* ========== MAIN ========== */
+/* MAIN */
 .main{
   flex:1;overflow-y:auto;overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
@@ -86,7 +86,7 @@ body{
   100%{opacity:1;transform:translateY(0)}
 }
 
-/* ========== GAME VIEW ========== */
+/* GAME */
 .game-hero{
   background:linear-gradient(135deg,rgba(225,29,110,.10),rgba(168,85,247,.06));
   border:1px solid var(--border);border-radius:14px;
@@ -151,6 +151,7 @@ body{
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 .pdf-loading .err{color:var(--red);font-size:.68rem;margin-top:8px;line-height:1.5}
+.pdf-loading .err b{color:var(--accent2)}
 .page-badge{
   position:absolute;top:8px;left:8px;
   background:rgba(7,4,16,.88);border:1px solid var(--border);
@@ -161,6 +162,21 @@ body{
   transition:transform .2s;
 }
 .page-badge.bump{transform:scale(1.15)}
+
+/* Fallback picker */
+.fallback-box{
+  margin-top:14px;
+}
+.fallback-label{
+  display:inline-block;padding:10px 18px;
+  background:rgba(225,29,110,.15);
+  border:1px solid var(--accent);border-radius:10px;
+  color:var(--accent);font-size:.7rem;font-weight:800;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;
+  transition:.2s;
+}
+.fallback-label:hover{background:rgba(225,29,110,.25)}
+.fallback-label input{display:none}
 
 /* DRAW BUTTON */
 .draw-btn{
@@ -188,7 +204,7 @@ body{
 .draw-btn:disabled{opacity:.35;cursor:not-allowed;animation:none;box-shadow:none}
 .draw-btn:disabled::before{display:none}
 
-/* MODES + AUTO ROWS */
+/* CHIPS */
 .chip-row{
   display:flex;gap:5px;overflow-x:auto;
   padding-bottom:2px;
@@ -212,7 +228,7 @@ body{
   box-shadow:0 0 14px rgba(225,29,110,.3);
 }
 
-/* BOTTOM ACTIONS */
+/* ACTIONS */
 .actions-row{
   display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;
   flex-shrink:0;
@@ -232,7 +248,7 @@ body{
 }
 .btn-act:active{transform:scale(.96)}
 
-/* ========== KOMPAS VIEW ========== */
+/* KOMPAS */
 .info-box{
   background:linear-gradient(135deg,rgba(225,29,110,.08),rgba(168,85,247,.04));
   border:1px solid var(--border);border-left:3px solid var(--accent);
@@ -365,7 +381,7 @@ body{
 }
 .footer strong{color:var(--accent2);font-weight:600}
 
-/* ========== BOTTOM NAV ========== */
+/* BOTTOM NAV */
 .navbar{
   flex-shrink:0;
   display:grid;grid-template-columns:1fr 1fr;
@@ -391,7 +407,7 @@ body{
 }
 .nav-btn.active .ico{filter:drop-shadow(0 0 6px var(--accent))}
 
-/* ========== MODAL ========== */
+/* MODAL */
 .modal{
   position:fixed;inset:0;z-index:9998;
   background:rgba(7,4,16,.85);
@@ -441,7 +457,6 @@ body{
 .setting-row{
   display:grid;grid-template-columns:1fr 1fr;gap:8px;
 }
-.setting-row.three{grid-template-columns:1fr 1fr 1fr}
 .setting-input{
   width:100%;padding:10px 12px;
   background:#0a0518;border:1px solid var(--border);
@@ -504,7 +519,7 @@ body{
 .history-list .h-item:last-child{border-bottom:none}
 .history-list .h-item .p{color:var(--gold);font-weight:800}
 
-/* ========== TOAST ========== */
+/* TOAST */
 #toast{
   position:fixed;bottom:calc(80px + env(safe-area-inset-bottom,0px));
   left:50%;transform:translateX(-50%) translateY(20px);
@@ -526,7 +541,7 @@ body{
 #toast.gold{border-color:var(--accent2);color:var(--accent2)}
 #toast.jade{border-color:var(--jade);color:var(--jade)}
 
-/* ========== AUTH MODAL ========== */
+/* AUTH */
 #authModal{
   position:fixed;inset:0;z-index:9999;
   background:rgba(7,4,16,.97);
@@ -550,7 +565,7 @@ body{
 }
 .auth-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
 
-/* ========== DESKTOP ========== */
+/* DESKTOP */
 @media (min-width:700px){
   .view{padding:16px;gap:14px}
   .turn-display{font-size:2.1rem}
@@ -564,7 +579,7 @@ body{
 </head>
 <body>
 
-<!-- ========== AUTH ========== -->
+<!-- AUTH -->
 <div id="authModal">
   <div class="modal-box">
     <div style="font-size:2.5rem;margin-bottom:8px">🔞</div>
@@ -580,7 +595,7 @@ body{
   </div>
 </div>
 
-<!-- ========== APP ========== -->
+<!-- APP -->
 <div class="app">
 
   <div class="topbar">
@@ -596,7 +611,7 @@ body{
 
   <div class="main" id="mainScroll">
 
-    <!-- ========== HRA ========== -->
+    <!-- HRA -->
     <div class="view active" id="viewGame">
 
       <div class="game-hero">
@@ -612,8 +627,14 @@ body{
         <div class="page-badge" id="pageBadge">— / —</div>
         <div id="pdfLoading" class="pdf-loading">
           <div class="spin"></div>
-          <div id="loadMsg">Načítavam PDF...</div>
+          <div id="loadMsg">Načítavam PDF z repozitára...</div>
           <div id="loadErr" class="err" style="display:none"></div>
+          <div class="fallback-box" id="fallbackBox" style="display:none">
+            <label class="fallback-label">
+              📁 Vybrať PDF z telefónu
+              <input type="file" id="pdfUpload" accept="application/pdf">
+            </label>
+          </div>
         </div>
         <canvas id="pdfCanvas" style="display:none"></canvas>
       </div>
@@ -642,7 +663,7 @@ body{
 
     </div>
 
-    <!-- ========== KOMPAS ========== -->
+    <!-- KOMPAS -->
     <div class="view" id="viewKompas">
 
       <div class="info-box">
@@ -742,7 +763,7 @@ body{
 
 </div>
 
-<!-- ========== SETTINGS MODAL ========== -->
+<!-- SETTINGS MODAL -->
 <div class="modal" id="settingsModal">
   <div class="modal-sheet">
     <div class="modal-head">
@@ -804,7 +825,7 @@ body{
   </div>
 </div>
 
-<!-- ========== HISTORY MODAL ========== -->
+<!-- HISTORY MODAL -->
 <div class="modal" id="historyModal">
   <div class="modal-sheet">
     <div class="modal-head">
@@ -819,7 +840,7 @@ body{
 
 <div id="toast"></div>
 
-<!-- ========== PDF.JS PRED HLAVNÝM SKRIPTOM ========== -->
+<!-- PDF.JS PRED HLAVNÝM SKRIPTOM -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
   if(window.pdfjsLib){
@@ -843,7 +864,7 @@ var AUTH_KEY = 'kmpt_auth_v1';
 var $ = function(id){ return document.getElementById(id); };
 
 /* =========================================================
-   STAV HRY
+   STAV
 ========================================================= */
 var STATE = {
   pdfDoc: null,
@@ -864,7 +885,7 @@ var STATE = {
 };
 
 /* =========================================================
-   LOCALSTORAGE POMOCNÍCI
+   LOCALSTORAGE
 ========================================================= */
 function lsGet(key, def){
   try{
@@ -888,7 +909,7 @@ function toast(msg, type){
   clearTimeout(toastTO);
   toastTO = setTimeout(function(){
     el.className = '';
-  }, 2000);
+  }, 2200);
 }
 
 /* =========================================================
@@ -927,7 +948,6 @@ function sWin(){
   setTimeout(function(){ playTone(659.25, 'sine', 0.15); }, 150);
   setTimeout(function(){ playTone(783.99, 'sine', 0.3); }, 300);
 }
-function sSoft(){ playTone(330, 'sine', 0.1); }
 
 /* =========================================================
    AUTH
@@ -991,7 +1011,7 @@ for(var i = 0; i < navBtns.length; i++){
 }
 
 /* =========================================================
-   PLANETÁRNY A LUNÁRNY ČAS
+   PLANETÁRNY + LUNÁRNY ČAS
 ========================================================= */
 var CHALDEAN = ['Saturn','Jupiter','Mars','Slnko','Venuša','Merkúr','Mesiac'];
 var DAY_RULER_IDX = [3,6,2,5,1,4,0];
@@ -1032,7 +1052,7 @@ setInterval(updateLiveBar, 1000);
 updateLiveBar();
 
 /* =========================================================
-   HASH + PRNG (pre kompas)
+   HASH + PRNG
 ========================================================= */
 function hash32(str){
   var h = 2166136261 >>> 0;
@@ -1062,8 +1082,6 @@ function pickN(rng, arr, n){
   }
   return out;
 }
-
-/* Fisher-Yates shuffle */
 function shuffle(arr){
   var a = arr.slice();
   for(var i = a.length - 1; i > 0; i--){
@@ -1154,7 +1172,7 @@ var P_EXP = [
 ];
 
 /* =========================================================
-   KOMPAS VÝPOČET
+   KOMPAS FORMULÁR
 ========================================================= */
 (function(){
   var curYear = new Date().getFullYear();
@@ -1261,7 +1279,7 @@ $('btnRefresh').addEventListener('click', function(){
 var canvas = $('pdfCanvas');
 var ctx = canvas.getContext('2d');
 
-/* --- Načítanie nastavení --- */
+/* Načítanie nastavení */
 (function(){
   var s = lsGet(LS_SETTINGS, null);
   if(s){
@@ -1276,7 +1294,6 @@ var ctx = canvas.getContext('2d');
   STATE.history = lsGet(LS_HISTORY, []);
 })();
 
-/* --- Uloženie nastavení --- */
 function saveSettings(){
   lsSet(LS_SETTINGS, {
     mode: STATE.mode,
@@ -1288,7 +1305,6 @@ function saveSettings(){
   });
 }
 
-/* --- Update UI --- */
 function updateTurnDisplay(){
   $('turnDisplay').textContent = STATE.currentTurn;
   $('turnSub').textContent = (STATE.currentTurn === 'ONA')
@@ -1322,7 +1338,6 @@ function updatePageBadge(){
   setTimeout(function(){ b.classList.remove('bump'); }, 250);
 }
 
-/* --- Render PDF stránky --- */
 function renderPage(num){
   if(!STATE.pdfDoc) return;
   STATE.pdfDoc.getPage(num).then(function(page){
@@ -1338,23 +1353,23 @@ function renderPage(num){
       STATE.currentPage = num;
       updatePageBadge();
     });
+  }).catch(function(err){
+    console.error('Render error:', err);
+    toast('Chyba pri zobrazení strany', 'accent');
   });
 }
 
-/* --- ALGORITMUS VÝBERU STRANY --- */
 function pickNextPage(){
   var start = STATE.startPage;
   var end = STATE.endPage;
   if(end < start) return start;
 
-  /* SEKVENČNÝ */
   if(STATE.mode === 'sequential'){
     var next = STATE.currentPage + 1;
     if(next > end) next = start;
     return next;
   }
 
-  /* BEZ OPAKOVANIA (Fisher-Yates + localStorage) */
   if(STATE.mode === 'no-repeat'){
     var all = [];
     for(var i = start; i <= end; i++) all.push(i);
@@ -1365,23 +1380,19 @@ function pickNextPage(){
       if(!seenSet[all[j]]) remaining.push(all[j]);
     }
     if(remaining.length === 0){
-      /* Všetky videné — reset */
       STATE.seen = [];
       lsSet(LS_SEEN, []);
-      toast('🎉 Všetky strany videné — reštart histórie!', 'gold');
+      toast('🎉 Všetky strany videné — reštart!', 'gold');
       remaining = all.slice();
     }
-    /* Fisher-Yates na zamiešanie */
     var shuffled = shuffle(remaining);
     return shuffled[0];
   }
 
-  /* KLASICKÝ — čistá náhoda */
   var range = end - start + 1;
   return Math.floor(Math.random() * range) + start;
 }
 
-/* --- Animácia losovania --- */
 function executeDraw(){
   if(!STATE.pdfDoc || STATE.isDrawing) return;
   STATE.isDrawing = true;
@@ -1399,13 +1410,11 @@ function executeDraw(){
       var finalPage = pickNextPage();
       renderPage(finalPage);
 
-      /* Zaznamenať ako videné */
       if(STATE.seen.indexOf(finalPage) === -1){
         STATE.seen.push(finalPage);
         lsSet(LS_SEEN, STATE.seen);
       }
 
-      /* História */
       STATE.history.unshift({
         page: finalPage,
         time: new Date().toISOString(),
@@ -1416,7 +1425,6 @@ function executeDraw(){
 
       sWin();
 
-      /* Striedanie kôl */
       if(STATE.alternateTurns){
         STATE.currentTurn = (STATE.currentTurn === 'ONA') ? 'ON' : 'ONA';
         updateTurnDisplay();
@@ -1428,10 +1436,8 @@ function executeDraw(){
   }, 70);
 }
 
-/* --- Priradenie tlačidla --- */
 $('drawBtn').addEventListener('click', executeDraw);
 
-/* --- Manuálna zmena kola --- */
 $('shuffleTurnBtn').addEventListener('click', function(){
   sClick();
   STATE.currentTurn = (STATE.currentTurn === 'ONA') ? 'ON' : 'ONA';
@@ -1439,7 +1445,7 @@ $('shuffleTurnBtn').addEventListener('click', function(){
   toast('Na ťahu: ' + STATE.currentTurn, 'accent');
 });
 
-/* --- Režimy hry --- */
+/* REŽIMY */
 (function(){
   var chips = document.querySelectorAll('#modesRow .chip');
   for(var i = 0; i < chips.length; i++){
@@ -1452,7 +1458,6 @@ $('shuffleTurnBtn').addEventListener('click', function(){
         saveSettings();
         toast('Režim: ' + c.textContent.trim(), 'accent');
       });
-      /* Aplikovať uložený stav */
       if(c.getAttribute('data-mode') === STATE.mode){
         for(var k = 0; k < chips.length; k++) chips[k].classList.remove('active');
         c.classList.add('active');
@@ -1461,7 +1466,7 @@ $('shuffleTurnBtn').addEventListener('click', function(){
   }
 })();
 
-/* --- Auto režim --- */
+/* AUTO */
 function stopAuto(){
   if(STATE.autoTimer){
     clearInterval(STATE.autoTimer);
@@ -1489,7 +1494,6 @@ function startAuto(minutes){
           toast('Auto vypnuté', 'accent');
         } else if(val === 'custom'){
           STATE.autoMinutes = -1;
-          /* Otvorí nastavenia */
           openSettings();
         } else {
           STATE.autoMinutes = parseInt(val, 10);
@@ -1497,7 +1501,6 @@ function startAuto(minutes){
         }
         saveSettings();
       });
-      /* Aplikovať uložený stav */
       var val2 = c.getAttribute('data-auto');
       if(val2 === String(STATE.autoMinutes)){
         for(var k = 0; k < chips.length; k++) chips[k].classList.remove('active');
@@ -1508,9 +1511,7 @@ function startAuto(minutes){
   }
 })();
 
-/* =========================================================
-   MODALS
-========================================================= */
+/* MODALS */
 function openModal(id){
   var m = $(id);
   if(m) m.classList.add('open');
@@ -1533,7 +1534,6 @@ document.querySelectorAll('.modal').forEach(function(m){
 });
 
 function openSettings(){
-  /* Naplniť aktuálne hodnoty */
   $('setStartPage').value = STATE.startPage;
   $('setEndPage').value = STATE.endPage || '';
   $('setCustomInterval').value = STATE.customAutoMinutes;
@@ -1555,7 +1555,6 @@ $('historyBtn').addEventListener('click', function(){
   openModal('historyModal');
 });
 
-/* --- Settings inputs --- */
 $('setStartPage').addEventListener('change', function(){
   var v = parseInt(this.value, 10);
   if(!isNaN(v) && v >= 1 && v <= STATE.totalPages){
@@ -1585,7 +1584,6 @@ $('setCustomInterval').addEventListener('change', function(){
   }
 });
 
-/* --- Toggles --- */
 $('swSound').addEventListener('click', function(){
   STATE.soundOn = !STATE.soundOn;
   this.classList.toggle('on', STATE.soundOn);
@@ -1599,7 +1597,6 @@ $('swAlternate').addEventListener('click', function(){
   toast(STATE.alternateTurns ? '🔄 Striedanie ON' : '⏸ Striedanie OFF', 'accent');
 });
 
-/* --- Reset histórie --- */
 $('resetHistory').addEventListener('click', function(){
   sClick();
   if(!confirm('Vymazať históriu a zoznam videných strán?')) return;
@@ -1611,10 +1608,9 @@ $('resetHistory').addEventListener('click', function(){
   updateStatsBox();
   updateHistoryList();
   updateHistoryFull();
-  toast('🗑 Histórie vymazaná', 'gold');
+  toast('🗑 História vymazaná', 'gold');
 });
 
-/* --- Stats box --- */
 function updateStatsBox(){
   var total = STATE.endPage - STATE.startPage + 1;
   var seenInRange = 0;
@@ -1660,63 +1656,100 @@ function updateHistoryFull(){
 }
 
 /* =========================================================
-   NAČÍTANIE PDF
+   PDF NAČÍTANIE
 ========================================================= */
+function applyLoadedPdf(doc){
+  STATE.pdfDoc = doc;
+  STATE.totalPages = doc.numPages;
+
+  if(STATE.totalPages < 8){
+    $('loadMsg').textContent = 'PDF má menej ako 8 strán';
+    $('loadErr').textContent = 'PDF má ' + STATE.totalPages + ' strán, potrebuje aspoň 8.';
+    $('loadErr').style.display = 'block';
+    $('fallbackBox').style.display = 'block';
+    return;
+  }
+
+  if(!STATE.endPage || STATE.endPage > STATE.totalPages){
+    STATE.endPage = STATE.totalPages;
+  }
+  if(STATE.startPage < 1) STATE.startPage = 8;
+  if(STATE.startPage > STATE.totalPages) STATE.startPage = 8;
+
+  $('pdfLoading').style.display = 'none';
+  $('fallbackBox').style.display = 'none';
+  canvas.style.display = 'block';
+  $('drawBtn').removeAttribute('disabled');
+
+  var first = STATE.startPage;
+  renderPage(first);
+  STATE.currentPage = first;
+
+  updateTurnDisplay();
+  updateStatPill();
+  updateStatsBox();
+  saveSettings();
+
+  toast('✅ PDF načítané · ' + STATE.totalPages + ' strán', 'jade');
+}
+
 function loadRepoPdf(){
   if(!window.pdfjsLib){
-    $('loadMsg').textContent = 'Chyba: PDF.js sa nenačítal.';
+    $('loadMsg').textContent = 'PDF.js sa nenačítal';
     $('loadErr').textContent = 'Skontrolujte pripojenie k internetu.';
     $('loadErr').style.display = 'block';
+    $('fallbackBox').style.display = 'block';
     return;
   }
   $('loadMsg').textContent = 'Načítavam PDF z repozitára...';
+  $('loadErr').style.display = 'none';
+
   var loadingTask = pdfjsLib.getDocument({ url: PDF_URL });
   loadingTask.promise.then(function(doc){
-    STATE.pdfDoc = doc;
-    STATE.totalPages = doc.numPages;
-
-    if(STATE.totalPages < 8){
-      $('loadErr').textContent = 'PDF má menej ako 8 strán.';
-      $('loadErr').style.display = 'block';
-      return;
-    }
-
-    /* Nastav endPage ak nebol nastavený */
-    if(!STATE.endPage || STATE.endPage > STATE.totalPages){
-      STATE.endPage = STATE.totalPages;
-    }
-    if(STATE.startPage < 1) STATE.startPage = 8;
-    if(STATE.startPage > STATE.totalPages) STATE.startPage = 8;
-
-    $('pdfLoading').style.display = 'none';
-    canvas.style.display = 'block';
-    $('drawBtn').removeAttribute('disabled');
-
-    var first = STATE.startPage;
-    renderPage(first);
-    STATE.currentPage = first;
-
-    updateTurnDisplay();
-    updateStatPill();
-    updateStatsBox();
-
-    /* Uložiť endPage do settings */
-    saveSettings();
-
-    toast('✅ PDF načítané · ' + STATE.totalPages + ' strán', 'jade');
+    applyLoadedPdf(doc);
   }).catch(function(err){
-    console.error(err);
-    $('loadMsg').textContent = 'Nepodarilo sa načítať PDF.';
-    $('loadErr').innerHTML = 'Skontrolujte, či je v repe <b>positions.pdf</b>.';
+    console.error('PDF load error:', err);
+    $('loadMsg').textContent = 'PDF z repozitára sa nenačítal';
+    $('loadErr').innerHTML =
+      'Možnosti:<br>' +
+      '1. Skontrolujte, či je v repe platný <b>positions.pdf</b><br>' +
+      '2. Alebo nahrajte PDF ručne nižšie:';
     $('loadErr').style.display = 'block';
+    $('fallbackBox').style.display = 'block';
   });
 }
 
+/* Fallback — manuálny upload */
+$('pdfUpload').addEventListener('change', function(e){
+  var file = e.target.files && e.target.files[0];
+  if(!file) return;
+  if(file.type !== 'application/pdf'){
+    toast('Musí byť PDF súbor', 'accent');
+    return;
+  }
+  $('loadMsg').textContent = 'Načítavam vybraný PDF...';
+  $('loadErr').style.display = 'none';
+  $('fallbackBox').style.display = 'none';
+
+  var reader = new FileReader();
+  reader.onload = function(){
+    var typedArray = new Uint8Array(this.result);
+    pdfjsLib.getDocument({ data: typedArray }).promise.then(function(doc){
+      applyLoadedPdf(doc);
+    }).catch(function(err){
+      console.error('PDF error:', err);
+      $('loadMsg').textContent = 'PDF sa nepodarilo načítať';
+      $('loadErr').textContent = 'Súbor je poškodený alebo nie je PDF.';
+      $('loadErr').style.display = 'block';
+      $('fallbackBox').style.display = 'block';
+    });
+  };
+  reader.readAsArrayBuffer(file);
+});
+
 setTimeout(loadRepoPdf, 400);
 
-/* =========================================================
-   RESIZE — prerender PDF
-========================================================= */
+/* RESIZE */
 var resizeTO = null;
 window.addEventListener('resize', function(){
   clearTimeout(resizeTO);
@@ -1727,9 +1760,7 @@ window.addEventListener('resize', function(){
   }, 250);
 });
 
-/* =========================================================
-   INIT
-========================================================= */
+/* INIT */
 updateTurnDisplay();
 updateStatPill();
 
