@@ -1,1998 +1,1061 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <meta name="theme-color" content="#070410">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Kompas tela</title>
-  <style>
-    :root {
-      --bg: #070410;
-      --bg-2: #110819;
-      --panel: rgba(18, 10, 30, 0.96);
-      --panel-strong: rgba(12, 8, 22, 0.98);
-      --card: rgba(255, 255, 255, 0.03);
-      --card-strong: rgba(255, 255, 255, 0.05);
-      --border: rgba(255,255,255,0.08);
-      --border-strong: rgba(255,255,255,0.14);
-      --text: #f4ebff;
-      --muted: #a69ac0;
-      --accent: #e11d6e;
-      --accent-2: #f59e0b;
-      --gold: #ffb800;
-      --jade: #10b981;
-      --purple: #a855f7;
-      --red: #ef4444;
-      --shadow: rgba(0, 0, 0, 0.45);
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
-      --radius: 24px;
-      --radius-sm: 14px;
-      --phone-w: min(100vw, 460px);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; }
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background:
-        radial-gradient(circle at top, rgba(168,85,247,0.22), transparent 34%),
-        radial-gradient(circle at bottom right, rgba(225,29,110,0.18), transparent 28%),
-        linear-gradient(180deg, #080413 0%, #05030d 100%);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      overflow: hidden;
-      padding: 12px;
-    }
-
-    button, input, select { font: inherit; }
-
-    #app {
-      position: relative;
-      width: var(--phone-w);
-      height: min(100vh - 24px, 920px);
-      max-height: 920px;
-      display: flex;
-      flex-direction: column;
-      background: linear-gradient(180deg, rgba(10, 8, 18, 0.96) 0%, rgba(9, 5, 17, 0.98) 100%);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 26px;
-      overflow: hidden;
-      box-shadow:
-        0 32px 80px rgba(0,0,0,0.65),
-        inset 0 1px 0 rgba(255,255,255,0.06),
-        0 0 0 1px rgba(225,29,110,0.08);
-    }
-
-    #header {
-      flex-shrink: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 12px 10px;
-      padding-top: calc(12px + var(--safe-top));
-      background: linear-gradient(180deg, rgba(18,10,30,0.98), rgba(18,10,30,0.92));
-      border-bottom: 1px solid var(--border);
-      position: relative;
-      z-index: 10;
-    }
-
-    #headerLogo {
-      font-size: clamp(0.8rem, 2.4vw, 1rem);
-      font-weight: 900;
-      letter-spacing: 1.8px;
-      background: linear-gradient(135deg, var(--accent-2), var(--accent), var(--purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      white-space: nowrap;
-    }
-
-    #headerActions { display: flex; align-items: center; gap: 8px; }
-
-    .icon-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-      color: var(--text);
-      font-size: 1.08rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .icon-btn:active { transform: scale(0.94); }
-    .icon-btn:hover { border-color: var(--border-strong); background: rgba(255,255,255,0.04); }
-
-    #main {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(180deg, rgba(7, 4, 16, 0.7), rgba(7, 4, 16, 0.95));
-    }
-
-    .screen { position: absolute; inset: 0; display: none; flex-direction: column; min-height: 0; }
-    .screen.active { display: flex; }
-
-    #gameScreen {
-      background: linear-gradient(180deg, rgba(7, 4, 16, 0.9), rgba(0, 0, 0, 1));
-    }
-
-    #pdfArea {
-      flex: 1;
-      position: relative;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 14px 12px 8px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    #pdfArea::-webkit-scrollbar { width: 4px; }
-    #pdfArea::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 999px; }
-
-    #pdfCanvas {
-      display: none;
-      width: min(100%, 420px);
-      height: auto;
-      border-radius: 18px;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
-      border: 1px solid rgba(255,255,255,0.08);
-      margin: 0 auto;
-      background: rgba(255,255,255,0.02);
-    }
-
-    #pdfLoader {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: min(92%, 340px);
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.78rem;
-      line-height: 1.6;
-      padding: 16px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      backdrop-filter: blur(8px);
-    }
-
-    #pdfLoader .spin {
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.08);
-      border-top-color: var(--accent);
-      margin: 0 auto 14px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    #pdfLoader .err {
-      margin-top: 12px;
-      color: var(--red);
-      font-size: 0.7rem;
-      border-radius: 10px;
-      background: rgba(239,68,68,0.08);
-      border: 1px solid rgba(239,68,68,0.2);
-      text-align: left;
-      line-height: 1.5;
-      padding: 10px;
-      display: none;
-    }
-
-    #pdfLoader .err.visible { display: block; }
-    #pdfLoader .err b { color: var(--accent-2); }
-
-    .upload-btn {
-      display: none;
-      align-items: center;
-      justify-content: center;
-      margin-top: 14px;
-      padding: 12px 18px;
-      background: linear-gradient(135deg, rgba(225,29,110,0.2), rgba(168,85,247,0.18));
-      border: 1px solid rgba(225,29,110,0.4);
-      border-radius: 12px;
-      color: var(--text);
-      font-size: 0.74rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.18s ease, filter 0.2s ease;
-    }
-
-    .upload-btn.visible { display: inline-flex; }
-    .upload-btn:hover { filter: brightness(1.08); }
-    .upload-btn:active { transform: scale(0.98); }
-    .upload-btn input { display: none; }
-
-    #gameBottom {
-      flex-shrink: 0;
-      background: linear-gradient(180deg, rgba(7,4,16,.94), rgba(7,4,16,.98));
-      border-top: 1px solid var(--border);
-      padding: 12px 12px calc(12px + var(--safe-bottom));
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    #gameStatus {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-      font-family: ui-monospace, monospace;
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.06em;
-      min-width: 108px;
-      justify-content: center;
-    }
-
-    .status-pill .dot {
-      width: 7px;
-      height: 7px;
-      background: var(--accent-2);
-      border-radius: 50%;
-      box-shadow: 0 0 12px rgba(245,158,11,0.8);
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.45; transform: scale(0.8); }
-    }
-
-    #turnBtn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-width: 92px;
-      padding: 8px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(225,29,110,0.35);
-      background: linear-gradient(135deg, rgba(225,29,110,0.2), rgba(168,85,247,0.12));
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 800;
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: transform 0.18s ease, box-shadow 0.2s ease;
-    }
-
-    #turnBtn:hover { box-shadow: 0 0 18px rgba(225,29,110,0.18); }
-    #turnBtn:active { transform: scale(0.97); }
-
-    #drawBtn {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      padding: 18px 18px;
-      border: none;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #e11d6e 0%, #a855f7 52%, #f59e0b 100%);
-      background-size: 200% 200%;
-      animation: gradientShift 6s ease infinite;
-      box-shadow: 0 18px 38px rgba(225,29,110,0.25);
-      color: white;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: transform 0.18s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-      overflow: hidden;
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    #drawBtn::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%);
-      transform: translateX(-120%);
-      animation: shine 3s ease-in-out infinite;
-    }
-
-    @keyframes shine {
-      0%, 100% { transform: translateX(-120%); }
-      45%, 55% { transform: translateX(120%); }
-    }
-
-    #drawBtn:active { transform: scale(0.99); }
-    #drawBtn:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      animation: none;
-      box-shadow: none;
-      filter: grayscale(0.2);
-    }
-    #drawBtn:disabled::before { display: none; }
-    #drawBtn .ico { font-size: 1.2rem; }
-
-    #kompasScreen {
-      background:
-        radial-gradient(circle at top, rgba(225,29,110,0.12), transparent 30%),
-        linear-gradient(180deg, rgba(15, 10, 25, 0.98), rgba(7, 4, 16, 1));
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 14px 12px calc(14px + var(--safe-bottom));
-      gap: 12px;
-    }
-
-    #kompasScreen.active { display: block; }
-
-    .info-box {
-      background: linear-gradient(135deg, rgba(225,29,110,0.09), rgba(168,85,247,0.04));
-      border: 1px solid rgba(225,29,110,0.24);
-      border-left: 3px solid var(--accent);
-      border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 12px;
-    }
-
-    .info-box strong {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--accent-2);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-size: 0.6rem;
-    }
-
-    .info-box p { color: var(--muted); line-height: 1.6; font-size: 0.8rem; }
-
-    #kompasForm { display: grid; gap: 12px; }
-
-    .person-block {
-      position: relative;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px 14px 10px;
-      overflow: hidden;
-    }
-
-    .person-block::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 3px; height: 100%;
-      background: linear-gradient(180deg, var(--accent), var(--purple));
-    }
-
-    .person-block[data-p="B"]::before {
-      background: linear-gradient(180deg, var(--purple), var(--accent-2));
-    }
-
-    .person-title {
-      margin-bottom: 12px;
-      font-size: 0.62rem;
-      color: var(--accent);
-      font-weight: 900;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-
-    .person-block[data-p="B"] .person-title { color: var(--purple); }
-
-    .form-group { margin-bottom: 10px; }
-    .form-group:last-child { margin-bottom: 0; }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--muted);
-      font-size: 0.58rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .form-group input,
-    .date-row select,
-    .setting-input {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: rgba(10,5,24,0.82);
-      color: var(--text);
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .form-group input::placeholder { color: rgba(166,154,192,0.7); }
-
-    .form-group input:focus,
-    .date-row select:focus,
-    .setting-input:focus {
-      border-color: rgba(225,29,110,0.6);
-      box-shadow: 0 0 0 3px rgba(225,29,110,0.12);
-    }
-
-    .date-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1.4fr;
-      gap: 8px;
-    }
-
-    .date-row select {
-      appearance: none;
-      -webkit-appearance: none;
-      cursor: pointer;
-      padding-right: 30px;
-    }
-
-    .polarity {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 7px;
-      margin-top: 6px;
-    }
-
-    .polarity button {
-      padding: 10px 6px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.02);
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 0.64rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      transition: all 0.2s ease;
-    }
-
-    .polarity button.active {
-      background: linear-gradient(135deg, rgba(225,29,110,0.24), rgba(168,85,247,0.18));
-      border-color: rgba(225,29,110,0.5);
-      color: #fff;
-      box-shadow: 0 0 18px rgba(225,29,110,0.12);
-    }
-
-    .btn-primary {
-      width: 100%;
-      padding: 15px 18px;
-      border: none;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--accent), var(--purple), var(--accent-2));
-      background-size: 200% 200%;
-      animation: gradientShift 5s ease infinite;
-      color: white;
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 900;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      box-shadow: 0 16px 36px rgba(225,29,110,0.2);
-      transition: transform 0.18s ease, filter 0.2s ease;
-    }
-
-    .btn-primary:hover { filter: brightness(1.04); }
-    .btn-primary:active { transform: scale(0.99); }
-
-    #results {
-      display: none;
-      margin-top: 2px;
-      animation: fadeUp 0.28s ease;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    #results.active { display: block; }
-
-    .deco {
-      text-align: center;
-      letter-spacing: 0.8em;
-      margin: 0 0 12px;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.2);
-    }
-
-    .section {
-      background: linear-gradient(135deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 14px;
-      padding: 14px 14px 12px;
-      margin-bottom: 10px;
-    }
-
-    .section.s-accent2 { border-left-color: var(--accent-2); }
-    .section.s-gold { border-left-color: var(--gold); }
-    .section.s-purple { border-left-color: var(--purple); }
-    .section.s-jade { border-left-color: var(--jade); }
-
-    .section h3 {
-      margin-bottom: 8px;
-      font-size: 0.66rem;
-      font-weight: 900;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-
-    .section.s-accent2 h3 { color: var(--accent-2); }
-    .section.s-gold h3 { color: var(--gold); }
-    .section.s-purple h3 { color: var(--purple); }
-    .section.s-jade h3 { color: var(--jade); }
-
-    .section p { color: #dcd2eb; font-size: 0.85rem; line-height: 1.7; margin-bottom: 7px; }
-    .section p:last-child { margin-bottom: 0; }
-
-    .section ul { list-style: none; display: grid; gap: 6px; margin-top: 8px; }
-
-    .section ul li {
-      position: relative;
-      padding-left: 18px;
-      color: #d8d0e8;
-      font-size: 0.8rem;
-      line-height: 1.5;
-    }
-
-    .section ul li::before {
-      content: "◈";
-      position: absolute;
-      left: 0; top: 0;
-      color: var(--accent-2);
-      font-size: 0.62rem;
-    }
-
-    .hl { color: var(--accent-2); font-weight: 800; }
-    .hl2 { color: var(--accent); font-weight: 800; }
-    .hl3 { color: var(--purple); font-weight: 800; }
-    .hl4 { color: var(--gold); font-weight: 800; }
-    .hl5 { color: var(--jade); font-weight: 800; }
-
-    .results-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .btn-soft {
-      padding: 12px 8px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(225,29,110,0.08);
-      color: var(--accent);
-      cursor: pointer;
-      font-size: 0.68rem;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: transform 0.18s ease;
-    }
-
-    .btn-soft.secondary { background: transparent; color: var(--muted); }
-    .btn-soft:active { transform: scale(0.98); }
-
-    #navbar {
-      flex-shrink: 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background: linear-gradient(180deg, rgba(18,10,30,.99), rgba(18,10,30,.96));
-      border-top: 1px solid var(--border);
-      padding: 6px 8px calc(8px + var(--safe-bottom));
-      gap: 8px;
-    }
-
-    .nav-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      padding: 8px 6px;
-      border: none;
-      border-radius: 12px;
-      background: transparent;
-      color: var(--muted);
-      font-size: 0.6rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease, transform 0.18s ease;
-    }
-
-    .nav-btn .ico { font-size: 1.15rem; }
-
-    .nav-btn.active {
-      background: linear-gradient(135deg, rgba(225,29,110,0.17), rgba(168,85,247,0.12));
-      color: #fff;
-    }
-
-    .nav-btn.active .ico { filter: drop-shadow(0 0 6px rgba(225,29,110,0.8)); }
-    .nav-btn:active { transform: scale(0.98); }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      background: rgba(7,4,16,.78);
-      backdrop-filter: blur(12px);
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 0;
-    }
-
-    .modal.open { display: flex; }
-
-    .modal-sheet {
-      width: min(100%, 540px);
-      max-height: min(86vh, 760px);
-      overflow-y: auto;
-      background: linear-gradient(180deg, rgba(26, 14, 42, 0.98), rgba(18,10,30,0.98));
-      border-top-left-radius: 24px;
-      border-top-right-radius: 24px;
-      border: 1px solid var(--border);
-      border-bottom: none;
-      padding: 18px 16px calc(18px + var(--safe-bottom));
-      animation: sheetIn 0.25s ease;
-    }
-
-    @keyframes sheetIn {
-      from { transform: translateY(100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .modal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .modal-head h2 {
-      font-size: 0.96rem;
-      font-weight: 900;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      background: linear-gradient(135deg, var(--accent-2), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .modal-close {
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-    }
-
-    .setting-group { margin-bottom: 18px; }
-    .setting-group > label {
-      display: block;
-      margin-bottom: 10px;
-      color: var(--muted);
-      font-size: 0.6rem;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .mode-grid, .auto-grid { display: grid; gap: 8px; }
-    .mode-grid { grid-template-columns: repeat(3, 1fr); }
-
-    .mode-card {
-      padding: 12px 8px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-      color: var(--muted);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 0.56rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: all 0.2s ease;
-      min-height: 72px;
-    }
-
-    .mode-card .ico { font-size: 1.15rem; }
-
-    .mode-card.active {
-      background: linear-gradient(135deg, rgba(225,29,110,0.18), rgba(168,85,247,0.12));
-      color: #fff;
-      border-color: rgba(225,29,110,0.5);
-    }
-
-    .auto-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-
-    .auto-card {
-      padding: 10px 2px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 0.54rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      min-height: 62px;
-      transition: all 0.2s ease;
-    }
-
-    .auto-card .ico { font-size: 0.9rem; }
-
-    .auto-card.active {
-      background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(16,185,129,0.08));
-      border-color: rgba(16,185,129,0.42);
-      color: var(--jade);
-    }
-
-    .setting-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      margin-bottom: 8px;
-    }
-
-    .toggle-row-label { display: flex; flex-direction: column; gap: 2px; }
-    .toggle-row-label .t { font-size: 0.72rem; color: var(--text); font-weight: 800; }
-    .toggle-row-label .s { font-size: 0.52rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; }
-
-    .switch {
-      width: 46px; height: 26px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      position: relative;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .switch::after {
-      content: "";
-      position: absolute;
-      top: 2px; left: 2px;
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: var(--muted);
-      transition: all 0.2s ease;
-    }
-
-    .switch.on {
-      background: rgba(16,185,129,0.25);
-      border-color: rgba(16,185,129,0.4);
-    }
-
-    .switch.on::after {
-      left: calc(100% - 22px);
-      background: var(--jade);
-      box-shadow: 0 0 10px rgba(16,185,129,0.6);
-    }
-
-    .stats-box {
-      padding: 12px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-family: ui-monospace, monospace;
-      font-size: 0.65rem;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .stats-box .num { color: var(--accent-2); font-weight: 800; }
-    .stats-box .num2 { color: var(--jade); font-weight: 800; }
-
-    .history-list { max-height: 300px; overflow-y: auto; }
-
-    .h-item {
-      padding: 8px 10px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      font-family: ui-monospace, monospace;
-      font-size: 0.62rem;
-      color: var(--muted);
-    }
-
-    .h-item:last-child { border-bottom: none; }
-    .h-item .p { color: var(--gold); font-weight: 800; }
-
-    .btn-danger {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(239,68,68,0.35);
-      background: rgba(239,68,68,0.08);
-      color: var(--red);
-      font-size: 0.68rem;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-
-    #toast {
-      position: fixed;
-      left: 50%;
-      bottom: calc(120px + var(--safe-bottom));
-      transform: translateX(-50%) translateY(20px);
-      background: rgba(18,10,30,.96);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 10px 14px;
-      color: var(--text);
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      z-index: 1200;
-    }
-
-    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    #toast.accent { border-color: rgba(225,29,110,0.5); color: var(--accent); }
-    #toast.gold { border-color: rgba(245,158,11,0.5); color: var(--accent-2); }
-    #toast.jade { border-color: rgba(16,185,129,0.5); color: var(--jade); }
-
-    #authModal {
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      background: rgba(7,4,16,.97);
-      backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-    }
-
-    #authModal.hidden { display: none; }
-
-    .auth-box {
-      background: linear-gradient(180deg, rgba(18,10,30,1), rgba(12,8,22,1));
-      border: 1px solid rgba(225,29,110,0.4);
-      border-radius: 22px;
-      padding: 26px 22px 20px;
-      width: min(100%, 360px);
-      text-align: center;
-      box-shadow: 0 22px 60px rgba(0,0,0,0.7);
-    }
-
-    .auth-box .emoji { font-size: 2.5rem; margin-bottom: 8px; }
-    .auth-box h2 { color: var(--accent); font-size: 1.2rem; margin-bottom: 8px; }
-    .auth-box p { color: var(--muted); font-size: 0.76rem; line-height: 1.5; margin-bottom: 16px; }
-
-    .auth-input {
-      width: 100%;
-      padding: 12px 14px;
-      background: #070410;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: #fff;
-      margin-bottom: 14px;
-      outline: none;
-      text-align: center;
-      font-size: 1.25rem;
-      letter-spacing: 0.55em;
-      font-family: ui-monospace, monospace;
-      font-weight: 700;
-    }
-
-    .auth-input:focus {
-      border-color: rgba(225,29,110,0.6);
-      box-shadow: 0 0 0 3px rgba(225,29,110,0.12);
-    }
-
-    .auth-age {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .auth-age input { width: 16px; height: 16px; accent-color: var(--accent); }
-    .auth-age label { color: var(--text); font-size: 0.72rem; cursor: pointer; }
-
-    #authBtn {
-      width: 100%;
-      padding: 12px 16px;
-      background: linear-gradient(135deg, rgba(225,29,110,0.9), rgba(168,85,247,0.8));
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-weight: 900;
-      cursor: pointer;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    #authErr {
-      display: none;
-      margin-top: 10px;
-      color: var(--red);
-      font-size: 0.72rem;
-    }
-
-    @media (min-width: 768px) {
-      body {
-        padding: 26px;
-        background:
-          radial-gradient(circle at top, rgba(168,85,247,0.2), transparent 34%),
-          radial-gradient(circle at bottom right, rgba(225,29,110,0.15), transparent 30%),
-          linear-gradient(180deg, #080412 0%, #06030d 100%);
-      }
-
-      #app {
-        width: min(100%, 520px);
-        height: min(92vh, 960px);
-      }
-
-      #kompasForm {
-        grid-template-columns: 1fr 1fr;
-        align-items: start;
-      }
-
-      .btn-primary { grid-column: 1 / -1; }
-    }
-
-    @media (max-width: 360px) {
-      body { padding: 8px; }
-      #app { border-radius: 18px; }
-      .polarity button { font-size: 0.56rem; }
-      .section p { font-size: 0.8rem; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#070410">
+<meta name="robots" content="noindex, nofollow">
+<title>Kompas tela</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#070410;--card:#120a1e;--card2:#1a0e2a;--border:#2a1a44;--text:#f0e6ff;--muted:#7a6a9a;--accent:#e11d6e;--accent2:#f59e0b;--gold:#ffb800;--jade:#10b981;--purple:#a855f7;--red:#ef4444;--glow:rgba(225,29,110,.18)}
+html,body{height:100%;overscroll-behavior:none}
+body{background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;font-size:15px}
+.app{position:fixed;inset:0;display:flex;flex-direction:column;max-width:840px;margin:0 auto}
+.topbar{flex-shrink:0;padding:8px 12px 6px;padding-top:calc(8px + env(safe-area-inset-top,0px));background:linear-gradient(180deg,rgba(18,10,30,.96),rgba(18,10,30,.88));border-bottom:1px solid var(--border);backdrop-filter:blur(10px);z-index:10}
+.topbar-row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.topbar-logo{font-size:.88rem;font-weight:900;letter-spacing:1.5px;background:linear-gradient(135deg,var(--accent2),var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
+.topbar-live{display:flex;gap:6px;flex-wrap:wrap;font-family:ui-monospace,monospace;font-size:.5rem;letter-spacing:1px}
+.topbar-live .lb{display:flex;align-items:center;gap:4px;padding:3px 7px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:20px}
+.topbar-live .lbl{color:var(--muted);text-transform:uppercase}
+.topbar-live .val{color:var(--gold);font-weight:800}
+.topbar-live .dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);box-shadow:0 0 8px var(--accent2);animation:lp 1.6s ease-in-out infinite}
+@keyframes lp{50%{opacity:.3;transform:scale(.7)}}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative}
+.view{display:none;padding:10px;padding-bottom:16px;min-height:100%}
+.view.active{display:flex;flex-direction:column;gap:10px;animation:viewIn .3s ease}
+@keyframes viewIn{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
+
+/* GAME */
+.game-hero{background:linear-gradient(135deg,rgba(225,29,110,.10),rgba(168,85,247,.06));border:1px solid var(--border);border-radius:14px;padding:10px 14px;position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.game-hero::before{content:'';position:absolute;top:-50%;right:-20%;width:180px;height:180px;background:radial-gradient(circle,rgba(225,29,110,.22),transparent 70%);pointer-events:none}
+.game-hero-left{position:relative;z-index:1;min-width:0}
+.game-hero h2{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;font-weight:700}
+.turn-display{font-size:1.7rem;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.05}
+.turn-sub{font-size:.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:ui-monospace,monospace;margin-top:2px}
+.stat-pill{position:relative;z-index:1;padding:6px 10px;border-radius:20px;background:rgba(7,4,16,.7);border:1px solid var(--border);font-family:ui-monospace,monospace;font-size:.58rem;color:var(--accent2);font-weight:800;letter-spacing:1px;white-space:nowrap;flex-shrink:0}
+.pdf-stage{background:#000;border-radius:14px;border:1px solid var(--border);flex:1;min-height:280px;display:flex;align-items:center;justify-content:center;padding:8px;position:relative;overflow:hidden}
+.pdf-stage canvas{display:block;border-radius:8px;max-width:100%;max-height:100%;box-shadow:0 8px 30px rgba(0,0,0,.7)}
+.pdf-loading{color:var(--muted);font-size:.75rem;text-align:center;padding:20px;line-height:1.6}
+.pdf-loading .spin{display:inline-block;width:22px;height:22px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pdf-loading .err{color:var(--red);font-size:.68rem;margin-top:8px;line-height:1.5}
+.pdf-loading .err b{color:var(--accent2)}
+.page-badge{position:absolute;top:8px;left:8px;background:rgba(7,4,16,.88);border:1px solid var(--border);padding:3px 9px;border-radius:20px;font-family:ui-monospace,monospace;font-size:.58rem;color:var(--gold);font-weight:800;letter-spacing:1px;backdrop-filter:blur(6px);z-index:2;transition:transform .2s}
+.page-badge.bump{transform:scale(1.15)}
+.fallback-box{margin-top:14px}
+.fallback-label{display:inline-block;padding:10px 18px;background:rgba(225,29,110,.15);border:1px solid var(--accent);border-radius:10px;color:var(--accent);font-size:.7rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:.2s}
+.fallback-label:hover{background:rgba(225,29,110,.25)}
+.fallback-label input{display:none}
+.draw-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),var(--purple),var(--accent2));background-size:200% 200%;border:none;border-radius:14px;color:#fff;font-size:1rem;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:.25s;box-shadow:0 0 40px var(--glow),0 8px 24px rgba(0,0,0,.5);animation:sg 6s ease infinite;font-family:inherit;position:relative;overflow:hidden;flex-shrink:0}
+.draw-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transform:translateX(-100%);animation:shine 3s ease-in-out infinite}
+@keyframes shine{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+@keyframes sg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.draw-btn:active{transform:scale(.98)}
+.draw-btn:disabled{opacity:.35;cursor:not-allowed;animation:none;box-shadow:none}
+.draw-btn:disabled::before{display:none}
+.chip-row{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;flex-shrink:0}
+.chip-row::-webkit-scrollbar{display:none}
+.chip{flex:1;min-width:fit-content;white-space:nowrap;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--muted);font-size:.6rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:.2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px}
+.chip .ico{font-size:.85rem;line-height:1}
+.chip.active{background:linear-gradient(135deg,rgba(225,29,110,.2),rgba(168,85,247,.15));border-color:var(--accent);color:#fff;box-shadow:0 0 14px rgba(225,29,110,.3)}
+.actions-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;flex-shrink:0}
+.btn-act{padding:10px 4px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.58rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:.2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px}
+.btn-act .ico{font-size:.85rem;line-height:1}
+.btn-act.active{background:rgba(16,185,129,.15);border-color:var(--jade);color:var(--jade)}
+.btn-act:active{transform:scale(.96)}
+
+/* KOMPAS */
+.info-box{background:linear-gradient(135deg,rgba(225,29,110,.08),rgba(168,85,247,.04));border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:11px;padding:11px 14px;font-size:.75rem;line-height:1.55;color:#e2d8f0}
+.info-box strong{color:var(--accent2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px;font-size:.62rem}
+.info-box p{font-size:.75rem}
+.person-block{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:11px;padding:12px 12px 4px;margin-bottom:10px;position:relative;overflow:hidden}
+.person-block::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,var(--accent),var(--purple))}
+.person-block[data-p="B"]::before{background:linear-gradient(180deg,var(--purple),var(--accent2))}
+.person-title{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:6px}
+.person-block[data-p="B"] .person-title{color:var(--purple)}
+.form-group{margin-bottom:8px}
+.form-group label{display:block;font-size:.55rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:3px;font-weight:600}
+.form-group input{width:100%;padding:9px 11px;background:#0a0518;border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:.85rem;transition:.3s;outline:none;font-family:inherit}
+.form-group input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.date-row{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:5px}
+.date-row select{padding:8px 4px;background:#0a0518;border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:.78rem;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer;font-family:inherit}
+.date-row select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.polarity{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-top:3px}
+.polarity button{padding:7px 2px;border:1px solid var(--border);background:#0a0518;color:var(--muted);font-size:.6rem;font-weight:700;border-radius:8px;cursor:pointer;transition:.2s;font-family:inherit}
+.polarity button.active{background:linear-gradient(135deg,var(--accent),var(--purple));border-color:transparent;color:#fff;box-shadow:0 0 12px var(--glow)}
+.btn-primary{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--purple),var(--accent2));background-size:200% 200%;border:none;border-radius:10px;color:#fff;font-size:.85rem;font-weight:800;letter-spacing:1.5px;cursor:pointer;transition:.3s;text-transform:uppercase;margin-top:4px;box-shadow:0 0 28px var(--glow);animation:sg 6s ease infinite;font-family:inherit}
+.btn-primary:active{transform:scale(.98)}
+.results{display:none;margin-top:4px}
+.results.active{display:block;animation:viewIn .4s ease}
+.section{background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.01));border:1px solid var(--border);border-radius:12px;padding:14px 14px 12px;margin-bottom:9px;border-left:3px solid var(--accent)}
+.section.s-accent2{border-left-color:var(--accent2)}
+.section.s-gold{border-left-color:var(--gold)}
+.section.s-purple{border-left-color:var(--purple)}
+.section.s-jade{border-left-color:var(--jade)}
+.section.s-red{border-left-color:var(--red)}
+.section .head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:6px;flex-wrap:wrap}
+.section .head h3{font-size:.72rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.section.s-accent2 .head h3{color:var(--accent2)}
+.section.s-gold .head h3{color:var(--gold)}
+.section.s-purple .head h3{color:var(--purple)}
+.section.s-jade .head h3{color:var(--jade)}
+.section.s-red .head h3{color:var(--red)}
+.section .stat-row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.section .stat-box{flex:1;min-width:60px;padding:6px 8px;background:rgba(0,0,0,.25);border-radius:8px;text-align:center;border:1px solid var(--border)}
+.section .stat-box .lbl{display:block;font-size:.48rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.section .stat-box .val{font-size:.9rem;font-weight:900;color:var(--gold);font-family:ui-monospace,monospace}
+.section p{font-size:.82rem;line-height:1.7;color:#d8d0e8;margin-bottom:7px}
+.section p:last-child{margin-bottom:0}
+.section ul{margin:6px 0 0 0;padding-left:0;list-style:none}
+.section ul li{padding:5px 0 5px 18px;position:relative;font-size:.8rem;line-height:1.65;color:#d8d0e8}
+.section ul li::before{content:'◈';position:absolute;left:0;top:5px;color:var(--accent2);font-size:.6rem}
+.hl{color:var(--accent2);font-weight:700}
+.hl2{color:var(--accent);font-weight:700}
+.hl3{color:var(--purple);font-weight:700}
+.hl4{color:var(--gold);font-weight:700}
+.hl5{color:var(--jade);font-weight:700}
+.hl6{color:var(--red);font-weight:700}
+.deco{font-family:ui-monospace,monospace;font-size:.6rem;color:var(--accent2);opacity:.35;letter-spacing:6px;text-align:center;margin:2px 0 8px}
+.footer{margin-top:14px;padding-top:8px;border-top:1px solid var(--border);text-align:center;font-size:.5rem;color:var(--muted);letter-spacing:1.8px;text-transform:uppercase}
+.footer strong{color:var(--accent2);font-weight:600}
+
+/* NAVBAR */
+.navbar{flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;background:linear-gradient(0deg,rgba(18,10,30,.98),rgba(18,10,30,.9));border-top:1px solid var(--border);padding:5px 6px calc(5px + env(safe-area-inset-bottom,0px));backdrop-filter:blur(12px);z-index:10}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;background:transparent;border:none;color:var(--muted);font-size:.58rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;transition:.25s;border-radius:9px;font-family:inherit}
+.nav-btn .ico{font-size:1.05rem;line-height:1}
+.nav-btn.active{color:#fff;background:linear-gradient(135deg,rgba(225,29,110,.18),rgba(168,85,247,.12));box-shadow:0 0 16px rgba(225,29,110,.22)}
+.nav-btn.active .ico{filter:drop-shadow(0 0 6px var(--accent))}
+
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:9998;background:rgba(7,4,16,.85);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal.open{display:flex;animation:modalIn .25s ease}
+@keyframes modalIn{0%{opacity:0}100%{opacity:1}}
+.modal-sheet{background:linear-gradient(180deg,var(--card2),var(--card));border-top-left-radius:22px;border-top-right-radius:22px;border:1px solid var(--border);border-bottom:none;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px));width:100%;max-width:840px;max-height:88vh;overflow-y:auto;animation:sheetIn .3s cubic-bezier(.2,.9,.3,1)}
+@keyframes sheetIn{0%{transform:translateY(100%)}100%{transform:translateY(0)}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.modal-head h2{font-size:.95rem;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-close{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}
+.setting-group{margin-bottom:16px}
+.setting-group > label{display:block;font-size:.6rem;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin-bottom:8px;font-weight:700}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.mode-card{padding:12px 6px;border:1px solid var(--border);background:rgba(255,255,255,.02);border-radius:10px;color:var(--muted);font-size:.6rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;cursor:pointer;transition:.2s;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.mode-card .ico{font-size:1.2rem;line-height:1}
+.mode-card.active{background:linear-gradient(135deg,rgba(225,29,110,.2),rgba(168,85,247,.15));border-color:var(--accent);color:#fff;box-shadow:0 0 14px rgba(225,29,110,.3)}
+.auto-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.auto-card{padding:9px 2px;border:1px solid var(--border);background:rgba(255,255,255,.02);border-radius:9px;color:var(--muted);font-size:.6rem;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:.2s;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px}
+.auto-card .ico{font-size:1rem;line-height:1}
+.auto-card.active{background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(16,185,129,.1));border-color:var(--jade);color:var(--jade);box-shadow:0 0 12px rgba(16,185,129,.3)}
+.setting-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.setting-input{width:100%;padding:10px 12px;background:#0a0518;border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:.85rem;outline:none;font-family:ui-monospace,monospace;font-weight:700;text-align:center}
+.setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px;margin-bottom:8px}
+.toggle-row-label{display:flex;flex-direction:column;gap:2px}
+.toggle-row-label .t{font-size:.72rem;font-weight:800;color:var(--text)}
+.toggle-row-label .s{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.switch{width:44px;height:24px;border-radius:20px;background:rgba(255,255,255,.1);position:relative;transition:.25s;cursor:pointer;flex-shrink:0;border:1px solid var(--border)}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:.25s}
+.switch.on{background:rgba(16,185,129,.3);border-color:var(--jade)}
+.switch.on::after{left:22px;background:var(--jade);box-shadow:0 0 8px var(--jade)}
+.btn-danger{width:100%;padding:11px;border-radius:9px;border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.08);color:var(--red);font-size:.68rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:.2s}
+.btn-danger:active{transform:scale(.98);background:rgba(239,68,68,.15)}
+.stats-box{padding:11px 12px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px;font-family:ui-monospace,monospace;font-size:.65rem;color:var(--muted);line-height:1.7}
+.stats-box .num{color:var(--accent2);font-weight:800}
+.stats-box .num2{color:var(--jade);font-weight:800}
+.history-list{max-height:250px;overflow-y:auto;font-family:ui-monospace,monospace;font-size:.62rem;color:var(--muted)}
+.history-list .h-item{padding:7px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+.history-list .h-item:last-child{border-bottom:none}
+.history-list .h-item .p{color:var(--gold);font-weight:800}
+
+/* TOAST */
+#toast{position:fixed;bottom:calc(200px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(20px);background:rgba(18,10,30,.96);border:1px solid var(--border);border-radius:20px;padding:9px 18px;font-size:.72rem;font-weight:700;letter-spacing:.8px;color:var(--text);box-shadow:0 8px 30px rgba(0,0,0,.7);opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.2,.9,.3,1);z-index:9999;white-space:nowrap;backdrop-filter:blur(10px)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.accent{border-color:var(--accent);color:var(--accent)}
+#toast.gold{border-color:var(--accent2);color:var(--accent2)}
+#toast.jade{border-color:var(--jade);color:var(--jade)}
+
+/* AUTH */
+#authModal{position:fixed;inset:0;z-index:9999;background:rgba(7,4,16,.97);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:16px}
+#authModal.hidden{display:none}
+.auth-box{background:#120a1e;border:1px solid rgba(225,29,110,.4);border-radius:20px;padding:24px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.9)}
+.auth-input{width:100%;padding:10px;background:#070410;border:1px solid var(--border);border-radius:10px;color:#fff;margin-bottom:12px;outline:none;text-align:center;font-size:1.3rem;letter-spacing:6px;font-family:inherit}
+.auth-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+
+@media (min-width:700px){
+  .view{padding:16px;gap:14px}
+  .turn-display{font-size:2.1rem}
+  .draw-btn{padding:20px;font-size:1.15rem;letter-spacing:3px}
+  .pdf-stage{min-height:400px}
+  .game-hero{padding:14px 18px}
+  .chip{padding:10px 16px;font-size:.65rem}
+  .btn-act{padding:12px 6px;font-size:.62rem}
+}
+</style>
 </head>
 <body>
 
-  <!-- AUTH -->
-  <div id="authModal">
-    <div class="auth-box">
-      <div class="emoji">🔞</div>
-      <h2>Vstupné overenie (18+)</h2>
-      <p>Obsah je chránený. Zadajte štvorciferné heslo.</p>
-      <input type="password" id="authPass" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="••••" class="auth-input">
-      <div class="auth-age">
-        <input type="checkbox" id="authAge">
-        <label for="authAge">Mám 18 rokov alebo viac</label>
+<div id="authModal">
+  <div class="auth-box">
+    <div style="font-size:2.5rem;margin-bottom:8px">🔞</div>
+    <h2 style="color:var(--accent);font-size:1.3rem;margin-bottom:6px">Vstupné overenie (18+)</h2>
+    <p style="color:var(--muted);font-size:.8rem;margin-bottom:16px">Obsah je chránený. Zadajte štvorciferné heslo.</p>
+    <input type="password" id="authPass" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="••••" class="auth-input">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;justify-content:center">
+      <input type="checkbox" id="authAge" style="accent-color:var(--accent);width:16px;height:16px">
+      <label for="authAge" style="font-size:.75rem;color:var(--text);cursor:pointer">Mám 18 rokov alebo viac</label>
+    </div>
+    <button id="authBtn" style="width:100%;padding:11px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:inherit">Vstúpiť</button>
+    <div id="authErr" style="color:#ef4444;font-size:.75rem;margin-top:8px;display:none">Nesprávne heslo alebo nepotvrdený vek.</div>
+  </div>
+</div>
+
+<div class="app">
+
+<div class="topbar">
+  <div class="topbar-row">
+    <div class="topbar-logo" id="topLogo">🔥 HRA</div>
+    <div class="topbar-live">
+      <div class="lb"><span class="dot"></span><span class="val" id="lbClock">--:--</span></div>
+      <div class="lb"><span class="lbl">Pl.</span><span class="val" id="lbHour">—</span></div>
+      <div class="lb"><span class="lbl">Mes.</span><span class="val" id="lbMoon">—</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="mainScroll">
+
+<div class="view active" id="viewGame">
+  <div class="game-hero">
+    <div class="game-hero-left">
+      <h2>Na ťahu</h2>
+      <div class="turn-display" id="turnDisplay">ONA</div>
+      <div class="turn-sub" id="turnSub">Ona vyberá</div>
+    </div>
+    <div class="stat-pill" id="statPill">— / —</div>
+  </div>
+
+  <div class="pdf-stage" id="pdfStage">
+    <div class="page-badge" id="pageBadge">— / —</div>
+    <div id="pdfLoading" class="pdf-loading">
+      <div class="spin"></div>
+      <div id="loadMsg">Načítavam PDF z repozitára...</div>
+      <div id="loadErr" class="err" style="display:none"></div>
+      <div class="fallback-box" id="fallbackBox" style="display:none">
+        <label class="fallback-label">📁 Vybrať PDF z telefónu<input type="file" id="pdfUpload" accept="application/pdf"></label>
       </div>
-      <button id="authBtn">Overiť</button>
-      <div id="authErr">Nesprávne heslo alebo nepotvrdený vek.</div>
+    </div>
+    <canvas id="pdfCanvas" style="display:none"></canvas>
+  </div>
+
+  <button class="draw-btn" id="drawBtn" disabled>🎲 VYLOOSOVAŤ</button>
+
+  <div class="chip-row" id="modesRow">
+    <button class="chip active" data-mode="no-repeat"><span class="ico">🚫</span>Bez opak.</button>
+    <button class="chip" data-mode="classic"><span class="ico">🎲</span>Klasický</button>
+    <button class="chip" data-mode="sequential"><span class="ico">📖</span>Sekvenčný</button>
+  </div>
+
+  <div class="chip-row" id="autoRow">
+    <button class="chip active" data-auto="0"><span class="ico">⏸</span>OFF</button>
+    <button class="chip" data-auto="2"><span class="ico">⏱</span>2 min</button>
+    <button class="chip" data-auto="4"><span class="ico">⏱</span>4 min</button>
+    <button class="chip" data-auto="10"><span class="ico">⏱</span>10 min</button>
+    <button class="chip" data-auto="custom"><span class="ico">⚙️</span>Vlastné</button>
+  </div>
+
+  <div class="actions-row">
+    <button class="btn-act" id="shuffleTurnBtn"><span class="ico">🔄</span>Vymeň kolo</button>
+    <button class="btn-act" id="historyBtn"><span class="ico">📜</span>História</button>
+    <button class="btn-act" id="settingsBtn"><span class="ico">⚙️</span>Nastavenia</button>
+  </div>
+</div>
+
+<div class="view" id="viewKompas">
+  <div class="info-box">
+    <strong>🜂 Kompas tela · Maximálna matrica</strong>
+    <p>Planetárny čas · lunárny cyklus · biorytmus · numerológia · staroveké systémy · pocity oboch · kde držať · polohy · rituály · karmická sexualita — všetko v reálnom čase.</p>
+  </div>
+
+  <div id="formSection">
+    <div class="person-block" data-p="A">
+      <div class="person-title">🜂 Osoba A</div>
+      <div class="form-group"><label>Meno a priezvisko</label><input type="text" id="nameA" placeholder="napr. Július Kováč" autocomplete="off"></div>
+      <div class="form-group">
+        <label>Dátum narodenia</label>
+        <div class="date-row">
+          <select id="dayA"><option value="">Deň</option></select>
+          <select id="monA"><option value="">Mes.</option><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option><option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option></select>
+          <select id="yearA"><option value="">Rok</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Telesná polarita</label>
+        <div class="polarity" data-p="A">
+          <button type="button" class="active" data-g="m">⚔ Muž</button>
+          <button type="button" data-g="f">⚘ Žena</button>
+          <button type="button" data-g="x">⚧ Iná</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="person-block" data-p="B">
+      <div class="person-title">🜄 Osoba B</div>
+      <div class="form-group"><label>Meno a priezvisko</label><input type="text" id="nameB" placeholder="napr. Jana Kováčová" autocomplete="off"></div>
+      <div class="form-group">
+        <label>Dátum narodenia</label>
+        <div class="date-row">
+          <select id="dayB"><option value="">Deň</option></select>
+          <select id="monB"><option value="">Mes.</option><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option><option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option></select>
+          <select id="yearB"><option value="">Rok</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Telesná polarita</label>
+        <div class="polarity" data-p="B">
+          <button type="button" data-g="m">⚔ Muž</button>
+          <button type="button" class="active" data-g="f">⚘ Žena</button>
+          <button type="button" data-g="x">⚧ Iná</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btnRun">🜂 Vypočítať úplnú matricu 🜄</button>
+  </div>
+
+  <div class="results" id="results">
+    <div class="deco">⸎ ⸎ ⸎</div>
+    <div id="out"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px">
+      <button class="btn-act" id="btnRefresh" style="padding:11px">🎲 Pretrasť</button>
+      <button class="btn-act" id="btnRestart" style="padding:11px">↺ Nový pár</button>
     </div>
   </div>
 
-  <div id="app">
-    <div id="header">
-      <div id="headerLogo">🔥 KOMPAS TELA</div>
-      <div id="headerActions">
-        <button class="icon-btn" id="btnSettings" title="Nastavenia">⚙️</button>
-        <button class="icon-btn" id="btnHistory" title="História">📜</button>
-      </div>
+  <div class="footer"><strong>Grizzly Courage</strong> · The Human Maintenance · Ad Aeternum</div>
+</div>
+</div>
+
+<div class="navbar">
+  <button class="nav-btn active" data-view="game"><span class="ico">🔥</span><span>Hra</span></button>
+  <button class="nav-btn" data-view="kompas"><span class="ico">🜂</span><span>Kompas</span></button>
+</div>
+</div>
+
+<div class="modal" id="modalSettings">
+  <div class="modal-sheet">
+    <div class="modal-head"><h2>⚙️ Nastavenia</h2><button class="modal-close" data-close="modalSettings">✕</button></div>
+    <div class="setting-group"><label>Režim hry</label><div class="mode-grid" id="modeGrid">
+      <button class="mode-card active" data-mode="no-repeat"><span class="ico">🚫</span><span>Bez opak.</span></button>
+      <button class="mode-card" data-mode="classic"><span class="ico">🎲</span><span>Klasický</span></button>
+      <button class="mode-card" data-mode="sequential"><span class="ico">📖</span><span>Sekvenčný</span></button>
+    </div></div>
+    <div class="setting-group"><label>Auto interval</label><div class="auto-grid" id="autoGrid">
+      <button class="auto-card active" data-auto="0"><span class="ico">⏸</span>OFF</button>
+      <button class="auto-card" data-auto="2"><span class="ico">⏱</span>2m</button>
+      <button class="auto-card" data-auto="4"><span class="ico">⏱</span>4m</button>
+      <button class="auto-card" data-auto="10"><span class="ico">⏱</span>10m</button>
+      <button class="auto-card" data-auto="custom"><span class="ico">⚙️</span>Vl.</button>
+    </div></div>
+    <div class="setting-group"><label>Vlastný interval (min)</label><input type="number" class="setting-input" id="setCustom" min="1" max="120" placeholder="7"></div>
+    <div class="setting-group"><label>Rozsah strán</label><div class="setting-row"><input type="number" class="setting-input" id="setStart" placeholder="Od" min="1"><input type="number" class="setting-input" id="setEnd" placeholder="Do" min="1"></div></div>
+    <div class="setting-group"><label>Možnosti</label>
+      <div class="toggle-row"><div class="toggle-row-label"><span class="t">🔊 Zvuk</span><span class="s">Zvuky pri losovaní</span></div><div class="switch on" id="swSound"></div></div>
+      <div class="toggle-row"><div class="toggle-row-label"><span class="t">🔄 Striedanie</span><span class="s">ONA ↔ ON</span></div><div class="switch on" id="swAlternate"></div></div>
     </div>
-
-    <div id="main">
-
-      <!-- HRA -->
-      <div class="screen active" id="gameScreen">
-        <div id="pdfArea">
-          <canvas id="pdfCanvas"></canvas>
-          <div id="pdfLoader">
-            <div class="spin"></div>
-            <div id="loaderMsg">Načítavam PDF z repozitára...</div>
-            <div class="err" id="loaderErr"></div>
-            <label class="upload-btn" id="uploadBtn">
-              📁 Vybrať PDF z telefónu
-              <input type="file" id="pdfUpload" accept="application/pdf">
-            </label>
-          </div>
-        </div>
-
-        <div id="gameBottom">
-          <div id="gameStatus">
-            <div class="status-pill"><span class="dot"></span><span id="pageBadge">— / —</span></div>
-            <button id="turnBtn"><span class="ico">👤</span><span id="turnText">ONA</span></button>
-          </div>
-          <button id="drawBtn" disabled>
-            <span class="ico">🎲</span>
-            <span>VYLOOSOVAŤ</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- KOMPAS -->
-      <div class="screen" id="kompasScreen">
-        <div class="info-box">
-          <strong>🜂 Kompas tela · Kompatibilita</strong>
-          <p>Zadajte údaje oboch osôb. Algoritmus prepojí planetárny čas, mená a narodenie a vygeneruje unikátny kompatibilitný profil.</p>
-        </div>
-
-        <div id="kompasForm">
-          <div class="person-block" data-p="A">
-            <div class="person-title">🜂 Osoba A</div>
-            <div class="form-group">
-              <label>Meno a priezvisko</label>
-              <input type="text" id="nameA" placeholder="napr. Július Kováč" autocomplete="off">
-            </div>
-            <div class="form-group">
-              <label>Dátum narodenia</label>
-              <div class="date-row">
-                <select id="dayA"><option value="">Deň</option></select>
-                <select id="monA">
-                  <option value="">Mes.</option>
-                  <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
-                  <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
-                  <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
-                  <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
-                </select>
-                <select id="yearA"><option value="">Rok</option></select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Telesná polarita</label>
-              <div class="polarity" data-p="A">
-                <button type="button" class="active" data-g="m">⚔ Muž</button>
-                <button type="button" data-g="f">⚘ Žena</button>
-                <button type="button" data-g="x">⚧ Iná</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="person-block" data-p="B">
-            <div class="person-title">🜄 Osoba B</div>
-            <div class="form-group">
-              <label>Meno a priezvisko</label>
-              <input type="text" id="nameB" placeholder="napr. Jana Kováčová" autocomplete="off">
-            </div>
-            <div class="form-group">
-              <label>Dátum narodenia</label>
-              <div class="date-row">
-                <select id="dayB"><option value="">Deň</option></select>
-                <select id="monB">
-                  <option value="">Mes.</option>
-                  <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
-                  <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
-                  <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
-                  <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
-                </select>
-                <select id="yearB"><option value="">Rok</option></select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Telesná polarita</label>
-              <div class="polarity" data-p="B">
-                <button type="button" data-g="m">⚔ Muž</button>
-                <button type="button" class="active" data-g="f">⚘ Žena</button>
-                <button type="button" data-g="x">⚧ Iná</button>
-              </div>
-            </div>
-          </div>
-
-          <button class="btn-primary" id="btnRun">🜂 Vypočítať kompatibilitu 🜄</button>
-        </div>
-
-        <div id="results">
-          <div class="deco">⸎ ⸎ ⸎</div>
-          <div id="out"></div>
-          <div class="results-actions">
-            <button class="btn-soft" id="btnRefresh">🎲 Pretrasť</button>
-            <button class="btn-soft secondary" id="btnRestart">↺ Nový pár</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div id="navbar">
-      <button class="nav-btn active" data-screen="game">
-        <span class="ico">🔥</span>
-        <span>Hra</span>
-      </button>
-      <button class="nav-btn" data-screen="kompas">
-        <span class="ico">🜂</span>
-        <span>Kompas</span>
-      </button>
-    </div>
+    <div class="setting-group"><label>Štatistika</label><div class="stats-box" id="statsBox">Videných: 0 / 0</div></div>
+    <div class="setting-group"><button class="btn-danger" id="resetHistory">🗑 Vymazať históriu</button></div>
   </div>
+</div>
 
-  <!-- SETTINGS MODAL -->
-  <div class="modal" id="modalSettings">
-    <div class="modal-sheet">
-      <div class="modal-head">
-        <h2>⚙️ Nastavenia</h2>
-        <button class="modal-close" data-close="modalSettings">✕</button>
-      </div>
-
-      <div class="setting-group">
-        <label>Režim hry</label>
-        <div class="mode-grid" id="modeGrid">
-          <button class="mode-card active" data-mode="no-repeat"><span class="ico">🚫</span><span>Bez opakovania</span></button>
-          <button class="mode-card" data-mode="classic"><span class="ico">🎲</span><span>Klasický</span></button>
-          <button class="mode-card" data-mode="sequential"><span class="ico">📖</span><span>Sekvenčný</span></button>
-        </div>
-      </div>
-
-      <div class="setting-group">
-        <label>Automatické losovanie</label>
-        <div class="auto-grid" id="autoGrid">
-          <button class="auto-card active" data-auto="0"><span class="ico">⏸</span>OFF</button>
-          <button class="auto-card" data-auto="2"><span class="ico">⏱</span>2m</button>
-          <button class="auto-card" data-auto="4"><span class="ico">⏱</span>4m</button>
-          <button class="auto-card" data-auto="10"><span class="ico">⏱</span>10m</button>
-          <button class="auto-card" data-auto="custom"><span class="ico">⚙️</span>Vlastné</button>
-        </div>
-      </div>
-
-      <div class="setting-group">
-        <label>Vlastný interval (minúty)</label>
-        <input type="number" class="setting-input" id="setCustom" placeholder="napr. 7" min="1" max="120">
-      </div>
-
-      <div class="setting-group">
-        <label>Rozsah strán</label>
-        <div class="setting-row">
-          <input type="number" class="setting-input" id="setStart" placeholder="Od" min="1">
-          <input type="number" class="setting-input" id="setEnd" placeholder="Do" min="1">
-        </div>
-      </div>
-
-      <div class="setting-group">
-        <label>Možnosti</label>
-        <div class="toggle-row">
-          <div class="toggle-row-label"><span class="t">🔊 Zvuk</span><span class="s">Zvuky pri losovaní</span></div>
-          <div class="switch on" id="swSound"></div>
-        </div>
-        <div class="toggle-row">
-          <div class="toggle-row-label"><span class="t">🔄 Striedanie kôl</span><span class="s">ONA ↔ ON po každom losovaní</span></div>
-          <div class="switch on" id="swAlternate"></div>
-        </div>
-      </div>
-
-      <div class="setting-group">
-        <label>Štatistika</label>
-        <div class="stats-box" id="statsBox">Videných: 0 / 0<br>Zostáva: 0</div>
-      </div>
-
-      <div class="setting-group">
-        <label>Reset</label>
-        <button class="btn-danger" id="btnReset">🗑 Vymazať históriu a videné strany</button>
-      </div>
-    </div>
+<div class="modal" id="modalHistory">
+  <div class="modal-sheet">
+    <div class="modal-head"><h2>📜 História</h2><button class="modal-close" data-close="modalHistory">✕</button></div>
+    <div class="stats-box history-list" id="historyListFull"><div style="text-align:center;color:var(--muted);padding:20px">Zatiaľ žiadne záznamy</div></div>
   </div>
+</div>
 
-  <!-- HISTORY MODAL -->
-  <div class="modal" id="modalHistory">
-    <div class="modal-sheet">
-      <div class="modal-head">
-        <h2>📜 História</h2>
-        <button class="modal-close" data-close="modalHistory">✕</button>
-      </div>
-      <div class="stats-box history-list" id="historyList">
-        <div style="text-align:center;color:var(--muted);padding:20px">Zatiaľ žiadne záznamy</div>
-      </div>
-    </div>
-  </div>
+<div id="toast"></div>
 
-  <div id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}
+</script>
 
-  <!-- PDF.JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script>
-    if (window.pdfjsLib) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
-  </script>
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+var PDF_URL='./positions.pdf';
+var CROP_RATIO=0.78;
+var AUTH_KEY='kmpt_auth_max2';
 
-  <script>
-  (function(){
-  'use strict';
+var ST={pdfDoc:null,totalPages:0,currentPage:0,mode:'no-repeat',autoMin:0,customAuto:7,autoTimer:null,turn:'ONA',alternate:true,sound:true,startPage:8,endPage:0,seen:[],history:[],drawing:false};
 
-  var $ = function(id){ return document.getElementById(id); };
-  var PDF_URL = './positions.pdf';
-  var CROP_RATIO = 0.78;
-  var AUTH_PASSWORD = '0007';
+function lsGet(k,d){try{var v=localStorage.getItem(k);return v===null?d:JSON.parse(v);}catch(e){return d;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 
-  /* ========== STATE ========== */
-  var ST = {
-    pdfDoc: null,
-    totalPages: 0,
-    currentPage: 0,
-    mode: 'no-repeat',
-    autoMin: 0,
-    customAuto: 7,
-    autoTimer: null,
-    turn: 'ONA',
-    alternate: true,
-    sound: true,
-    startPage: 8,
-    endPage: 0,
-    seen: [],
-    history: [],
-    drawing: false
-  };
+var toastTO;
+function toast(msg,type){var el=$('toast');el.textContent=msg;el.className='show '+(type||'accent');clearTimeout(toastTO);toastTO=setTimeout(function(){el.className='';},2200);}
 
-  /* ========== LS ========== */
-  function lsGet(k, d){ try{ var v = localStorage.getItem(k); return v===null?d:JSON.parse(v); }catch(e){ return d; } }
-  function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+var audioCtx=null;
+function initAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(audioCtx&&audioCtx.state==='suspended'){try{audioCtx.resume();}catch(e){}}}
+function beep(f,t,d){if(!ST.sound)return;try{initAudio();if(!audioCtx)return;var o=audioCtx.createOscillator();var g=audioCtx.createGain();o.type=t;o.frequency.setValueAtTime(f,audioCtx.currentTime);g.gain.setValueAtTime(0.15,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
+function sClick(){beep(440,'sine',.08);}
+function sTick(){beep(600,'triangle',.05);}
+function sWin(){beep(523.25,'sine',.15);setTimeout(function(){beep(659.25,'sine',.15);},150);setTimeout(function(){beep(783.99,'sine',.3);},300);}
 
-  /* ========== TOAST ========== */
-  var toastTO;
-  function showToast(msg, type){
-    var el = $('toast');
-    el.textContent = msg;
-    el.className = 'show ' + (type || 'accent');
-    clearTimeout(toastTO);
-    toastTO = setTimeout(function(){ el.className = ''; }, 2000);
+function isAuthed(){try{var a=JSON.parse(localStorage.getItem(AUTH_KEY)||'null');if(!a)return false;return(Date.now()-a.t)<30*24*60*60*1000;}catch(e){return false;}}
+if(isAuthed())$('authModal').classList.add('hidden');
+$('authBtn').addEventListener('click',function(){
+  var p=$('authPass').value.trim(),a=$('authAge').checked;
+  if(p==='0007'&&a){try{localStorage.setItem(AUTH_KEY,JSON.stringify({t:Date.now()}));}catch(e){}sWin();$('authModal').classList.add('hidden');initAudio();}
+  else{sClick();$('authErr').style.display='block';}
+});
+$('authPass').addEventListener('keydown',function(e){if(e.key==='Enter')$('authBtn').click();});
+
+document.querySelectorAll('.nav-btn').forEach(function(b){
+  b.addEventListener('click',function(){
+    sClick();
+    var v=b.getAttribute('data-view');
+    document.querySelectorAll('.nav-btn').forEach(function(x){x.classList.toggle('active',x===b);});
+    document.querySelectorAll('.view').forEach(function(x){x.classList.remove('active');});
+    if(v==='game'){$('viewGame').classList.add('active');$('topLogo').textContent='🔥 HRA';}
+    else{$('viewKompas').classList.add('active');$('topLogo').textContent='🜂 KOMPAS';}
+    $('mainScroll').scrollTop=0;
+  });
+});
+
+var CHALDEAN=['Saturn','Jupiter','Mars','Slnko','Venuša','Merkúr','Mesiac'];
+var CHALDEAN_SYM={Saturn:'♄',Jupiter:'♃',Mars:'♂',Slnko:'☉',Venuša:'♀',Merkúr:'☿',Mesiac:'☽'};
+var CHALDEAN_Q={Saturn:'disciplína, hranice, výdrž',Jupiter:'hojnosť, expanzia, radosť',Mars:'vášeň, akcia, priebojnosť',Slnko:'vitalita, jas, vedenie',Venuša:'láska, krása, zmyselnosť',Merkúr:'komunikácia, hravosť',Mesiac:'intuícia, emócia, cyklus'};
+var DAY_RULER=[3,6,2,5,1,4,0];
+
+function getMoonPhase(d){var syn=29.530588853,known=Date.UTC(2000,0,6,18,14,0);var days=(d.getTime()-known)/86400000,p=(days%syn)/syn;if(p<0)p+=1;return p;}
+function moonName(p){
+  if(p<.03)return{n:'Nov',e:'🌑',q:'Temnota — semeno'};
+  if(p<.22)return{n:'Dorastajúci kosáčik',e:'🌒',q:'Prvý pohyb'};
+  if(p<.28)return{n:'Prvá štvrť',e:'🌓',q:'Konflikt a tlak'};
+  if(p<.47)return{n:'Dorastajúci',e:'🌔',q:'Rast sily'};
+  if(p<.53)return{n:'Spln',e:'🌕',q:'Maximum — oheň'};
+  if(p<.72)return{n:'Cúvajúci',e:'🌖',q:'Zber plodov'};
+  if(p<.78)return{n:'Posledná štvrť',e:'🌗',q:'Očista'};
+  return{n:'Cúvajúci kosáčik',e:'🌘',q:'Uvoľnenie'};
+}
+function getPlanetary(date){
+  var dIdx=DAY_RULER[date.getDay()];
+  var h=date.getHours()+date.getMinutes()/60;
+  var hIdx=Math.floor((h-6+24)%24);
+  var pIdx=(dIdx+hIdx)%7;
+  return{dayPlanet:CHALDEAN[dIdx],hourPlanet:CHALDEAN[pIdx],hourNumber:hIdx+1,dayIdx:dIdx,planetIdx:pIdx};
+}
+function getBiorhythm(birthDate,now){
+  var days=Math.floor((now-birthDate)/86400000);
+  return{physical:Math.sin((2*Math.PI*days)/23),emotional:Math.sin((2*Math.PI*days)/28),intellectual:Math.sin((2*Math.PI*days)/33),days:days};
+}
+function updateLiveBar(){
+  var now=new Date();
+  $('lbClock').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  var p=getPlanetary(now);
+  $('lbHour').textContent=CHALDEAN_SYM[p.hourPlanet]+' '+p.hourPlanet;
+  var m=moonName(getMoonPhase(now));
+  $('lbMoon').textContent=m.e+' '+m.n;
+}
+setInterval(updateLiveBar,1000);updateLiveBar();
+
+function hash32(s){var h=2166136261>>>0;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}h^=h>>>16;h=Math.imul(h,2246822507);h^=h>>>13;h=Math.imul(h,3266489909);h^=h>>>16;return h>>>0;}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function pick(r,a){return a[Math.floor(r()*a.length)];}
+function pickN(r,a,n){var c=a.slice(),o=[];for(var i=0;i<n&&c.length;i++){o.push(c.splice(Math.floor(r()*c.length),1)[0]);}return o;}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function reduce(n){while(n>9&&n!==11&&n!==22&&n!==33){n=String(n).split('').reduce(function(a,b){return +a+ +b;},0);}return n;}
+function numSum(s){var t=0;for(var i=0;i<String(s).length;i++){var d=parseInt(String(s)[i]);if(!isNaN(d))t+=d;}return reduce(t);}
+var LETTERS={a:1,'á':1,'ä':1,b:2,c:3,'č':3,d:4,'ď':4,e:5,'é':5,'ě':5,f:6,g:7,h:8,i:9,'í':9,j:1,k:2,l:3,m:4,n:5,'ň':5,o:6,'ó':6,'ô':6,p:7,q:8,r:9,'ř':9,s:1,'š':1,t:2,'ť':2,u:3,'ú':3,'ů':3,v:4,w:5,x:6,y:7,'ý':7,z:8,'ž':8};
+var VOWELS='aeiouyáäéíóôúýěů';
+function numName(s){var t=0,c=s.toLowerCase().replace(/[^a-záäčďéěíňóôřšťúůýž]/g,'');for(var i=0;i<c.length;i++)if(LETTERS[c[i]])t+=LETTERS[c[i]];return reduce(t);}
+function numVow(s){var t=0,c=s.toLowerCase().replace(/[^a-záäčďéěíňóôřšťúůýž]/g,'');for(var i=0;i<c.length;i++)if(VOWELS.indexOf(c[i])>-1)t+=LETTERS[c[i]]||0;return reduce(t);}
+function numCons(s){var t=0,c=s.toLowerCase().replace(/[^a-záčďéěíňóôřšťúůýž]/g,'');for(var i=0;i<c.length;i++)if(VOWELS.indexOf(c[i])===-1&&LETTERS[c[i]])t+=LETTERS[c[i]];return reduce(t);}
+
+/* POOLY */
+var P_ATTRACT=[
+  'Prvá reakcia na tohto človeka nebola racionálna. Telo odpovedalo skôr než hlava — <span class="hl2">prachová reakcia</span>, ktorá sa nedá vytrénovať.',
+  'Keď ste sa prvý raz dotkli, niečo v tele povedalo <em>toto už poznám</em>. Bunková pamäť nezabúda — <span class="hl3">fyzické rozpoznanie</span> predchádza vedomé.',
+  'Medzi vami je napätie, ktoré nejde vyrobiť. Buď tam je, alebo nie. A u vás <span class="hl4">je</span> — v priestore medzi telami.',
+  'Vzduch okolo vás zhustne, keď ste v jednej miestnosti. Elektromagnetické pole vašich tiel rezonuje na <span class="hl">frekvencii, ktorá patrí len vám</span>.',
+  'Prvý kontakt očí trval dlhšie, než je obvyklé. Oboch vás to zarazilo — a hlboko pritiahlo.',
+  'Babylončania by povedali, že ste sa narodili v rovnakom <em>zodickom dome tela</em>.',
+  'Gréci by povedali, že vás spojila <em>Ananké</em> — nevyhnutnosť, nie voľba.',
+  'Egyptská tradícia hovorí, že vaše <em>ka</em> (dvojníci duše) sa poznali už v podsvetí.',
+  'Venuša sa pri vašom prvom stretnutí nachádzala v priaznivom aspekte voči vašim osám. <span class="hl4">Timing duší</span>.',
+  'Keď sa jeden z vás pohne, druhý to cíti. <span class="hl3">Zrkadlové neuróny</span> pracujú na 3× vyššej úrovni než u bežných párov.',
+  'Váš prvý dotyk nebol náhodný. Bol to test kompatibility — a telo ho <span class="hl5">označilo ako bezpečný</span>.',
+  'Nie ste kompatibilní. Ste <span class="hl2">nutní</span>. Rozdiel je v tom, že kompatibilita sa dá nahradiť, ale nutnosť sa nedá.',
+  'Toto nie je zamilovanosť. Je to <span class="hl3">rozpoznanie</span>. Ako keď pes zďaleka cíti svoj druh.',
+  'Existuje dôvod, prečo si pamätáš, čo mal na sebe. To nie je detail. To je <span class="hl4">záznam tela</span>.',
+  'Váš tep sa pri sebe spomalí. Telo považuje toho druhého za bezpečie — najsilnejšia forma príťažlivosti.'
+];
+var P_CHEM=[
+  'Sexuálna chémia je <span class="hl">elektrická</span> — telá sa hľadajú aj vtedy, keď sa mysle hádajú.',
+  'Chémia je <span class="hl">tekutá</span> — pomalá, vlhká, hlboká. Milovanie môže trvať hodinu a vy ani neviete, kedy ste začali.',
+  'Chémia je <span class="hl">ohnivá</span> — rýchla, divoká, hlasná. Predohra je krátka, orgazmus je explózia.',
+  'Chémia je <span class="hl">zemská</span> — stabilná, hlboká, verná. Telo si pamätá ruky toho druhého naspamäť.',
+  'Chémia je <span class="hl">éterická</span> — pri milovaní nie ste dvaja. Ste jedno pole.',
+  'Chémia je <span class="hl">hodvábna</span> — jemná, dotyková, kĺzavá. Plynulý prechod kože po koži.',
+  'Chémia je <span class="hl">búrková</span> — intenzívna, krátka, ničivá. Po nej ste vyčerpaní, ale živí.',
+  'Chémia je <span class="hl">bylinková</span> — vône, dotyky, malé rituály. Každý dotyk má svoj zámer.'
+];
+var ELEM_NAMES=['Oheň','Voda','Vzduch','Zem','Éter'];
+var P_ELEM=[
+  'Dominuje <span class="hl2">oheň</span>. Všetko robíte intenzívne — buď naplno, alebo vôbec.',
+  'Dominuje <span class="hl3">voda</span>. Nie je to o rýchlosti, je to o hĺbke.',
+  'Dominuje <span class="hl">vzduch</span>. Veľa smiechu, veľa rečí, veľa experimentov.',
+  'Dominuje <span class="hl5">zem</span>. Stabilní, hlbokí, verní. Sex je pre vás rituál.',
+  'Dominuje <span class="hl4">éter</span>. Niekedy pri milovaní cítite, že ste jedna bytosť.'
+];
+var MALE_ANIMALS={1:'Býk (Vršabha) — mohutný, pomalý, vytrvalý',2:'Jeleň (Hariṇa) — húževnatý, rýchly',3:'Zajac (Śaśaka) — jemný, rýchly, precízny',4:'Kôň (Aśva) — statný, divoký, neúnavný',5:'Zajac (Śaśaka) — drobný, rýchly',6:'Jeleň (Hariṇa) — pružný, hravý',7:'Kôň (Aśva) — silný, temperamentný',8:'Býk (Vršabha) — mohutný, vládnuci',9:'Slon (Gaja) — obrovský, hlboký, starostlivý',11:'Býk',22:'Slon',33:'Slon'};
+var FEMALE_ANIMALS={1:'Kobyla (Vaḍavā) — šľachetná, divoká, verná',2:'Srna (Mṛgī) — jemná, plachá, hlboká',3:'Slonica (Karī) — mohutná, múdra',4:'Kobyla — elegantná, silná, hrdá',5:'Srna — drobná, rýchla, zmyselná',6:'Slonica — teplá, ochranná',7:'Kobyla — divoká, slobodná, ohnivá',8:'Srna — nežná, intuitívna',9:'Slonica — veľkorysá, posvätná',11:'Slonica',22:'Kobyla',33:'Slonica'};
+var P_ANIMALS=[
+  'Keď sa stretnú dva rovnaké typy, sex je prirodzený ako dýchanie. Žiadne trenie — len rezonancia.',
+  'Keď sa stretnú nerovnaké typy, musíte objaviť svoje uhly. Najlepšie polohy sú tie, kde sa jeden nechá viesť.',
+  'Vaše zvieratá si rozumejú cez pach. Nerozmýšľate — reagujete. To je prastaré.',
+  'Kámasútra hovorí: ak sa typy líšia, pravidlá určuje ten menší. On je navigátor, ten väčší je motor.',
+  'Vaše zvieratá vytvárajú kruh — každé ovláda inú fázu milovania.',
+  'Toto je vzácna kombinácia — Vátsjájana by povedal, že ste sa našli v správnom čase.'
+];
+var P_FEELS_HER=[
+  'Cíti ťa <span class="hl2">v celom tele</span> ešte hodiny po tom, čo ste sa rozišli. Nie je to spomienka — je to fyzická prítomnosť, ktorá sa nedá vytrhnúť z kože.',
+  'Keď sa jej dotkneš na pravom mieste, jej myseľ sa vyprázdni. Zostane len <span class="hl3">telo a ty v ňom</span>.',
+  'Chce cítiť tvoju váhu. <span class="hl4">Fyzický tlak</span> ju upokojuje — potrebuje vedieť, kde si.',
+  'V hlave má neustály dialóg. Ty si jediný, kto dokáže <span class="hl5">vypnúť ten hluk</span>.',
+  'Keď ju držíš za vlasy pri milovaní, <span class="hl6">nie je to o bolesti</span> — je to o odovzdaní kontroly.',
+  'Túži po <span class="hl2">pohľade, ktorý trvá príliš dlho</span>. Nie sex. Oči, ktoré ju vidia takú, akú ju nikto nevidel.',
+  'Chce, aby si ju viedol — ale iba preto, aby sa mohla nechať viesť.',
+  'Po milovaní potrebuje <span class="hl3">ticho</span> aspoň 5 minút. Telo ešte nie je hotové.',
+  'Keď sa jej dotkneš bez toho, aby si niečo chcel, cíti to ako dar. <span class="hl4">Dotyk bez účelu</span> je najsilnejší jazyk lásky.',
+  'V posteli myslí na tvoje ruky, aj keď nie sú na jej tele. <span class="hl5">Vie, kde sú</span>.',
+  'Chce byť videná, keď je najzraniteľnejšia. Keď sa schová, <span class="hl6">hľadaj ju</span>.',
+  'Jej najerotickejšie pásmo nie je medzi nohami — je <span class="hl2">za uchom, na krku, na vnútornom zápästí</span>.'
+];
+var P_FEELS_HIS=[
+  'Cíti sa pri tebe <span class="hl2">bezpečne</span> prvýkrát v živote — a to je pre muža erotickejšie než čokoľvek iné.',
+  'Keď mu priložíš ruku na hruď, <span class="hl3">spomalí sa mu tep</span>. Telo reaguje skôr, než hlava.',
+  'Chce ťa vidieť <span class="hl4">v extáze</span> viac než chce vlastný orgazmus.',
+  'V hlave má tlak — <em>musím byť dobrý, musím vydržať, musím viesť</em>. Tvoje uvoľnenie ho <span class="hl5">oslobodzuje od výkonu</span>.',
+  'Keď ho držíš za zápästie a vedieš ho, cíti sa <span class="hl6">žiadaný</span> — silnejšie ako byť ten, kto vedie.',
+  'Túži po <span class="hl2">tvojom hlase</span> viac ako po tvojom tele.',
+  'Chce sa o teba starať. Nie preto, že si slabá — preto, že jeho mužskosť je postavená na <span class="hl3">ochrane a službe</span>.',
+  'Po milovaní sa cíti zraniteľný. <span class="hl4">Nechaj ho spať na svojej hrudi</span>. Nič viac nepotrebuje.',
+  'V posteli má strach, že ťa sklame. <span class="hl5">Povedz mu, že je dobrý</span> — úprimne, počas, nie po.',
+  'Keď ho chytíš za vlasy a povieš mu, čo chceš, <span class="hl6">je to pre neho úľava</span>.',
+  'Chce ťa cítiť mokrú — telo je pre neho <span class="hl2">pravdivejšie než slová</span>.',
+  'Jeho najerotickejšie pásmo je <span class="hl3">vnútorná strana stehien, spodok chrbta a ucho</span>.'
+];
+var P_HOLD_HER=[
+  '<strong>Za vlasy na temene</strong> — nie ťahať, ale <span class="hl2">držať s istotou</span>. Najsilnejší bod kontroly a odovzdania.',
+  '<strong>Za zápästia</strong> — obe ruky, tlak na tep. <span class="hl3">Kontrolovaná nehybnosť</span> počas predohry.',
+  '<strong>Okolo pása</strong> — celá dlaň, tlak do stredu. <span class="hl4">Uzemňujúci bod</span>, ktorý jej dáva pocit prítomnosti.',
+  '<strong>Za krk zozadu</strong> — jemne, prsty na šiji. <span class="hl5">Aktivuje parasympatikus</span>, zvyšuje dôveru.',
+  '<strong>Za vnútorné stehná</strong> — zospodu, keď otváraš nohy. <span class="hl6">Otváraš priestor</span>.',
+  '<strong>Dlaňou na srdce</strong> — počas milovania, keď je na chrbte. <span class="hl2">Uzemňuje ju to</span>.',
+  '<strong>Za boky</strong> — zozadu, pri doggy style. Miesto <span class="hl3">vedenia</span> — pohybu aj rytmu.',
+  '<strong>Za zátylok v lone</strong> — keď jej hlava spočíva na tvojej hrudi. Najhlbšia forma <span class="hl4">ochrany</span>.',
+  '<strong>Za palce na nohách</strong> — pri pomalom milovaní. <span class="hl5">Aktivuje reflexné body</span> celého tela.',
+  '<strong>Okolo hrudníka zozadu</strong> — keď je na tebe. <span class="hl6">Kompletné obopnutie</span> tela.'
+];
+var P_HOLD_HIM=[
+  '<strong>Za vlasy pri tele</strong> — jemne ťahá, keď ho vedie. Jeho mužskosť potrebuje <span class="hl2">smerovanie</span>.',
+  '<strong>Za krk zozadu</strong> — nechty jemne, ale cítiť. <span class="hl3">Prvý bod, ktorý ho okamžite zapne</span>.',
+  '<strong>Za spodok chrbta</strong> — obe ruky. Drží ho, keď je v nej hlboko. <span class="hl4">Stabilita pre jeho rytmus</span>.',
+  '<strong>Za hruď zospodu</strong> — keď je na nej. <span class="hl5">Necháva ho cítiť sa mocného</span>.',
+  '<strong>Za vnútornú stranu stehien</strong> — keď ho vedie do seba. <span class="hl6">Pozvánka aj kontrola</span>.',
+  '<strong>Za zápästie</strong> — keď ho chce zastaviť v pohybe. Jeho telo <span class="hl2">okamžite reaguje</span>.',
+  '<strong>Za ucho a šiju</strong> — jemnými prstami pri predohre. <span class="hl3">Erotogénne pásmo, ktoré muži skrývajú</span>.',
+  '<strong>Za vnútornú stranu lýtok</strong> — keď je medzi jej nohami. <span class="hl4">Urýchľuje jeho dýchanie</span>.',
+  '<strong>Okolo hrudníka zozadu</strong> — pri pomalej predohre. <span class="hl5">Celé telo na telo</span>.',
+  '<strong>Za tvár oboma rukami</strong> — pred bozkom. <span class="hl6">Maximálna prítomnosť</span>.'
+];
+var P_RITUAL=[
+  'babylonskej <em>Ištarinej komnaty</em> — svetlo sviečok, vône kadidla, pomalé zvodné dotyky.',
+  'tantrických škôl <em>Kašmíru</em> — 64 minút predohry, jantra pred očami, mantry v hlave.',
+  'taoistických <em>Údolí jantáru</em> — pomalý dotyk, cirkulácia energie, zadržanie semena.',
+  'egyptskej <em>Hathorskej školy</em> — oleje na koži, zvuk harfy, zrkadlá, kadidlo myrhy.',
+  'gréckych <em>Afroditiných mystérií</em> — víno, ovocie, kúpele, olej s ružovým kvetom.',
+  'indických <em>chrámov Khadžuráho</em> — sochy, tanec, kvetiny, posvätné texty.',
+  'rímskych <em>Bakchanálií</em> — divokosť, hrozno, hlasný smiech, prevrátený stôl.',
+  'perzských <em>Sufistických nocí</em> — Rumiho poézia, hudba, extáza, večná túžba.'
+];
+var P_RITUAL_STEPS=[
+  'Začnite <strong>v inej miestnosti</strong>, nie v spálni. Prvý dotyk až po 10 minútach očného kontaktu.',
+  'Predohra minimálne <strong>45 minút</strong> — hrajte sa, nie ponáhľajte.',
+  'Použite <strong>jeden kus oblečenia</strong> ako vodítko (hodvábna šatka, kožený opasok).',
+  'Začnite <strong>spoločnou kúpeľou</strong> — horúca voda, soľ, sviečky, ticho.',
+  'Predohra <strong>20–30 minút</strong>, zameraná na krk, zápästia, vnútorné stehná.',
+  'Použite <strong>teplý olej</strong> s ylang-ylang alebo santalovým drevom.',
+  'Začnite <strong>masážou chodidiel</strong> — reflexné body prebúdzajú celé telo.',
+  'Zaviazte si oči <strong>jednému z vás</strong>. Druhý vedie. Vymeňte po 10 minútach.',
+  'Dýchajte <strong>spolu 4-4-4-4</strong> 5 minút pred.',
+  'Postavte sa <strong>chrbtom k sebe</strong>, dotýkajte sa len lopatkami. 3 minúty.'
+];
+var P_POSITIONS=[
+  {n:'Nebeská lastúra (Samputa)',d:'Obaja na boku, telá zrkadlovo, nohy prepletené. Ruky voľné na celom tele. Najlepšia poloha na milovanie, nie sex.'},
+  {n:'Divoká kobyla (Vajroli)',d:'Ona na ňom, čelom k sebe, ruky zopnuté za hlavou. Maximálna dominancia oboch.'},
+  {n:'Čierna včela (Bhramara)',d:'Zboku, ona vpredu, noha zohnutá. Pomalý, hlboký, dlhý.'},
+  {n:'Žena-slimák (Kaurmika)',d:'Ona na bruchu s vankúšom pod panvou, on na nej zhora. Veľmi hlboké, veľmi intímne.'},
+  {n:'Obojstranný oblak (Maudža)',d:'Obojstranné bočné spojenie s nohami prekríženými. Jemné, ale intenzívne.'},
+  {n:'Stojaci kvet (Sthita)',d:'Ona v stoji o stenu, jedna noha zdvihnutá. Rýchle, spontánne.'},
+  {n:'Pevná skala (Sthira)',d:'On sedí, ona na ňom obkročmo. Hlboké, kontrolované. Skúšajte s dýchaním 4-4-4.'},
+  {n:'Harmónia (Sankocha)',d:'V sede oproti sebe, iba ruky a ústa 20 minút, až potom spojenie.'},
+  {n:'Rozpätie krídel (Pakšini)',d:'Ona na okraji postele, nohy na jeho ramenách. Hlboké, intenzívne.'},
+  {n:'Spútaný lotos (Bandha Padma)',d:'V lotosovom sede, čelom k sebe. Pomalé, meditatívne.'},
+  {n:'Most (Setu)',d:'Ona v moste, on kľačí pred ňou. Obojstranná kontrola.'},
+  {n:'Zrkadlo (Darpana)',d:'Pred zrkadlom, ona vpredu, on vzadu, obaja sa pozerajú.'},
+  {n:'Vták v letu (Khangha)',d:'On kľačí, ona sa spustí zozadu dole. Vzácne, odmeňujúce.'},
+  {n:'Zvíjajúci sa had (Sarpa)',d:'Ona vpredu na bruchu, on na boku za ňou. Pomalé, hlboké.'},
+  {n:'Stĺp (Stambha)',d:'Ona v stoji, on kľačí. Ona vedie, on slúži.'},
+  {n:'Otočený kvet (Viparīta Padma)',d:'Ona v lotose, on na chrbte, vstúpi zospodu. Extrémne hlboké.'},
+  {n:'Kolíska (Dola)',d:'Obaja v sede, ona na ňom, on ju hojdá. Neskutočne pomalé, éterické.'},
+  {n:'Divoký kôň (Aśva)',d:'Ona na štyroch, on vzadu. Zvieracie, rýchle, prvotné.'},
+  {n:'Motýľ (Tittibha)',d:'Obaja v sede, telá zakliesnené, nohy prekrížené.'},
+  {n:'Tanec Šivy (Nataradža)',d:'Kombinácia stojky a kľaku. Akrobatické.'}
+];
+var P_HOURS=[
+  'Ranné svitanie (5:00–6:30) — testosterón najvyšší, divoké, inštinktívne.',
+  'Ráno (7:00–9:00) — po káve, pred prácou. Rýchlovka, ktorá nakopne.',
+  'Dopoludnie (10:00–12:00) — vrchol kortizolu. Sex je súťaž.',
+  'Popoludnie (14:00–16:00) — vrchol telesnej teploty. Ideálne na predohru.',
+  'Podvečer (17:00–19:00) — telo sa uvoľňuje. Pomalé, dlhé milovanie.',
+  'Večer (20:00–22:00) — melatonín sa dvíha, kortizol klesá. Čas na tantru.',
+  'Neskorý večer (22:00–23:30) — dom tichý. Vy dvaja a nič iné.',
+  'Polnoc (23:30–1:00) — vrchol parasympatiku. Hlboké, pomalé, éterické.',
+  'Nočná (1:00–3:00) — sex je senný, snový, zvláštny.',
+  'Svitanie (4:00–5:00) — magická hodina medzi svetmi.'
+];
+var P_EXP=[
+  'Hra moci: jeden je pán, druhý sluha. Dohodnite hranice. Vymeňte role.',
+  'Tantrická seansa: 90 minút bez orgazmu. Len spojenie, dýchanie, oči.',
+  'Slovná hra: počas milovania si šepkajte, čo cítite.',
+  'Zmena miesta: kuchyňa, kúpeľňa, balkón, výťah.',
+  'Zmena rolí: aktívny je pasívny.',
+  'Zaviazané oči: jeden vedie, druhý je slepý. 20 minút.',
+  'Kocka ľadu: prejdite ľadom po tele.',
+  'Sex bez preniknutia: 60 minút. Extrémna tantrická praxis.',
+  'Zrkadlo: milujte sa pred veľkým zrkadlom.',
+  'Dlhšia predohra: 2 hodiny. Bez preniknutia.',
+  'Perie: žiadny dotyk rukou — len pero, hodváb, kožušina.',
+  'Studená sprcha → teplá posteľ.',
+  'Sex v tme: absolútna tma.',
+  'Hovorte o sexe 30 minút pred. Bez hanby.',
+  'Sex pri sviečkach: 50 sviečok v miestnosti.',
+  'Vonku: balkón, les, auto.',
+  'Sex s otvorenými očami: tantrická praxis.',
+  'Umenie nehy: 20 minút bez pohnutia.',
+  'Šepkanie tajomstiev: každý povie jednu vec, ktorú nikdy nikomu nepovedal.',
+  'Rituál kúpeľa: 45 minút v horúcej vode, potom sex bez osušenia.'
+];
+var P_KARMIC=[
+  'Vaša karmická lekcia je <strong>odovzdanie sa</strong>. Jeden z vás sa príliš kontroluje. V posteli musí dovoliť druhému viesť.',
+  'Vaša karmická lekcia je <strong>hranice</strong>. Jeden dáva príliš, druhý berie. V posteli musíte povedať „nie“ aj „áno“ — nahlas.',
+  'Vaša karmická lekcia je <strong>radosť bez viny</strong>. Jeden sa hanbí za to, čo cíti.',
+  'Vaša karmická lekcia je <strong>prítomnosť</strong>. Jeden je v posteli myšlienkami inde.',
+  'Vaša karmická lekcia je <strong>dôvera</strong>. Jeden neverí, že druhý zostane.',
+  'Vaša karmická lekcia je <strong>hnev</strong>. Jeden nosí v tele starý hnev.',
+  'Vaša karmická lekcia je <strong>túžba</strong>. Jeden sa bojí chcieť.',
+  'Vaša karmická lekcia je <strong>telo</strong>. Jeden sa hanbí za svoje telo.',
+  'Vaša karmická lekcia je <strong>hlas</strong>. Jeden v posteli mlčí.',
+  'Vaša karmická lekcia je <strong>zraniteľnosť</strong>. Jeden sa bojí byť zranený.'
+];
+var P_KARMIC_PRACTICE=[
+  'Skúste 30 dní hovoriť v posteli iba pravdu. Žiadne „som v poriadku“, keď nie ste.',
+  'Skúste raz za týždeň milovanie s úplnou tmou.',
+  'Skúste sa pozerať do očí 5 minút bez toho, aby ste sa dotkli.',
+  'Skúste sa dotýkať 20 minút bez preniknutia.',
+  'Skúste sa milovať, keď sa nechcete. Zistíte, čo sa skrýva pod nechuťou.',
+  'Skúste sa nemilovať, keď sa chcete.',
+  'Skúste povedať „nie“ v posteli.',
+  'Skúste povedať „áno“ v posteli bez rozmýšľania.',
+  'Skúste plakať v posteli. Ak to príde, nechajte to.',
+  'Skúste sa smiať v posteli.'
+];
+var P_CYCLE=[
+  '<strong>Fáza 1 — Rozpálenie (0–3 mesiace).</strong> 5× za týždeň, niekedy 3× za noc.',
+  '<strong>Fáza 2 — Osvojenie (3–12 mesiacov).</strong> 2–3× za týždeň. Už viete, čo ten druhý chce.',
+  '<strong>Fáza 3 — Oheň a popol (1–3 roky).</strong> Buď exploduje nová vášeň, alebo vzťah vyhasne.',
+  '<strong>Fáza 4 — Hlboká vášeň (3–10 rokov).</strong> Úroveň, ktorú 90% párov nikdy neuvidí.',
+  '<strong>Fáza 3b — Stabilizácia (1–5 rokov).</strong> Niekedy 1× za týždeň, ale je to kvalitné.',
+  '<strong>Fáza 4b — Rituál (5+ rokov).</strong> Vaše telá sa poznajú naspamäť.',
+  '<strong>Fáza 5 — Znovuzrodenie (10+ rokov).</strong> Prišla nová vášeň. Hĺbka, nie mladosť.'
+];
+var P_CYCLE_NOTE=[
+  'Rada starých: Nikdy sa nemilujte v rovnakom čase dva dni po sebe. Telo si musí pamätať, čo stratilo.',
+  'Raz za mesiac si sadnite nahí oproti sebe a 30 minút sa iba rozprávajte o sexe.',
+  'Raz za štvrťrok urobte niečo, čo ste nikdy nerobili. V posteli.',
+  'Ak prejdete 1 rok bez nového experimentu, vzťah začína umierať.',
+  'Každý druhý rok predefinujte svoje hranice.',
+  'Ak máte deti, nájdite si 2 hodiny týždenne bez nich.'
+];
+var P_FRICTIONS=[
+  'RÝCHLOSŤ: Jeden chce vždy rýchlo, druhý pomaly. Riešenie: prvých 15 minút patrí pomalému.',
+  'VÝDRŽ: Jeden má nižšiu výdrž. Riešenie: viac predohry, menej tlaku na výkon.',
+  'KONTROLA: Jeden chce vždy viesť. Riešenie: striedanie rolí každý druhý raz.',
+  'INICIATÍVA: Jeden nikdy nezačne. Riešenie: dohodnuté signály.',
+  'FREKVENCIA: Jeden chce viac, druhý menej. Riešenie: striedajte týždne.',
+  'ČAS: Jeden chce ráno, druhý večer. Riešenie: striedanie dní.',
+  'HLASITOSŤ: Jeden je hlasný, druhý tichý. Riešenie: nájdite spoločnú hladinu.',
+  'OČI: Jeden chce mať otvorené oči, druhý zatvorené. Kompromis.',
+  'POZÍCIA: Jeden chce len jednu, druhý variovať. Riešenie: 1× klasika, 2× nové.',
+  'PO PREDOHRE: Jeden chce hneď, druhý potrebuje 30 minút. Predohra podľa pomalšieho.',
+  'PO ORGAZME: Jeden chce spať, druhý hovoriť. 5 minút ticha, potom 5 minút reči.',
+  'VYČERPANIE: Jeden po sexe nemôže vstať, druhý je svieži. Rešpektujte.'
+];
+var P_LEARNING=[
+  '<strong>Rôzne duše, rovnaké telá.</strong> Vaše duše túžia po inom, ale telá sa milujú.',
+  '<strong>Hĺbka cez slzy.</strong> Niekedy pri milovaní plačete. To je očista.',
+  '<strong>Hlas je liek.</strong> Hovorte viac. Slovo v posteli je modlitba.',
+  '<strong>Oheň, ktorý nezhasne.</strong> Vášeň nie je o intenzite, ale o udržaní.',
+  '<strong>Dych je most.</strong> Dýchajte spolu. 4-4-4-4.',
+  '<strong>Oči sú brány.</strong> Milujte sa s otvorenými očami.',
+  '<strong>Ticho po.</strong> Po milovaní nehovorte nič 5 minút.',
+  '<strong>Slovo „nie“ je dar.</strong> Dávate tomu druhému hranicu.',
+  '<strong>Smiech je erotický.</strong> Smiech v posteli je forma extázy.',
+  '<strong>Pomalosť je luxus.</strong> V posteli je posvätná.',
+  '<strong>Zraniteľnosť je sila.</strong> Najväčšia odvaha.',
+  '<strong>Prítomnosť je všetko.</strong> Ak nie ste v prítomnosti, nie ste v posteli.'
+];
+
+/* FORM */
+(function(){
+  var cy=new Date().getFullYear(),i,opt;
+  for(i=1;i<=31;i++){opt=document.createElement('option');opt.value=i;opt.textContent=i;$('dayA').appendChild(opt.cloneNode(true));$('dayB').appendChild(opt);}
+  for(i=cy;i>=1930;i--){opt=document.createElement('option');opt.value=i;opt.textContent=i;$('yearA').appendChild(opt.cloneNode(true));$('yearB').appendChild(opt);}
+})();
+
+document.querySelectorAll('.polarity').forEach(function(pol){
+  pol.addEventListener('click',function(e){
+    if(e.target.tagName==='BUTTON'){sClick();pol.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});e.target.classList.add('active');}
+  });
+});
+
+/* HLAVNÝ VÝPOČET */
+$('btnRun').addEventListener('click',function(){
+  sClick();
+  var nA=$('nameA').value.trim()||'Osoba A',nB=$('nameB').value.trim()||'Osoba B';
+  var dA=+$('dayA').value||1,mA=+$('monA').value||1,yA=+$('yearA').value||1995;
+  var dB=+$('dayB').value||1,mB=+$('monB').value||1,yB=+$('yearB').value||1998;
+  if(!$('nameA').value.trim()||!$('nameB').value.trim()){toast('Zadajte obe mená','accent');return;}
+  if(!$('dayA').value||!$('dayB').value){toast('Zadajte dátumy','accent');return;}
+
+  var now=new Date();
+  var p=getPlanetary(now);
+  var moon=moonName(getMoonPhase(now));
+  var seedStr=nA+'|'+nB+'|'+yA+mA+dA+'|'+yB+mB+dB+'|'+p.dayPlanet+p.hourPlanet+p.hourNumber+'|'+Math.round(getMoonPhase(now)*1000);
+  var rng=mulberry32(hash32(seedStr));
+
+  var bA=''+yA+String(mA).padStart(2,'0')+String(dA).padStart(2,'0');
+  var bB=''+yB+String(mB).padStart(2,'0')+String(dB).padStart(2,'0');
+  var lpA=numSum(bA),lpB=numSum(bB);
+  var destA=numName(nA),destB=numName(nB);
+  var soulA=numVow(nA),soulB=numVow(nB);
+  var persA=numCons(nA),persB=numCons(nB);
+  var bdA=reduce(dA),bdB=reduce(dB);
+  var chA=reduce(Math.abs(dA-mA)),chB=reduce(Math.abs(dB-mB));
+
+  var fire=reduce(lpA+lpB+destA+destB);
+  var water=reduce(soulA+soulB);
+  var earth=reduce(persA+persB+destA+destB);
+  var air=reduce(persA+persB);
+  var voidN=reduce(chA+chB);
+  var union=reduce(lpA+lpB+soulA+soulB);
+
+  var bAd=new Date(yA,mA-1,dA);
+  var bBd=new Date(yB,mB-1,dB);
+  var bioA=getBiorhythm(bAd,now);
+  var bioB=getBiorhythm(bBd,now);
+
+  var polA='m',polB='f';
+  var polAEl=document.querySelector('.polarity[data-p="A"] .active');
+  var polBEl=document.querySelector('.polarity[data-p="B"] .active');
+  if(polAEl)polA=polAEl.getAttribute('data-g');
+  if(polBEl)polB=polBEl.getAttribute('data-g');
+  var animalA=(polA==='m'||polA==='x')?MALE_ANIMALS[destA]||MALE_ANIMALS[1]:FEMALE_ANIMALS[destA]||FEMALE_ANIMALS[2];
+  var animalB=(polB==='m'||polB==='x')?MALE_ANIMALS[destB]||MALE_ANIMALS[1]:FEMALE_ANIMALS[destB]||FEMALE_ANIMALS[2];
+
+  var harmonyIdx=Math.max(46,Math.min(97,Math.round((fire*3+water*4+union*2)/1.2)));
+  var energyIdx=Math.max(52,Math.min(99,Math.round((dA*2+dB*3+mA*4+mB*5+destA+destB+26))));
+  var intimacyIdx=Math.max(48,Math.min(98,Math.round((harmonyIdx+energyIdx)/2-4)));
+  var totalIdx=Math.max(50,Math.min(98,Math.round((harmonyIdx+energyIdx+intimacyIdx)/3)));
+
+  var ritual=reduce(bdA+bdB);
+  var rIdx=(ritual-1)%P_RITUAL.length;if(rIdx<0)rIdx=0;
+
+  var pos=pickN(rng,P_POSITIONS,4);
+  var exp=pickN(rng,P_EXP,5);
+  var kLesson=pickN(rng,P_KARMIC,2);
+  var kPractice=pickN(rng,P_KARMIC_PRACTICE,3);
+  var cycle=pickN(rng,P_CYCLE,3);
+  var cycleNote=pick(rng,P_CYCLE_NOTE);
+  var fric=pickN(rng,P_FRICTIONS,4);
+  var learn=pickN(rng,P_LEARNING,5);
+  var ritualSteps=pickN(rng,P_RITUAL_STEPS,4);
+  var feelsHer=pickN(rng,P_FEELS_HER,4);
+  var feelsHis=pickN(rng,P_FEELS_HIS,4);
+  var holdHer=pickN(rng,P_HOLD_HER,5);
+  var holdHim=pickN(rng,P_HOLD_HIM,5);
+
+  var liveMoon=moon;
+  var livePlanet=p;
+  var bioAState=bioA.physical>0.3?'stúpa':(bioA.physical<-0.3?'klesá':'na vrchole');
+  var bioBState=bioB.physical>0.3?'stúpa':(bioB.physical<-0.3?'klesá':'na vrchole');
+
+  var html='';
+
+  /* 1 */
+  html+='<div class="section s-accent2"><div class="head"><h3>🧬 Matica duše · Numerológia</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Cesta A</span><span class="val">'+lpA+'</span></div><div class="stat-box"><span class="lbl">Osud A</span><span class="val">'+destA+'</span></div><div class="stat-box"><span class="lbl">Duša A</span><span class="val">'+soulA+'</span></div><div class="stat-box"><span class="lbl">Cesta B</span><span class="val">'+lpB+'</span></div><div class="stat-box"><span class="lbl">Osud B</span><span class="val">'+destB+'</span></div><div class="stat-box"><span class="lbl">Duša B</span><span class="val">'+soulB+'</span></div></div><p><span class="hl2">'+nA+'</span> — cesta <strong>'+lpA+'</strong>, osud <strong>'+destA+'</strong>, duša <strong>'+soulA+'</strong>, osobnosť <strong>'+persA+'</strong>.</p><p><span class="hl3">'+nB+'</span> — cesta <strong>'+lpB+'</strong>, osud <strong>'+destB+'</strong>, duša <strong>'+soulB+'</strong>, osobnosť <strong>'+persB+'</strong>.</p><p>Spojenie vašich čísel: <span class="hl">'+union+'</span>.</p></div>';
+
+  /* 2 */
+  html+='<div class="section s-purple"><div class="head"><h3>🪐 Planetárna hodina · reálny čas</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Planéta dňa</span><span class="val">'+CHALDEAN_SYM[livePlanet.dayPlanet]+' '+livePlanet.dayPlanet+'</span></div><div class="stat-box"><span class="lbl">Planéta hodiny</span><span class="val">'+CHALDEAN_SYM[livePlanet.hourPlanet]+' '+livePlanet.hourPlanet+'</span></div><div class="stat-box"><span class="lbl">Hodina</span><span class="val">'+livePlanet.hourNumber+'/12</span></div></div><p>Práve teraz vládne <span class="hl3">'+livePlanet.hourPlanet+'</span> — '+CHALDEAN_Q[livePlanet.hourPlanet]+'.</p><p>Toto je ideálny čas pre: <em>'+pick(rng,['pomalé milovanie','rýchlovku','tantrickú seansu','predohru s olejom','milovanie v tme','experiment s ľadom','rituál kúpeľa','hru moci'])+'</em>.</p></div>';
+
+  /* 3 */
+  html+='<div class="section s-gold"><div class="head"><h3>🌙 Lunárny cyklus</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Fáza</span><span class="val">'+liveMoon.e+' '+liveMoon.n+'</span></div><div class="stat-box"><span class="lbl">Kvalita</span><span class="val" style="font-size:.7rem">'+liveMoon.q+'</span></div></div><p>Luna práve <span class="hl4">'+liveMoon.q.toLowerCase()+'</span>. '+(getMoonPhase(now)<0.5?'Rastúca fáza — ideálne na začiatky, experimenty, plánovanie.':'Klesajúca fáza — ideálne na ukončenia, očisty, spomalenie.')+'</p></div>';
+
+  /* 4 */
+  html+='<div class="section s-jade"><div class="head"><h3>📊 Biorytmus · reálne cykly</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Fyz. A</span><span class="val">'+Math.round(bioA.physical*100)+'%</span></div><div class="stat-box"><span class="lbl">Emoc. A</span><span class="val">'+Math.round(bioA.emotional*100)+'%</span></div><div class="stat-box"><span class="lbl">Intel. A</span><span class="val">'+Math.round(bioA.intellectual*100)+'%</span></div></div><div class="stat-row"><div class="stat-box"><span class="lbl">Fyz. B</span><span class="val">'+Math.round(bioB.physical*100)+'%</span></div><div class="stat-box"><span class="lbl">Emoc. B</span><span class="val">'+Math.round(bioB.emotional*100)+'%</span></div><div class="stat-box"><span class="lbl">Intel. B</span><span class="val">'+Math.round(bioB.intellectual*100)+'%</span></div></div><p><span class="hl5">'+nA+'</span> — fyzický cyklus <span class="hl">'+bioAState+'</span> ('+bioA.days+' dní od narodenia).</p><p><span class="hl5">'+nB+'</span> — fyzický cyklus <span class="hl">'+bioBState+'</span> ('+bioB.days+' dní od narodenia).</p><p>Pozitívny biorytmus = vyššia chuť, výdrž a citlivosť. Negatívny = hlbšia, pomalšia, jemnejšia intimita.</p></div>';
+
+  /* 5 */
+  html+='<div class="section s-accent2"><div class="head"><h3>🜂 Prvotná príťažlivosť</h3><span class="hl2">'+nA+' & '+nB+'</span></div><p>'+pick(rng,P_ATTRACT)+'</p><p>'+pick(rng,P_ATTRACT)+'</p><p>'+pick(rng,P_ATTRACT)+'</p></div>';
+
+  /* 6 */
+  html+='<div class="section s-purple"><div class="head"><h3>🜄 Sexuálna chémia</h3></div><p>'+pick(rng,P_CHEM)+'</p><p>'+pick(rng,P_CHEM)+'</p></div>';
+
+  /* 7 */
+  html+='<div class="section s-gold"><div class="head"><h3>🜁 Živlový profil</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Intenzita</span><span class="val">'+fire+'/9</span></div><div class="stat-box"><span class="lbl">Hĺbka</span><span class="val">'+water+'/9</span></div><div class="stat-box"><span class="lbl">Výdrž</span><span class="val">'+earth+'/9</span></div><div class="stat-box"><span class="lbl">Reč</span><span class="val">'+air+'/9</span></div></div><p>'+pick(rng,P_ELEM)+'</p></div>';
+
+  /* 8 */
+  html+='<div class="section s-jade"><div class="head"><h3>🐅 Zvieracie typy (Kámasútra)</h3></div><p><span class="hl2">'+nA+'</span> — <strong>'+animalA+'</strong></p><p><span class="hl3">'+nB+'</span> — <strong>'+animalB+'</strong></p><p>'+pick(rng,P_ANIMALS)+'</p></div>';
+
+  /* 9 */
+  html+='<div class="section s-accent2"><div class="head"><h3>💗 Čo cíti '+nB+' (jej telo)</h3></div>'+feelsHer.map(function(t){return '<p>'+t+'</p>';}).join('')+'</div>';
+
+  /* 10 */
+  html+='<div class="section s-purple"><div class="head"><h3>💙 Čo cíti '+nA+' (jeho telo)</h3></div>'+feelsHis.map(function(t){return '<p>'+t+'</p>';}).join('')+'</div>';
+
+  /* 11 */
+  html+='<div class="section s-red"><div class="head"><h3>🤲 Kde držať '+nB+'</h3></div><ul>'+holdHer.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
+
+  /* 12 */
+  html+='<div class="section s-gold"><div class="head"><h3>🤲 Kde '+nB+' drží '+nA+'</h3></div><ul>'+holdHim.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
+
+  /* 13 */
+  html+='<div class="section s-purple"><div class="head"><h3>🕯 Rituál predohry</h3></div><p>Inšpirácia: <strong>'+P_RITUAL[rIdx]+'</strong></p><ul>'+ritualSteps.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
+
+  /* 14 */
+  html+='<div class="section s-gold"><div class="head"><h3>🛏 Polohy napätia</h3></div>'+pos.map(function(pp){return '<p><strong class="hl4">'+pp.n+'</strong><br>'+pp.d+'</p>';}).join('')+'</div>';
+
+  /* 15 */
+  html+='<div class="section s-accent2"><div class="head"><h3>⏳ Posvätné hodiny</h3></div>'+pickN(rng,P_HOURS,3).map(function(t){return '<p>'+t+'</p>';}).join('')+'<p><span class="hl">Teraz</span>: '+String(now.getHours()).padStart(2,'0')+':00 — planéta <strong>'+livePlanet.hourPlanet+'</strong>, luna <strong>'+liveMoon.e+' '+liveMoon.n+'</strong>. Ideálne pre '+pick(rng,['predohru s olejom','pomalé spojenie','rýchlovku','tantrickú seansu','milovanie v zrkadle','rituál kúpeľa'])+'.</p></div>';
+
+  /* 16 */
+  html+='<div class="section s-jade"><div class="head"><h3>🎭 Hry a experimenty</h3></div><ul>'+exp.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
+
+  /* 17 */
+  html+='<div class="section s-purple"><div class="head"><h3>🔮 Karmická sexualita</h3></div><p>'+kLesson[0]+'</p><p>'+kLesson[1]+'</p><ul>'+kPractice.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
+
+  /* 18 */
+  html+='<div class="section s-gold"><div class="head"><h3>📈 Cyklus vášne</h3></div><ul>'+cycle.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul><p>'+cycleNote+'</p></div>';
+
+  /* 19 */
+  html+='<div class="section s-red"><div class="head"><h3>⚔ Trenice v posteli</h3></div><ul>'+fric.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul><p>Pravidlo: <em>Nikdy sa nehádajte o sex v posteli. Vždy oblečení, pri čaji.</em></p></div>';
+
+  /* 20 */
+  html+='<div class="section s-jade"><div class="head"><h3>🌟 Učenie sa cez telo</h3></div><ul>'+learn.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
+
+  /* 21 */
+  var verdikt=totalIdx>=85?'<span class="hl4">Fenomenálne spojenie.</span> Toto je pár, ktorý starovekí nazývali dvojité plamene — nie preto, že ste rovnakí, ale preto, že horíte jeden od druhého.':totalIdx>=70?'<span class="hl2">Veľmi silná kompatibilita.</span> Máte potenciál pre hlboký, dlhý a intímny vzťah — ak budete rešpektovať svoje odlišnosti.':totalIdx>=55?'<span class="hl3">Dobrá kompatibilita.</span> Nie je to osudové, ale je to krásne. Budete musieť pracovať na komunikácii.':'<span class="hl5">Komplexné spojenie.</span> Nie ste si súdení, ale práve preto je to zaujímavé. Vaša cesta je o učenie, nie o pohodlie.';
+  html+='<div class="section s-accent2"><div class="head"><h3>🏆 Finálny verdikt</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Harmónia</span><span class="val">'+harmonyIdx+'%</span></div><div class="stat-box"><span class="lbl">Energia</span><span class="val">'+energyIdx+'%</span></div><div class="stat-box"><span class="lbl">Intimita</span><span class="val">'+intimacyIdx+'%</span></div><div class="stat-box"><span class="lbl">Celkovo</span><span class="val">'+totalIdx+'%</span></div></div><p>'+verdikt+'</p></div>';
+
+  $('out').innerHTML=html;
+  $('formSection').style.display='none';
+  $('results').classList.add('active');
+  sWin();
+  $('mainScroll').scrollTop=0;
+});
+
+$('btnRestart').addEventListener('click',function(){
+  sClick();$('results').classList.remove('active');$('formSection').style.display='block';$('mainScroll').scrollTop=0;
+});
+$('btnRefresh').addEventListener('click',function(){sClick();$('btnRun').click();});
+
+/* =========================================================
+   PDF GAME
+========================================================= */
+var canvas=$('pdfCanvas'),ctx=canvas.getContext('2d');
+
+(function(){
+  var s=lsGet('kmpt_set_m',null);
+  if(s){
+    if(typeof s.mode==='string')ST.mode=s.mode;
+    if(typeof s.autoMin==='number')ST.autoMin=s.autoMin;
+    if(typeof s.customAuto==='number')ST.customAuto=s.customAuto;
+    if(typeof s.alternate==='boolean')ST.alternate=s.alternate;
+    if(typeof s.sound==='boolean')ST.sound=s.sound;
+    if(typeof s.startPage==='number')ST.startPage=s.startPage;
   }
+  ST.seen=lsGet('kmpt_seen_m',[]);
+  ST.history=lsGet('kmpt_hist_m',[]);
+})();
 
-  /* ========== AUDIO ========== */
-  var audioCtx = null;
-  function initAudio(){
-    if (!audioCtx){
-      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
-    }
-    if (audioCtx && audioCtx.state === 'suspended'){
-      try { audioCtx.resume(); }catch(e){}
-    }
-  }
-  function beep(freq, type, dur){
-    if (!ST.sound) return;
-    try {
-      initAudio();
-      if (!audioCtx) return;
-      var o = audioCtx.createOscillator();
-      var g = audioCtx.createGain();
-      o.type = type;
-      o.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      g.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-      o.connect(g);
-      g.connect(audioCtx.destination);
-      o.start();
-      o.stop(audioCtx.currentTime + dur);
-    }catch(e){}
-  }
-  function sClick(){ beep(440, 'sine', 0.08); }
-  function sTick(){ beep(600, 'triangle', 0.05); }
-  function sWin(){
-    beep(523.25, 'sine', 0.15);
-    setTimeout(function(){ beep(659.25, 'sine', 0.15); }, 150);
-    setTimeout(function(){ beep(783.99, 'sine', 0.3); }, 300);
-  }
+function saveSettings(){lsSet('kmpt_set_m',{mode:ST.mode,autoMin:ST.autoMin,customAuto:ST.customAuto,alternate:ST.alternate,sound:ST.sound,startPage:ST.startPage});}
 
-  /* ========== AUTH ========== */
-  var AUTH_KEY = 'kmpt_auth_final';
-  function isAuthed(){
-    try {
-      var a = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
-      if (!a) return false;
-      return (Date.now() - a.t) < 30*24*60*60*1000;
-    }catch(e){ return false; }
+function updateTurnDisplay(){$('turnDisplay').textContent=ST.turn;$('turnSub').textContent=ST.turn==='ONA'?'Ona vyberá / vedie':'On vyberá / vedie';}
+function updateStatPill(){
+  if(!ST.pdfDoc){$('statPill').textContent='— / —';return;}
+  var t=ST.endPage-ST.startPage+1,s=0;
+  for(var i=0;i<ST.seen.length;i++)if(ST.seen[i]>=ST.startPage&&ST.seen[i]<=ST.endPage)s++;
+  $('statPill').textContent=s+' / '+t+' videných';
+}
+function updatePageBadge(){
+  if(!ST.pdfDoc){$('pageBadge').textContent='— / —';return;}
+  $('pageBadge').textContent=ST.currentPage+' / '+ST.totalPages;
+  var b=$('pageBadge');b.classList.add('bump');setTimeout(function(){b.classList.remove('bump');},250);
+}
+function renderPage(num){
+  if(!ST.pdfDoc)return;
+  ST.pdfDoc.getPage(num).then(function(page){
+    var stage=$('pdfStage'),mw=stage.clientWidth-24,mh=stage.clientHeight-24;
+    var base=page.getViewport({scale:1});
+    var sc=Math.min(mw/base.width,mh/base.height);
+    var vp=page.getViewport({scale:sc});
+    canvas.width=vp.width;canvas.height=vp.height;
+    page.render({canvasContext:ctx,viewport:vp}).promise.then(function(){ST.currentPage=num;updatePageBadge();});
+  }).catch(function(e){console.error(e);toast('Chyba','accent');});
+}
+function pickNextPage(){
+  var st=ST.startPage,en=ST.endPage;if(en<st)return st;
+  if(ST.mode==='sequential'){var n=ST.currentPage+1;if(n>en)n=st;return n;}
+  if(ST.mode==='no-repeat'){
+    var all=[],ss={};
+    for(var i=st;i<=en;i++)all.push(i);
+    for(var k=0;k<ST.seen.length;k++)ss[ST.seen[k]]=true;
+    var rem=all.filter(function(p){return !ss[p];});
+    if(rem.length===0){ST.seen=[];lsSet('kmpt_seen_m',[]);toast('🎉 Všetky videné!','gold');rem=all.slice();}
+    return shuffle(rem)[0];
   }
-  if (isAuthed()) $('authModal').classList.add('hidden');
-
-  $('authBtn').addEventListener('click', function(){
-    var pass = $('authPass').value.trim();
-    var age = $('authAge').checked;
-    if (pass === AUTH_PASSWORD && age){
-      try { localStorage.setItem(AUTH_KEY, JSON.stringify({t: Date.now()})); }catch(e){}
+  return Math.floor(Math.random()*(en-st+1))+st;
+}
+function executeDraw(){
+  if(!ST.pdfDoc||ST.drawing)return;
+  ST.drawing=true;sClick();
+  var c=0,iv=setInterval(function(){
+    c++;
+    var tmp=Math.floor(Math.random()*(ST.endPage-ST.startPage+1))+ST.startPage;
+    $('pageBadge').textContent='🎲 '+tmp+'...';sTick();
+    if(c>=14){
+      clearInterval(iv);
+      var fp=pickNextPage();renderPage(fp);
+      if(ST.seen.indexOf(fp)===-1){ST.seen.push(fp);lsSet('kmpt_seen_m',ST.seen);}
+      ST.history.unshift({page:fp,time:new Date().toISOString(),turn:ST.turn});
+      ST.history=ST.history.slice(0,50);lsSet('kmpt_hist_m',ST.history);
       sWin();
-      $('authModal').classList.add('hidden');
-      initAudio();
-    } else {
-      sClick();
-      $('authErr').style.display = 'block';
+      if(ST.alternate){ST.turn=ST.turn==='ONA'?'ON':'ONA';updateTurnDisplay();}
+      updateStatPill();ST.drawing=false;
     }
+  },70);
+}
+$('drawBtn').addEventListener('click',executeDraw);
+$('shuffleTurnBtn').addEventListener('click',function(){sClick();ST.turn=ST.turn==='ONA'?'ON':'ONA';updateTurnDisplay();toast('Na ťahu: '+ST.turn,'accent');});
+
+document.querySelectorAll('#modesRow .chip').forEach(function(c){
+  c.addEventListener('click',function(){
+    sClick();document.querySelectorAll('#modesRow .chip').forEach(function(x){x.classList.remove('active');});c.classList.add('active');
+    ST.mode=c.getAttribute('data-mode');saveSettings();toast('Režim OK','accent');
   });
-  $('authPass').addEventListener('keydown', function(e){
-    if (e.key === 'Enter') $('authBtn').click();
-  });
-
-  /* ========== NAVIGÁCIA ========== */
-  document.querySelectorAll('.nav-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      sClick();
-      var target = btn.getAttribute('data-screen');
-      document.querySelectorAll('.nav-btn').forEach(function(b){
-        b.classList.toggle('active', b === btn);
-      });
-      document.querySelectorAll('.screen').forEach(function(s){
-        s.classList.remove('active');
-      });
-      if (target === 'game'){
-        $('gameScreen').classList.add('active');
-        $('headerLogo').textContent = '🔥 KOMPAS TELA';
-      } else {
-        $('kompasScreen').classList.add('active');
-        $('headerLogo').textContent = '🜂 KOMPAS TELA';
-      }
-    });
-  });
-
-  /* ========== PLANETÁRNY ČAS (title) ========== */
-  var CHALDEAN = ['Saturn','Jupiter','Mars','Slnko','Venuša','Merkúr','Mesiac'];
-  var DAY_RULER = [3,6,2,5,1,4,0];
-  function moonPhase(date){
-    var syn = 29.530588853;
-    var known = Date.UTC(2000,0,6,18,14,0);
-    var days = (date.getTime() - known) / 86400000;
-    var p = (days % syn) / syn;
-    if (p < 0) p += 1;
-    return p;
-  }
-  function moonName(p){
-    if (p < 0.03) return {n:'Nov', e:'🌑'};
-    if (p < 0.22) return {n:'Dorast.', e:'🌒'};
-    if (p < 0.28) return {n:'1.Štvrť', e:'🌓'};
-    if (p < 0.47) return {n:'Dorast.', e:'🌔'};
-    if (p < 0.53) return {n:'Spln', e:'🌕'};
-    if (p < 0.72) return {n:'Cúvaj.', e:'🌖'};
-    if (p < 0.78) return {n:'Posl.Š.', e:'🌗'};
-    return {n:'Kosáčik', e:'🌘'};
-  }
-  function updateTitle(){
-    var now = new Date();
-    var dIdx = DAY_RULER[now.getDay()];
-    var h = now.getHours() + now.getMinutes()/60;
-    var hIdx = Math.floor((h - 6 + 24) % 24);
-    var pIdx = (dIdx + hIdx) % 7;
-    var m = moonName(moonPhase(now));
-    document.title = '🔥 ' + CHALDEAN[pIdx] + ' · ' + m.e + ' · Kompas tela';
-  }
-  setInterval(updateTitle, 30000);
-  updateTitle();
-
-  /* ========== HASH + PRNG ========== */
-  function hash32(str){
-    var h = 2166136261 >>> 0;
-    for (var i = 0; i < str.length; i++){
-      h ^= str.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    h ^= h >>> 16; h = Math.imul(h, 2246822507);
-    h ^= h >>> 13; h = Math.imul(h, 3266489909);
-    h ^= h >>> 16;
-    return h >>> 0;
-  }
-  function mulberry32(a){
-    return function(){
-      a |= 0; a = a + 0x6D2B79F5 | 0;
-      var t = Math.imul(a ^ a >>> 15, 1 | a);
-      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-      return ((t ^ t >>> 14) >>> 0) / 4294967296;
-    };
-  }
-  function pick(rng, arr){ return arr[Math.floor(rng() * arr.length)]; }
-  function pickN(rng, arr, n){
-    var c = arr.slice();
-    var out = [];
-    for (var i = 0; i < n && c.length; i++){
-      out.push(c.splice(Math.floor(rng() * c.length), 1)[0]);
-    }
-    return out;
-  }
-  function shuffle(arr){
-    var a = arr.slice();
-    for (var i = a.length - 1; i > 0; i--){
-      var j = Math.floor(Math.random() * (i + 1));
-      var t = a[i]; a[i] = a[j]; a[j] = t;
-    }
-    return a;
-  }
-
-  /* ========== POOLY ========== */
-  var P_ATTRACT = [
-    'Tvoja prvá reakcia na tohto človeka nebola racionálna. Bola to <span class="hl2">prachová reakcia</span> – telo odpovedalo skôr než hlava.',
-    'Keď ste sa prvý raz dotkli, niečo v tebe povedalo <em>toto už poznám</em>. Bunková pamäť nezabúda.',
-    'Medzi vami je napätie, ktoré sa nedá vytrénovať. Buď tam je, alebo nie. A u vás <span class="hl4">je</span>.',
-    'Vzduch okolo vás zhustne, keď ste v jednej miestnosti. Elektromagnetické pole vašich tiel rezonuje.',
-    'Prvý kontakt očí trval dlhšie, než je obvyklé. Oboch vás to zarazilo a hlboko pritiahlo.',
-    'Babylončania by povedali, že ste sa narodili v rovnakom <em>zodickom dome tela</em>.',
-    'Gréci by povedali, že vás spojila <em>Ananké</em> – nevyhnutnosť, nie voľba.',
-    'Egyptská tradícia hovorí, že vaše <em>ka</em> sa poznali už v podsvetí.',
-    'Venuša sa pri vašom prvom stretnutí nachádzala v priaznivom aspekte. Timing duší, nie náhoda.',
-    'Keď sa jeden z vás pohne, druhý to cíti. Proprioceptívna synchronizácia — vzácna.'
-  ];
-  var P_CHEM = [
-    'Sexuálna chémia medzi vami je <span class="hl">elektrická</span> – telá sa hľadajú, keď sa mysle hádajú.',
-    'Vaša chémia je <span class="hl">tekutá</span> – pomalá, hlboká, nie je to o výkone, je to o plynutí.',
-    'Chémia je <span class="hl">ohnivá</span> – rýchla, divoká, predohra je krátka a vyvrcholenie explozívne.',
-    'Chémia je <span class="hl">zemská</span> – stabilná, hlboká, verná. Telo si pamätá naspamäť.',
-    'Chémia je <span class="hl">éterická</span> – pri milovaní nie ste dvaja, ste jedno pole.',
-    'Chémia je <span class="hl">hodvábna</span> – jemná, dotyková. Kĺzanie, nie náraz.',
-    'Chémia je <span class="hl">búrková</span> – intenzívna, krátka, ničivá.',
-    'Chémia je <span class="hl">bylinková</span> – vône, dotyky, malé rituály.'
-  ];
-  var P_RITUAL = [
-    'babylonskej <em>Ištarinej komnaty</em> – svetlo sviečok, vône kadidla, pomalé zvodné dotyky.',
-    'tantrických škôl <em>Kašmíru</em> – dlhá predohra, vnímanie dychu a spoločné pulzovanie.',
-    'taoistických <em>Údolí jantáru</em> – pomalý dotyk, cirkulácia energie bez ponáhľania.',
-    'egyptskej <em>Hathorskej školy</em> – oleje na koži, zvuk harfy, zrkadlá.',
-    'gréckych <em>Afroditiných mystérií</em> – víno, ovocie, kúpele, olej.',
-    'indických <em>chrámov Khadžuráho</em> – sochy, tanec, kvetiny, posvätné texty.',
-    'rímskych <em>Bakchanálií</em> – divokosť, hrozno, hlasný smiech.',
-    'perzských <em>Sufistických nocí</em> – Rumiho poézia, hudba, extáza.'
-  ];
-  var P_POSITIONS = [
-    'Nebeská lastúra (Samputa) — obaja na boku, telá zrkadlovo, nohy prepletené.',
-    'Divoká kobyla (Vajroli) — ona na ňom, čelom k sebe, ruky zopnuté za hlavou.',
-    'Čierna včela (Bhramara) — zboku, ona vpredu, noha zohnutá.',
-    'Žena-slimák (Kaurmika) — ona na bruchu s vankúšom pod panvou, on zhora.',
-    'Obojstranný oblak (Maudža) — obojstranné bočné spojenie s nohami prekríženými.',
-    'Stojaci kvet (Sthita) — ona v stoji o stenu, jedna noha zdvihnutá.',
-    'Pevná skala (Sthira) — on sedí, ona na ňom obkročmo.',
-    'Harmónia (Sankocha) — v sede oproti sebe, iba ruky a ústa 20 minút.',
-    'Rozpätie krídel (Pakšini) — ona na okraji postele, nohy na jeho ramenách.',
-    'Spútaný lotos (Bandha Padma) — v lotosovom sede, čelom k sebe.',
-    'Most (Setu) — ona v moste, on kľačí.',
-    'Zrkadlo (Darpana) — pred zrkadlom, ona vpredu, on vzadu.',
-    'Vták v letu (Khangha) — on kľačí, ona sa spustí zozadu dole.',
-    'Zvíjajúci sa had (Sarpa) — ona vpredu na bruchu, on na boku za ňou.',
-    'Stĺp (Stambha) — ona v stoji, on kľačí.',
-    'Otočený kvet (Viparīta Padma) — ona v lotose, on na chrbte.'
-  ];
-  var P_HOURS = [
-    'Ranné svitanie (5:00–6:30) — testosterón najvyšší, divoké, inštinktívne.',
-    'Ráno (7:00–9:00) — po káve, pred prácou. Rýchlovka, ktorá nakopne.',
-    'Popoludnie (14:00–16:00) — vrchol telesnej teploty, ideálne na predohru.',
-    'Večer (20:00–22:00) — melatonín sa dvíha, kortizol klesá. Čas na tantru.',
-    'Polnoc (23:30–1:00) — vrchol parasympatiku. Hlboké, pomalé, éterické.',
-    'Svitanie (4:00–5:00) — magická hodina medzi svetmi.',
-    'Daždivé popoludnie — zvuk dažďa zvyšuje oxytocin.',
-    'Večer po hádke — sex, ktorý zmieruje.'
-  ];
-  var P_EXP = [
-    'Hra moci: jeden je pán, druhý sluha. Dohodnite hranice. Vymeňte role.',
-    'Tantrická seansa: 90 minút bez orgazmu. Len spojenie, dýchanie, oči.',
-    'Slovná hra: počas milovania si šepkajte, čo cítite. Bez hanby.',
-    'Zmena miesta: kuchyňa, kúpeľňa, balkón, výťah.',
-    'Zmena rolí: aktívny je pasívny. Uvidíte svoje telo v zrkadle.',
-    'Zaviazané oči: jeden vedie, druhý je slepý. 20 minút. Potom výmena.',
-    'Kocka ľadu: prejdite ľadom po tele. Reakcia je inštinktívna.',
-    'Sex bez preniknutia: 60 minút. Extrémna tantrická praxis.',
-    'Zrkadlo: milujte sa pred veľkým zrkadlom.',
-    'Dlhšia predohra: 2 hodiny. Bez preniknutia. Len telo.',
-    'Perie: žiadny dotyk rukou — len pero, hodváb, kožušina.',
-    'Studená sprcha → teplá posteľ.',
-    'Sex v tme: absolútna tma. Zostáva len dotyk a zvuk.',
-    'Hovorte o sexe 30 minút pred. Bez hanby.'
-  ];
-
-  /* ========== KOMPAS FORM ========== */
-  (function(){
-    var curYear = new Date().getFullYear();
-    var i, opt;
-    for (i = 1; i <= 31; i++){
-      opt = document.createElement('option');
-      opt.value = i; opt.textContent = i;
-      $('dayA').appendChild(opt.cloneNode(true));
-      $('dayB').appendChild(opt);
-    }
-    for (i = curYear; i >= 1930; i--){
-      opt = document.createElement('option');
-      opt.value = i; opt.textContent = i;
-      $('yearA').appendChild(opt.cloneNode(true));
-      $('yearB').appendChild(opt);
-    }
-  })();
-
-  document.querySelectorAll('.polarity').forEach(function(pol){
-    pol.addEventListener('click', function(e){
-      if (e.target.tagName === 'BUTTON'){
-        sClick();
-        pol.querySelectorAll('button').forEach(function(b){ b.classList.remove('active'); });
-        e.target.classList.add('active');
-      }
-    });
-  });
-
-  $('btnRun').addEventListener('click', function(){
-    sClick();
-    var nA = $('nameA').value.trim();
-    var nB = $('nameB').value.trim();
-    var dA = $('dayA').value, mA = $('monA').value, yA = $('yearA').value;
-    var dB = $('dayB').value, mB = $('monB').value, yB = $('yearB').value;
-    if (!nA || !nB || !dA || !mA || !yA || !dB || !mB || !yB){
-      showToast('Vyplňte obe mená a dátumy', 'accent');
-      return;
-    }
-    var now = new Date();
-    var seed = hash32(nA + '|' + nB + '|' + yA + mA + dA + '|' + yB + mB + dB + '|' + now.toISOString().slice(0,13));
-    var rng = mulberry32(seed);
-    var m = moonName(moonPhase(now));
-    var pos = pickN(rng, P_POSITIONS, 3);
-    var exp = pickN(rng, P_EXP, 3);
-
-    var html =
-      '<div class="section">' +
-        '<h3>🜂 Prvotná príťažlivosť · ' + nA + ' & ' + nB + '</h3>' +
-        '<p>' + pick(rng, P_ATTRACT) + '</p>' +
-        '<p>' + pick(rng, P_ATTRACT) + '</p>' +
-      '</div>' +
-      '<div class="section s-accent2">' +
-        '<h3>🜄 Sexuálna chémia</h3>' +
-        '<p>' + pick(rng, P_CHEM) + '</p>' +
-        '<p>' + pick(rng, P_CHEM) + '</p>' +
-      '</div>' +
-      '<div class="section s-purple">' +
-        '<h3>🜁 Rituál predohry</h3>' +
-        '<p>Inšpirujte sa tradíciou ' + pick(rng, P_RITUAL) + '</p>' +
-      '</div>' +
-      '<div class="section s-gold">' +
-        '<h3>🛏 Polohy napätia (Kámasútra)</h3>' +
-        '<ul>' + pos.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>' +
-      '</div>' +
-      '<div class="section s-accent2">' +
-        '<h3>⏳ Posvätné hodiny · ' + m.e + ' ' + m.n + '</h3>' +
-        '<p>' + pick(rng, P_HOURS) + '</p>' +
-        '<p>' + pick(rng, P_HOURS) + '</p>' +
-      '</div>' +
-      '<div class="section s-jade">' +
-        '<h3>🎭 Experimenty</h3>' +
-        '<ul>' + exp.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>' +
-      '</div>';
-
-    $('out').innerHTML = html;
-    $('kompasForm').style.display = 'none';
-    $('results').classList.add('active');
-    sWin();
-    $('kompasScreen').scrollTop = 0;
-  });
-
-  $('btnRestart').addEventListener('click', function(){
-    sClick();
-    $('results').classList.remove('active');
-    $('kompasForm').style.display = 'grid';
-    $('kompasScreen').scrollTop = 0;
-  });
-  $('btnRefresh').addEventListener('click', function(){
-    sClick();
-    $('btnRun').click();
-  });
-
-  /* ========== PDF GAME ========== */
-  var canvas = $('pdfCanvas');
-  var ctx = canvas.getContext('2d');
-  var pdfArea = $('pdfArea');
-
-  /* Load settings */
-  (function(){
-    var s = lsGet('kmpt_set_final', null);
-    if (s){
-      if (typeof s.mode === 'string') ST.mode = s.mode;
-      if (typeof s.autoMin === 'number') ST.autoMin = s.autoMin;
-      if (typeof s.customAuto === 'number') ST.customAuto = s.customAuto;
-      if (typeof s.alternate === 'boolean') ST.alternate = s.alternate;
-      if (typeof s.sound === 'boolean') ST.sound = s.sound;
-      if (typeof s.startPage === 'number') ST.startPage = s.startPage;
-    }
-    ST.seen = lsGet('kmpt_seen_final', []);
-    ST.history = lsGet('kmpt_hist_final', []);
-  })();
-
-  function saveSettings(){
-    lsSet('kmpt_set_final', {
-      mode: ST.mode,
-      autoMin: ST.autoMin,
-      customAuto: ST.customAuto,
-      alternate: ST.alternate,
-      sound: ST.sound,
-      startPage: ST.startPage
-    });
-  }
-
-  function updateTurn(){
-    $('turnText').textContent = ST.turn;
-  }
-  function updateBadge(){
-    if (!ST.pdfDoc){ $('pageBadge').textContent = '— / —'; return; }
-    $('pageBadge').textContent = ST.currentPage + ' / ' + ST.totalPages;
-  }
-
-  /* RENDER PDF s orezaním na 78 % */
-  function renderPage(num){
-    if (!ST.pdfDoc) return;
-    ST.pdfDoc.getPage(num).then(function(page){
-      var areaW = pdfArea.clientWidth - 24;
-      var base = page.getViewport({ scale: 1 });
-      var scale = Math.min(areaW / base.width, 2);
-      var vp = page.getViewport({ scale: scale });
-      var cropH = Math.floor(vp.height * CROP_RATIO);
-
-      canvas.width = vp.width;
-      canvas.height = cropH;
-      canvas.style.width = vp.width + 'px';
-      canvas.style.height = 'auto';
-
-      page.render({ canvasContext: ctx, viewport: vp }).promise.then(function(){
-        ST.currentPage = num;
-        updateBadge();
-        pdfArea.scrollTop = 0;
-      });
-    }).catch(function(err){
-      console.error('Render error:', err);
-      showToast('Chyba pri zobrazení', 'accent');
-    });
-  }
-
-  function pickNextPage(){
-    var start = ST.startPage;
-    var end = ST.endPage;
-    if (end < start) return start;
-
-    if (ST.mode === 'sequential'){
-      var next = ST.currentPage + 1;
-      if (next > end) next = start;
-      return next;
-    }
-
-    if (ST.mode === 'no-repeat'){
-      var all = [];
-      for (var i = start; i <= end; i++) all.push(i);
-      var seenSet = {};
-      ST.seen.forEach(function(p){ seenSet[p] = true; });
-      var remaining = all.filter(function(p){ return !seenSet[p]; });
-      if (remaining.length === 0){
-        ST.seen = [];
-        lsSet('kmpt_seen_final', []);
-        showToast('🎉 Všetky strany videné — reštart!', 'gold');
-        remaining = all.slice();
-      }
-      return shuffle(remaining)[0];
-    }
-
-    return Math.floor(Math.random() * (end - start + 1)) + start;
-  }
-
-  function executeDraw(){
-    if (!ST.pdfDoc || ST.drawing) return;
-    ST.drawing = true;
-    sClick();
-
-    var counter = 0;
-    var iv = setInterval(function(){
-      counter++;
-      var tmp = Math.floor(Math.random() * (ST.endPage - ST.startPage + 1)) + ST.startPage;
-      $('pageBadge').textContent = '🎲 ' + tmp + '...';
-      sTick();
-      if (counter >= 14){
-        clearInterval(iv);
-        var finalPage = pickNextPage();
-        renderPage(finalPage);
-        if (ST.seen.indexOf(finalPage) === -1){
-          ST.seen.push(finalPage);
-          lsSet('kmpt_seen_final', ST.seen);
-        }
-        ST.history.unshift({
-          page: finalPage,
-          time: new Date().toISOString(),
-          turn: ST.turn
-        });
-        ST.history = ST.history.slice(0, 50);
-        lsSet('kmpt_hist_final', ST.history);
-        sWin();
-        if (ST.alternate){
-          ST.turn = (ST.turn === 'ONA') ? 'ON' : 'ONA';
-          updateTurn();
-        }
-        ST.drawing = false;
-      }
-    }, 70);
-  }
-
-  $('drawBtn').addEventListener('click', executeDraw);
-  $('turnBtn').addEventListener('click', function(){
-    sClick();
-    ST.turn = (ST.turn === 'ONA') ? 'ON' : 'ONA';
-    updateTurn();
-    showToast('Na ťahu: ' + ST.turn, 'accent');
-  });
-
-  /* REŽIM */
-  document.querySelectorAll('#modeGrid .mode-card').forEach(function(c){
-    c.addEventListener('click', function(){
-      sClick();
-      document.querySelectorAll('#modeGrid .mode-card').forEach(function(x){ x.classList.remove('active'); });
-      c.classList.add('active');
-      ST.mode = c.getAttribute('data-mode');
-      saveSettings();
-      showToast('Režim: ' + c.textContent.trim(), 'accent');
-    });
-    if (c.getAttribute('data-mode') === ST.mode){
-      document.querySelectorAll('#modeGrid .mode-card').forEach(function(x){ x.classList.remove('active'); });
-      c.classList.add('active');
-    }
-  });
-
-  /* AUTO */
-  function stopAuto(){
-    if (ST.autoTimer){ clearInterval(ST.autoTimer); ST.autoTimer = null; }
-  }
-  function startAuto(min){
-    stopAuto();
-    ST.autoTimer = setInterval(executeDraw, min * 60 * 1000);
-    showToast('⏱ Auto každých ' + min + ' min', 'jade');
-  }
-  document.querySelectorAll('#autoGrid .auto-card').forEach(function(c){
-    c.addEventListener('click', function(){
-      sClick();
-      document.querySelectorAll('#autoGrid .auto-card').forEach(function(x){ x.classList.remove('active'); });
-      c.classList.add('active');
-      var val = c.getAttribute('data-auto');
-      if (val === '0'){
-        ST.autoMin = 0; stopAuto(); showToast('Auto vypnuté', 'accent');
-      } else if (val === 'custom'){
-        ST.autoMin = -1;
-        $('setCustom').focus();
-      } else {
-        ST.autoMin = parseInt(val, 10);
-        startAuto(ST.autoMin);
-      }
-      saveSettings();
-    });
-    if (c.getAttribute('data-auto') === String(ST.autoMin)){
-      document.querySelectorAll('#autoGrid .auto-card').forEach(function(x){ x.classList.remove('active'); });
-      c.classList.add('active');
-      if (ST.autoMin > 0) startAuto(ST.autoMin);
-    }
-  });
-
-  /* MODALS */
-  function openModal(id){ $(id).classList.add('open'); }
-  function closeModal(id){ $(id).classList.remove('open'); }
-  document.querySelectorAll('.modal-close').forEach(function(b){
-    b.addEventListener('click', function(){
-      sClick();
-      closeModal(b.getAttribute('data-close'));
-    });
-  });
-  document.querySelectorAll('.modal').forEach(function(m){
-    m.addEventListener('click', function(e){
-      if (e.target === m) m.classList.remove('open');
-    });
-  });
-
-  function openSettings(){
-    $('setStart').value = ST.startPage;
-    $('setEnd').value = ST.endPage || '';
-    $('setCustom').value = ST.customAuto;
-    $('swSound').classList.toggle('on', ST.sound);
-    $('swAlternate').classList.toggle('on', ST.alternate);
-    updateStats();
-    openModal('modalSettings');
-  }
-  $('btnSettings').addEventListener('click', function(){ sClick(); openSettings(); });
-  $('btnHistory').addEventListener('click', function(){ sClick(); updateHistoryFull(); openModal('modalHistory'); });
-
-  $('setStart').addEventListener('change', function(){
-    var v = parseInt(this.value, 10);
-    if (!isNaN(v) && v >= 1 && v <= ST.totalPages){
-      ST.startPage = v; saveSettings();
-      if (ST.pdfDoc) renderPage(Math.max(ST.startPage, Math.min(ST.currentPage || ST.startPage, ST.endPage)));
-      showToast('Od strany ' + v, 'jade');
-    }
-  });
-  $('setEnd').addEventListener('change', function(){
-    var v = parseInt(this.value, 10);
-    if (!isNaN(v) && v >= ST.startPage && v <= ST.totalPages){
-      ST.endPage = v;
-      showToast('Do strany ' + v, 'jade');
-    }
-  });
-  $('setCustom').addEventListener('change', function(){
-    var v = parseInt(this.value, 10);
-    if (!isNaN(v) && v >= 1 && v <= 120){
-      ST.customAuto = v; saveSettings();
-      showToast('Vlastný interval: ' + v + ' min', 'jade');
-      if (ST.autoMin === -1){ ST.autoMin = v; startAuto(v); saveSettings(); }
-    }
-  });
-
-  $('swSound').addEventListener('click', function(){
-    ST.sound = !ST.sound;
-    this.classList.toggle('on', ST.sound);
+  if(c.getAttribute('data-mode')===ST.mode){document.querySelectorAll('#modesRow .chip').forEach(function(x){x.classList.remove('active');});c.classList.add('active');}
+});
+function stopAuto(){if(ST.autoTimer){clearInterval(ST.autoTimer);ST.autoTimer=null;}}
+function startAuto(m){stopAuto();ST.autoTimer=setInterval(executeDraw,m*60*1000);toast('⏱ Auto '+m+' min','jade');}
+document.querySelectorAll('#autoRow .chip').forEach(function(c){
+  c.addEventListener('click',function(){
+    sClick();document.querySelectorAll('#autoRow .chip').forEach(function(x){x.classList.remove('active');});c.classList.add('active');
+    var v=c.getAttribute('data-auto');
+    if(v==='0'){ST.autoMin=0;stopAuto();toast('Auto OFF','accent');}
+    else if(v==='custom'){ST.autoMin=-1;$('setCustom').focus();}
+    else{ST.autoMin=parseInt(v,10);startAuto(ST.autoMin);}
     saveSettings();
-    showToast(ST.sound ? '🔊 Zvuk ON' : '🔇 Zvuk OFF', 'accent');
   });
-  $('swAlternate').addEventListener('click', function(){
-    ST.alternate = !ST.alternate;
-    this.classList.toggle('on', ST.alternate);
-    saveSettings();
-    showToast(ST.alternate ? '🔄 Striedanie ON' : '⏸ Striedanie OFF', 'accent');
+  if(c.getAttribute('data-auto')===String(ST.autoMin)){document.querySelectorAll('#autoRow .chip').forEach(function(x){x.classList.remove('active');});c.classList.add('active');if(ST.autoMin>0)startAuto(ST.autoMin);}
+});
+
+function openModal(id){$(id).classList.add('open');}
+function closeModal(id){$(id).classList.remove('open');}
+document.querySelectorAll('.modal-close').forEach(function(b){b.addEventListener('click',function(){sClick();closeModal(b.getAttribute('data-close'));});});
+document.querySelectorAll('.modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open');});});
+
+$('settingsBtn').addEventListener('click',function(){
+  sClick();$('setStart').value=ST.startPage;$('setEnd').value=ST.endPage||'';$('setCustom').value=ST.customAuto;
+  $('swSound').classList.toggle('on',ST.sound);$('swAlternate').classList.toggle('on',ST.alternate);
+  updateStatsBox();openModal('modalSettings');
+});
+$('historyBtn').addEventListener('click',function(){sClick();updateHistoryFull();openModal('modalHistory');});
+
+$('setStart').addEventListener('change',function(){var v=parseInt(this.value,10);if(!isNaN(v)&&v>=1&&v<=ST.totalPages){ST.startPage=v;saveSettings();if(ST.pdfDoc)renderPage(Math.max(ST.startPage,Math.min(ST.currentPage||ST.startPage,ST.endPage)));toast('Od '+v,'jade');}});
+$('setEnd').addEventListener('change',function(){var v=parseInt(this.value,10);if(!isNaN(v)&&v>=ST.startPage&&v<=ST.totalPages){ST.endPage=v;toast('Do '+v,'jade');}});
+$('setCustom').addEventListener('change',function(){var v=parseInt(this.value,10);if(!isNaN(v)&&v>=1&&v<=120){ST.customAuto=v;saveSettings();if(ST.autoMin===-1){ST.autoMin=v;startAuto(v);saveSettings();}}});
+$('swSound').addEventListener('click',function(){ST.sound=!ST.sound;this.classList.toggle('on',ST.sound);saveSettings();toast(ST.sound?'🔊 ON':'🔇 OFF','accent');});
+$('swAlternate').addEventListener('click',function(){ST.alternate=!ST.alternate;this.classList.toggle('on',ST.alternate);saveSettings();toast(ST.alternate?'🔄 ON':'⏸ OFF','accent');});
+$('resetHistory').addEventListener('click',function(){sClick();if(!confirm('Vymazať?'))return;ST.seen=[];ST.history=[];lsSet('kmpt_seen_m',[]);lsSet('kmpt_hist_m',[]);updateStatPill();updateStatsBox();updateHistoryFull();toast('🗑 OK','gold');});
+
+function updateStatsBox(){
+  var t=ST.endPage-ST.startPage+1,s=0;
+  for(var i=0;i<ST.seen.length;i++)if(ST.seen[i]>=ST.startPage&&ST.seen[i]<=ST.endPage)s++;
+  var r=Math.max(0,t-s),p=t>0?Math.round((s/t)*100):0;
+  $('statsBox').innerHTML='Videných: <span class="num">'+s+'</span> / <span class="num2">'+t+'</span><br>Zostáva: <span class="num">'+r+'</span> · <span class="num2">'+p+'%</span>';
+}
+function fmtTime(iso){try{var d=new Date(iso);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}catch(e){return '—';}}
+function updateHistoryFull(){
+  if(!ST.history.length){$('historyListFull').innerHTML='<div style="text-align:center;color:var(--muted);padding:20px">Zatiaľ žiadne záznamy</div>';return;}
+  $('historyListFull').innerHTML=ST.history.map(function(it){return '<div class="h-item"><span>Strana <span class="p">'+it.page+'</span></span><span>'+fmtTime(it.time)+' · '+(it.turn||'—')+'</span></div>';}).join('');
+}
+
+function applyLoaded(doc){
+  ST.pdfDoc=doc;ST.totalPages=doc.numPages;
+  if(ST.totalPages<8){$('loadMsg').textContent='PDF má menej ako 8 strán';$('loadErr').textContent='Potrebné aspoň 8.';$('loadErr').style.display='block';$('fallbackBox').style.display='block';return;}
+  if(!ST.endPage||ST.endPage>ST.totalPages)ST.endPage=ST.totalPages;
+  if(ST.startPage<1)ST.startPage=8;if(ST.startPage>ST.totalPages)ST.startPage=8;
+  $('pdfLoading').style.display='none';$('fallbackBox').style.display='none';canvas.style.display='block';
+  $('drawBtn').removeAttribute('disabled');
+  renderPage(ST.startPage);ST.currentPage=ST.startPage;updateTurnDisplay();updateStatPill();saveSettings();
+  toast('✅ PDF · '+ST.totalPages+' strán','jade');
+}
+function loadRepoPdf(){
+  if(!window.pdfjsLib){$('loadMsg').textContent='PDF.js sa nenačítal';$('loadErr').textContent='Skontrolujte internet.';$('loadErr').style.display='block';$('fallbackBox').style.display='block';return;}
+  $('loadMsg').textContent='Načítavam PDF z repozitára...';$('loadErr').style.display='none';
+  pdfjsLib.getDocument({url:PDF_URL}).promise.then(function(doc){applyLoaded(doc);}).catch(function(err){
+    console.error(err);
+    $('loadMsg').textContent='PDF z repozitára sa nenačítal';
+    $('loadErr').innerHTML='Skontrolujte <b>positions.pdf</b> v repe alebo ho nahrajte ručne:';
+    $('loadErr').style.display='block';$('fallbackBox').style.display='block';
   });
-  $('btnReset').addEventListener('click', function(){
-    sClick();
-    if (!confirm('Vymazať históriu a videné strany?')) return;
-    ST.seen = []; ST.history = [];
-    lsSet('kmpt_seen_final', []); lsSet('kmpt_hist_final', []);
-    updateStats(); updateHistoryFull();
-    showToast('🗑 Vymazané', 'gold');
-  });
-
-  function updateStats(){
-    var total = ST.endPage - ST.startPage + 1;
-    var seenInRange = ST.seen.filter(function(p){ return p >= ST.startPage && p <= ST.endPage; }).length;
-    var rem = Math.max(0, total - seenInRange);
-    var pct = total > 0 ? Math.round((seenInRange / total) * 100) : 0;
-    $('statsBox').innerHTML =
-      'Videných: <span class="num">' + seenInRange + '</span> / <span class="num2">' + total + '</span><br>' +
-      'Zostáva: <span class="num">' + rem + '</span> · <span class="num2">' + pct + '%</span>';
-  }
-  function fmtTime(iso){
-    try {
-      var d = new Date(iso);
-      return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
-    }catch(e){ return '—'; }
-  }
-  function updateHistoryFull(){
-    if (!ST.history.length){
-      $('historyList').innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px">Zatiaľ žiadne záznamy</div>';
-      return;
-    }
-    $('historyList').innerHTML = ST.history.map(function(item){
-      return '<div class="h-item"><span>Strana <span class="p">' + item.page + '</span></span><span>' + fmtTime(item.time) + ' · ' + (item.turn || '—') + '</span></div>';
-    }).join('');
-  }
-
-  /* LOAD PDF */
-  function applyLoaded(doc){
-    ST.pdfDoc = doc;
-    ST.totalPages = doc.numPages;
-
-    if (ST.totalPages < 8){
-      $('loaderMsg').textContent = 'PDF má menej ako 8 strán';
-      $('loaderErr').innerHTML = 'PDF má <b>' + ST.totalPages + '</b> strán, potrebuje aspoň 8.';
-      $('loaderErr').classList.add('visible');
-      $('uploadBtn').classList.add('visible');
-      return;
-    }
-
-    if (!ST.endPage || ST.endPage > ST.totalPages) ST.endPage = ST.totalPages;
-    if (ST.startPage < 1) ST.startPage = 8;
-    if (ST.startPage > ST.totalPages) ST.startPage = 8;
-
-    $('pdfLoader').style.display = 'none';
-    $('uploadBtn').classList.remove('visible');
-    canvas.style.display = 'block';
-    $('drawBtn').removeAttribute('disabled');
-
-    renderPage(ST.startPage);
-    ST.currentPage = ST.startPage;
-
-    updateTurn();
-    saveSettings();
-    showToast('✅ PDF · ' + ST.totalPages + ' strán', 'jade');
-  }
-
-  function loadRepoPdf(){
-    if (!window.pdfjsLib){
-      $('loaderMsg').textContent = 'PDF.js sa nenačítal';
-      $('loaderErr').textContent = 'Skontrolujte internet.';
-      $('loaderErr').classList.add('visible');
-      $('uploadBtn').classList.add('visible');
-      return;
-    }
-    $('loaderMsg').textContent = 'Načítavam PDF z repozitára...';
-    $('loaderErr').classList.remove('visible');
-
-    pdfjsLib.getDocument({ url: PDF_URL }).promise.then(function(doc){
-      applyLoaded(doc);
-    }).catch(function(err){
-      console.error('PDF error:', err);
-      $('loaderMsg').textContent = 'PDF z repozitára sa nenačítal';
-      $('loaderErr').innerHTML = 'Skontrolujte <b>positions.pdf</b> v repe, alebo nahrajte PDF ručne:';
-      $('loaderErr').classList.add('visible');
-      $('uploadBtn').classList.add('visible');
+}
+$('pdfUpload').addEventListener('change',function(e){
+  var f=e.target.files&&e.target.files[0];if(!f)return;
+  if(f.type!=='application/pdf'){toast('Musí byť PDF','accent');return;}
+  $('loadMsg').textContent='Načítavam...';$('loadErr').style.display='none';$('fallbackBox').style.display='none';
+  var r=new FileReader();
+  r.onload=function(){
+    var ta=new Uint8Array(this.result);
+    pdfjsLib.getDocument({data:ta}).promise.then(function(doc){applyLoaded(doc);}).catch(function(err){
+      console.error(err);
+      $('loadMsg').textContent='PDF sa nepodarilo načítať';
+      $('loadErr').textContent='Súbor je poškodený.';$('loadErr').style.display='block';$('fallbackBox').style.display='block';
     });
-  }
+  };
+  r.readAsArrayBuffer(f);
+});
+setTimeout(loadRepoPdf,400);
 
-  $('pdfUpload').addEventListener('change', function(e){
-    var file = e.target.files && e.target.files[0];
-    if (!file) return;
-    if (file.type !== 'application/pdf'){
-      showToast('Musí byť PDF', 'accent');
-      return;
-    }
-    $('loaderMsg').textContent = 'Načítavam vybraný PDF...';
-    $('loaderErr').classList.remove('visible');
-    $('uploadBtn').classList.remove('visible');
+var resizeTO;window.addEventListener('resize',function(){clearTimeout(resizeTO);resizeTO=setTimeout(function(){if(ST.pdfDoc&&ST.currentPage)renderPage(ST.currentPage);},250);});
 
-    var reader = new FileReader();
-    reader.onload = function(){
-      var typedArray = new Uint8Array(this.result);
-      pdfjsLib.getDocument({ data: typedArray }).promise.then(function(doc){
-        applyLoaded(doc);
-      }).catch(function(err){
-        console.error('PDF error:', err);
-        $('loaderMsg').textContent = 'PDF sa nepodarilo načítať';
-        $('loaderErr').textContent = 'Súbor je poškodený alebo nie je PDF.';
-        $('loaderErr').classList.add('visible');
-        $('uploadBtn').classList.add('visible');
-      });
-    };
-    reader.readAsArrayBuffer(file);
-  });
+updateTurnDisplay();updateStatPill();
 
-  setTimeout(loadRepoPdf, 400);
-
-  /* RESIZE */
-  var resizeTO;
-  window.addEventListener('resize', function(){
-    clearTimeout(resizeTO);
-    resizeTO = setTimeout(function(){
-      if (ST.pdfDoc && ST.currentPage) renderPage(ST.currentPage);
-    }, 250);
-  });
-
-  /* INIT */
-  updateTurn();
-  updateBadge();
-
-  })();
-  </script>
+})();
+</script>
 </body>
 </html>
