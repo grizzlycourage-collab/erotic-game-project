@@ -5,295 +5,562 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#070410">
 <meta name="robots" content="noindex, nofollow">
-<title>Kompas tela · Erotická Matrica</title>
+<title>Kompas tela · Erotická hra</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#070410;--card:#120a1e;--card2:#1a0e2a;--border:#2a1a44;
---text:#f0e6ff;--muted:#7a6a9a;--accent:#e11d6e;--accent2:#f59e0b;
---gold:#ffb800;--jade:#10b981;--purple:#a855f7;--glow:rgba(225,29,110,.18)}
-html,body{height:100%}
-body{background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;
-color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:14px;
--webkit-font-smoothing:antialiased;overflow-x:hidden}
-.app{max-width:840px;width:100%;background:linear-gradient(180deg,var(--card2),var(--card));
-border-radius:18px;border:1px solid var(--border);padding:24px 20px 18px;
-box-shadow:0 30px 100px rgba(0,0,0,.85);position:relative;overflow:hidden;margin:auto}
-.app::before{content:'';position:absolute;inset:0;pointer-events:none;
-background:radial-gradient(circle at 15% 5%,rgba(225,29,110,.10),transparent 40%),
-radial-gradient(circle at 85% 95%,rgba(168,85,247,.10),transparent 40%)}
-.app>*{position:relative;z-index:1}
+:root{
+  --bg:#070410;--card:#120a1e;--card2:#1a0e2a;--border:#2a1a44;
+  --text:#f0e6ff;--muted:#7a6a9a;
+  --accent:#e11d6e;--accent2:#f59e0b;--gold:#ffb800;
+  --jade:#10b981;--purple:#a855f7;
+  --glow:rgba(225,29,110,.18);
+}
+html,body{height:100%;overscroll-behavior:none}
+body{
+  background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
 
-#authModal{position:fixed;inset:0;z-index:9999;background:rgba(7,4,16,0.96);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px}
-.modal-box{background:var(--card);border:1px solid rgba(225,29,110,0.4);border-radius:20px;padding:24px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.9)}
+/* ============ LAYOUT ============ */
+.app{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  max-width:840px;margin:0 auto;
+}
 
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-.logo h1{font-size:1.5rem;font-weight:800;
-background:linear-gradient(135deg,var(--accent2),var(--accent),var(--purple));
--webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.logo span{display:block;font-size:.6rem;color:var(--muted);letter-spacing:3px;
-text-transform:uppercase;-webkit-text-fill-color:var(--muted);margin-top:2px}
-
-.live-bar{background:linear-gradient(90deg,rgba(225,29,110,.18),rgba(168,85,247,.12),rgba(245,158,11,.15));
-border:1px solid var(--border);border-radius:12px;padding:8px 12px;margin-bottom:12px;
-display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
-font-family:ui-monospace,monospace;font-size:.62rem;letter-spacing:1.5px}
-.live-bar .lbitem{display:flex;align-items:center;gap:5px;color:#e2d8f0}
-.live-bar .lb-lbl{color:var(--muted);font-size:.55rem;text-transform:uppercase}
-.live-bar .lb-val{color:var(--gold);font-weight:800}
-.live-bar .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent2);
-box-shadow:0 0 10px var(--accent2);animation:lp 1.6s ease-in-out infinite}
+/* ============ TOP BAR ============ */
+.topbar{
+  flex-shrink:0;
+  padding:10px 14px 8px;
+  background:linear-gradient(180deg,rgba(18,10,30,.95),rgba(18,10,30,.85));
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);
+  z-index:10;
+}
+.topbar-row{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;flex-wrap:wrap;
+}
+.topbar-logo{
+  font-size:.95rem;font-weight:900;letter-spacing:1.5px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.topbar-live{
+  display:flex;gap:8px;flex-wrap:wrap;
+  font-family:ui-monospace,monospace;
+  font-size:.55rem;letter-spacing:1.2px;
+}
+.topbar-live .lb{
+  display:flex;align-items:center;gap:4px;
+  padding:3px 8px;background:rgba(255,255,255,.03);
+  border:1px solid var(--border);border-radius:20px;
+}
+.topbar-live .lbl{color:var(--muted);text-transform:uppercase}
+.topbar-live .val{color:var(--gold);font-weight:800}
+.topbar-live .dot{
+  width:6px;height:6px;border-radius:50%;background:var(--accent2);
+  box-shadow:0 0 8px var(--accent2);
+  animation:lp 1.6s ease-in-out infinite;
+}
 @keyframes lp{50%{opacity:.3;transform:scale(.7)}}
 
-.info-box{background:linear-gradient(135deg,rgba(225,29,110,.08),rgba(168,85,247,.04));
-border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;
-padding:12px 16px;margin-bottom:16px;font-size:.8rem;line-height:1.6;color:#e2d8f0}
-.info-box strong{color:var(--accent2);text-transform:uppercase;letter-spacing:1px;
-display:block;margin-bottom:3px;font-size:.68rem}
+/* ============ MAIN ============ */
+.main{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  position:relative;
+}
+.view{
+  display:none;padding:14px;padding-bottom:20px;
+  animation:viewIn .35s ease;
+}
+.view.active{display:block}
+@keyframes viewIn{
+  0%{opacity:0;transform:translateY(8px)}
+  100%{opacity:1;transform:translateY(0)}
+}
 
-.person-block{background:rgba(255,255,255,.02);border:1px solid var(--border);
-border-radius:12px;padding:14px 14px 6px;margin-bottom:12px;position:relative;overflow:hidden}
-.person-block::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
-background:linear-gradient(180deg,var(--accent),var(--purple))}
-.person-block[data-p="B"]::before{background:linear-gradient(180deg,var(--purple),var(--accent2))}
-.person-title{font-size:.7rem;font-weight:800;text-transform:uppercase;
-letter-spacing:2px;color:var(--accent);margin-bottom:8px}
+/* ============ BOTTOM NAV ============ */
+.navbar{
+  flex-shrink:0;
+  display:grid;grid-template-columns:1fr 1fr;
+  background:linear-gradient(0deg,rgba(18,10,30,.98),rgba(18,10,30,.9));
+  border-top:1px solid var(--border);
+  padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));
+  backdrop-filter:blur(12px);
+  z-index:10;
+}
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:8px 4px;background:transparent;border:none;
+  color:var(--muted);font-size:.62rem;font-weight:800;
+  letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;transition:.25s;border-radius:10px;
+  font-family:inherit;
+}
+.nav-btn .ico{font-size:1.15rem;line-height:1}
+.nav-btn.active{
+  color:#fff;
+  background:linear-gradient(135deg,rgba(225,29,110,.18),rgba(168,85,247,.12));
+  box-shadow:0 0 20px rgba(225,29,110,.25);
+}
+.nav-btn.active .ico{filter:drop-shadow(0 0 8px var(--accent))}
+
+/* ============ GAME VIEW ============ */
+.game-hero{
+  background:linear-gradient(135deg,rgba(225,29,110,.08),rgba(168,85,247,.05));
+  border:1px solid var(--border);border-radius:16px;
+  padding:16px;margin-bottom:12px;
+  position:relative;overflow:hidden;
+}
+.game-hero::before{
+  content:'';position:absolute;top:-50%;right:-20%;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(225,29,110,.25),transparent 70%);
+  pointer-events:none;
+}
+.game-hero h2{
+  font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px;font-weight:700;
+  position:relative;z-index:1;
+}
+.turn-display{
+  font-size:2.2rem;font-weight:900;letter-spacing:2px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1.1;margin-bottom:4px;
+  position:relative;z-index:1;
+}
+.turn-sub{
+  font-size:.75rem;color:var(--muted);letter-spacing:1.5px;
+  text-transform:uppercase;font-family:ui-monospace,monospace;
+  position:relative;z-index:1;
+}
+.pdf-stage{
+  background:#000;border-radius:16px;border:1px solid var(--border);
+  min-height:380px;display:flex;align-items:center;justify-content:center;
+  padding:8px;position:relative;overflow:hidden;margin-bottom:12px;
+}
+.pdf-stage canvas{
+  display:block;max-width:100%;max-height:520px;height:auto;
+  border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.7);
+}
+.pdf-loading{
+  color:var(--muted);font-size:.78rem;text-align:center;
+  padding:30px 20px;line-height:1.7;
+}
+.pdf-loading .spin{
+  display:inline-block;width:24px;height:24px;
+  border:2px solid var(--border);border-top-color:var(--accent);
+  border-radius:50%;animation:spin 1s linear infinite;
+  margin-bottom:12px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pdf-loading .err{color:#ef4444;font-size:.7rem;margin-top:6px}
+.page-badge{
+  position:absolute;top:10px;left:10px;
+  background:rgba(7,4,16,.85);border:1px solid var(--border);
+  padding:4px 10px;border-radius:20px;
+  font-family:ui-monospace,monospace;font-size:.62rem;
+  color:var(--gold);font-weight:800;letter-spacing:1px;
+  backdrop-filter:blur(6px);z-index:2;
+}
+.draw-wrap{padding:0 2px;margin-bottom:10px}
+.draw-btn{
+  width:100%;padding:22px;
+  background:linear-gradient(135deg,var(--accent),var(--purple),var(--accent2));
+  background-size:200% 200%;
+  border:none;border-radius:18px;color:#fff;
+  font-size:1.15rem;font-weight:900;
+  letter-spacing:3px;text-transform:uppercase;
+  cursor:pointer;transition:.25s;
+  box-shadow:0 0 50px var(--glow),0 10px 30px rgba(0,0,0,.5);
+  animation:sg 6s ease infinite;
+  font-family:inherit;position:relative;overflow:hidden;
+}
+.draw-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
+  transform:translateX(-100%);
+  animation:shine 3s ease-in-out infinite;
+}
+@keyframes shine{
+  0%,100%{transform:translateX(-100%)}
+  50%{transform:translateX(100%)}
+}
+@keyframes sg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.draw-btn:hover{transform:translateY(-2px);box-shadow:0 0 70px var(--glow),0 12px 35px rgba(0,0,0,.6)}
+.draw-btn:active{transform:scale(.98)}
+.draw-btn:disabled{opacity:.4;cursor:not-allowed;animation:none;box-shadow:none}
+.draw-btn:disabled::before{display:none}
+.mini-actions{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  margin-bottom:6px;
+}
+.btn-soft{
+  padding:11px;border-radius:11px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--muted);font-size:.68rem;font-weight:800;
+  letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;transition:.25s;font-family:inherit;
+}
+.btn-soft:hover{border-color:var(--accent);color:#fff}
+.btn-soft.on{
+  background:rgba(16,185,129,.15);
+  border-color:var(--jade);color:var(--jade);
+  box-shadow:0 0 15px rgba(16,185,129,.3);
+}
+.btn-soft.reset{
+  background:rgba(225,29,110,.08);
+  border-color:rgba(225,29,110,.35);color:var(--accent);
+}
+
+/* ============ KOMPAS VIEW ============ */
+.info-box{
+  background:linear-gradient(135deg,rgba(225,29,110,.08),rgba(168,85,247,.04));
+  border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:12px;padding:12px 16px;margin-bottom:16px;
+  font-size:.8rem;line-height:1.6;color:#e2d8f0;
+}
+.info-box strong{
+  color:var(--accent2);text-transform:uppercase;
+  letter-spacing:1px;display:block;margin-bottom:3px;font-size:.68rem;
+}
+.info-box p{color:#e2d8f0}
+
+.person-block{
+  background:rgba(255,255,255,.02);border:1px solid var(--border);
+  border-radius:12px;padding:14px 14px 6px;margin-bottom:12px;
+  position:relative;overflow:hidden;
+}
+.person-block::before{
+  content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  background:linear-gradient(180deg,var(--accent),var(--purple));
+}
+.person-block[data-p="B"]::before{
+  background:linear-gradient(180deg,var(--purple),var(--accent2));
+}
+.person-title{
+  font-size:.7rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:2px;color:var(--accent);margin-bottom:8px;
+}
 .person-block[data-p="B"] .person-title{color:var(--purple)}
 
 .form-group{margin-bottom:10px}
-.form-group label{display:block;font-size:.58rem;text-transform:uppercase;
-letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;font-weight:600}
-.form-group input{width:100%;padding:10px 12px;background:#0a0518;
-border:1px solid var(--border);border-radius:10px;color:var(--text);
-font-size:.90rem;transition:.3s;outline:none}
-.form-group input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
-
+.form-group label{
+  display:block;font-size:.58rem;text-transform:uppercase;
+  letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;font-weight:600;
+}
+.form-group input{
+  width:100%;padding:10px 12px;background:#0a0518;
+  border:1px solid var(--border);border-radius:10px;
+  color:var(--text);font-size:.9rem;
+  transition:.3s;outline:none;font-family:inherit;
+}
+.form-group input:focus{
+  border-color:var(--accent);box-shadow:0 0 0 3px var(--glow);
+}
 .date-row{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:6px}
-.date-row select{padding:9px 6px;background:#0a0518;border:1px solid var(--border);
-border-radius:10px;color:var(--text);font-size:.85rem;outline:none;
-appearance:none;-webkit-appearance:none;cursor:pointer}
-.date-row select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
-
-.polarity{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:4px}
-.polarity button{padding:8px 3px;border:1px solid var(--border);background:#0a0518;
-color:var(--muted);font-size:.68rem;font-weight:700;border-radius:9px;
-cursor:pointer;transition:.25s}
-.polarity button.active{background:linear-gradient(135deg,var(--accent),var(--purple));
-border-color:transparent;color:#fff;box-shadow:0 0 18px var(--glow)}
-
-.btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--purple),var(--accent2));
-background-size:200% 200%;border:none;border-radius:11px;color:#fff;font-size:.95rem;
-font-weight:800;letter-spacing:2px;cursor:pointer;transition:.3s;text-transform:uppercase;
-margin-top:6px;box-shadow:0 0 36px var(--glow);animation:sg 6s ease infinite}
-@keyframes sg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.date-row select{
+  padding:9px 6px;background:#0a0518;border:1px solid var(--border);
+  border-radius:10px;color:var(--text);font-size:.85rem;
+  outline:none;appearance:none;-webkit-appearance:none;
+  cursor:pointer;font-family:inherit;
+}
+.date-row select:focus{
+  border-color:var(--accent);box-shadow:0 0 0 3px var(--glow);
+}
+.polarity{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:5px;margin-top:4px;
+}
+.polarity button{
+  padding:8px 3px;border:1px solid var(--border);
+  background:#0a0518;color:var(--muted);
+  font-size:.68rem;font-weight:700;border-radius:9px;
+  cursor:pointer;transition:.25s;font-family:inherit;
+}
+.polarity button.active{
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  border-color:transparent;color:#fff;
+  box-shadow:0 0 18px var(--glow);
+}
+.btn-primary{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,var(--accent),var(--purple),var(--accent2));
+  background-size:200% 200%;border:none;border-radius:11px;
+  color:#fff;font-size:.95rem;font-weight:800;letter-spacing:2px;
+  cursor:pointer;transition:.3s;text-transform:uppercase;
+  margin-top:6px;box-shadow:0 0 36px var(--glow);
+  animation:sg 6s ease infinite;font-family:inherit;
+}
 .btn-primary:hover{transform:scale(1.01);box-shadow:0 0 55px var(--glow)}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed;animation:none}
 
 .results{display:none;margin-top:10px}
-.results.active{display:block;animation:fi .6s ease}
-@keyframes fi{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+.results.active{display:block;animation:viewIn .5s ease}
 
-.section{background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.01));
-border:1px solid var(--border);border-radius:14px;padding:18px 18px 16px;margin-bottom:12px;
-border-left:4px solid var(--accent)}
+.section{
+  background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.01));
+  border:1px solid var(--border);border-radius:14px;
+  padding:18px 18px 16px;margin-bottom:12px;
+  border-left:4px solid var(--accent);
+}
 .section.s-accent2{border-left-color:var(--accent2)}
 .section.s-gold{border-left-color:var(--gold)}
 .section.s-purple{border-left-color:var(--purple)}
 .section.s-jade{border-left-color:var(--jade)}
-.section .head{display:flex;justify-content:space-between;align-items:flex-start;
-margin-bottom:8px;gap:8px;flex-wrap:wrap}
-.section .head h3{font-size:.82rem;font-weight:800;letter-spacing:1.4px;
-text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.section .head{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:8px;gap:8px;flex-wrap:wrap;
+}
+.section .head h3{
+  font-size:.82rem;font-weight:800;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--accent);margin-bottom:2px;
+}
 .section.s-accent2 .head h3{color:var(--accent2)}
 .section.s-gold .head h3{color:var(--gold)}
 .section.s-purple .head h3{color:var(--purple)}
 .section.s-jade .head h3{color:var(--jade)}
-.section p{font-size:.92rem;line-height:1.8;color:#d8d0e8;margin-bottom:9px}
+.section p{
+  font-size:.92rem;line-height:1.8;color:#d8d0e8;margin-bottom:9px;
+}
 .section p:last-child{margin-bottom:0}
 .section ul{margin:8px 0 0 0;padding-left:0;list-style:none}
-.section ul li{padding:6px 0 6px 20px;position:relative;font-size:.9rem;line-height:1.7;color:#d8d0e8}
-.section ul li::before{content:'◈';position:absolute;left:0;top:6px;color:var(--accent2);font-size:.65rem}
-.section .hl{color:var(--accent2);font-weight:700}
-.section .hl2{color:var(--accent);font-weight:700}
-.section .hl3{color:var(--purple);font-weight:700}
-.section .hl4{color:var(--gold);font-weight:700}
-.section .hl5{color:var(--jade);font-weight:700}
+.section ul li{
+  padding:6px 0 6px 20px;position:relative;
+  font-size:.9rem;line-height:1.7;color:#d8d0e8;
+}
+.section ul li::before{
+  content:'◈';position:absolute;left:0;top:6px;
+  color:var(--accent2);font-size:.65rem;
+}
+.hl{color:var(--accent2);font-weight:700}
+.hl2{color:var(--accent);font-weight:700}
+.hl3{color:var(--purple);font-weight:700}
+.hl4{color:var(--gold);font-weight:700}
+.hl5{color:var(--jade);font-weight:700}
 
-.game-box{background:linear-gradient(135deg,rgba(225,29,110,0.05),rgba(168,85,247,0.05));
-border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px}
-.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
-@media(max-width:700px){.game-grid{grid-template-columns:1fr}}
-.pdf-viewer-container{background:#000;border-radius:12px;overflow:hidden;
-border:1px solid var(--border);display:flex;justify-content:center;align-items:center;
-position:relative;min-height:320px;max-height:480px;padding:4px}
-canvas#pdfCanvas{display:block;max-width:100%;height:auto;border-radius:8px}
-.turn-badge{background:rgba(225,29,110,0.15);border:1px solid var(--accent);
-color:var(--accent);padding:8px 12px;border-radius:10px;text-align:center;
-font-weight:800;font-size:.85rem;margin-bottom:10px;letter-spacing:1px;transition:.3s}
-.turn-badge.turn-on{background:rgba(168,85,247,0.15);border-color:var(--purple);color:var(--purple)}
-
-.pdf-loading{color:var(--muted);font-size:.75rem;text-align:center;padding:20px;line-height:1.6}
-.pdf-loading .spin{display:inline-block;width:20px;height:20px;border:2px solid var(--border);
-border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:10px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-.action-row{display:flex;gap:8px;margin-top:10px}
-.btn-act{flex:1;padding:11px;border-radius:11px;font-size:.72rem;font-weight:800;
-letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:.25s;
-border:1px solid var(--border);background:transparent;color:var(--muted)}
-.btn-refresh{background:rgba(225,29,110,.10);color:var(--accent);border-color:rgba(225,29,110,.4)}
-.btn-refresh:hover{background:rgba(225,29,110,.2)}
-.btn-restart:hover{border-color:var(--accent);color:#fff}
-
-.footer{margin-top:18px;padding-top:10px;border-top:1px solid var(--border);
-text-align:center;font-size:.52rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.deco{
+  font-family:ui-monospace,monospace;font-size:.7rem;
+  color:var(--accent2);opacity:.3;letter-spacing:8px;
+  text-align:center;margin:4px 0 10px;
+}
+.footer{
+  margin-top:18px;padding-top:10px;border-top:1px solid var(--border);
+  text-align:center;font-size:.52rem;color:var(--muted);
+  letter-spacing:2px;text-transform:uppercase;
+}
 .footer strong{color:var(--accent2);font-weight:600}
-.deco{font-family:ui-monospace,monospace;font-size:.7rem;color:var(--accent2);
-opacity:.3;letter-spacing:8px;text-align:center;margin:4px 0 10px}
+
+/* ============ AUTH MODAL ============ */
+#authModal{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(7,4,16,.97);
+  backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;
+}
+.modal-box{
+  background:var(--card);
+  border:1px solid rgba(225,29,110,.4);
+  border-radius:20px;padding:24px;
+  max-width:400px;width:100%;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.9);
+}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:520px){
+  .topbar{padding:8px 10px 6px}
+  .topbar-logo{font-size:.85rem}
+  .topbar-live{font-size:.5rem;gap:5px}
+  .topbar-live .lb{padding:2px 6px}
+  .view{padding:10px}
+  .game-hero{padding:12px}
+  .turn-display{font-size:1.8rem}
+  .pdf-stage{min-height:300px}
+  .draw-btn{padding:18px;font-size:1rem;letter-spacing:2px}
+  .section{padding:14px 14px 12px}
+  .section p,.section ul li{font-size:.86rem}
+}
 </style>
 </head>
 <body>
 
+<!-- ============ AUTH MODAL ============ -->
 <div id="authModal">
   <div class="modal-box">
     <div style="font-size:2.5rem;margin-bottom:8px">🔞</div>
     <h2 style="color:var(--accent);font-size:1.3rem;margin-bottom:6px">Vstupné overenie (18+)</h2>
-    <p style="color:var(--muted);font-size:0.8rem;margin-bottom:16px">Obsah je chránený. Zadajte štvorciferné heslo.</p>
+    <p style="color:var(--muted);font-size:.8rem;margin-bottom:16px">Obsah je chránený. Zadajte štvorciferné heslo.</p>
     <input type="password" id="accessPassword" maxlength="4" inputmode="numeric" autocomplete="off"
       placeholder="••••"
-      style="width:100%;padding:10px;background:#070410;border:1px solid var(--border);border-radius:10px;color:#fff;margin-bottom:12px;outline:none;text-align:center;font-size:1.3rem;letter-spacing:6px">
+      style="width:100%;padding:10px;background:#070410;border:1px solid var(--border);border-radius:10px;color:#fff;margin-bottom:12px;outline:none;text-align:center;font-size:1.3rem;letter-spacing:6px;font-family:inherit">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;justify-content:center">
       <input type="checkbox" id="ageCheck" style="accent-color:var(--accent);width:16px;height:16px">
-      <label for="ageCheck" style="font-size:0.75rem;color:var(--text);cursor:pointer">Mám 18 rokov alebo viac</label>
+      <label for="ageCheck" style="font-size:.75rem;color:var(--text);cursor:pointer">Mám 18 rokov alebo viac</label>
     </div>
-    <button id="authBtn" style="width:100%;padding:11px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;text-transform:uppercase;letter-spacing:1px">Vstúpiť</button>
-    <div id="authErr" style="color:#ef4444;font-size:0.75rem;margin-top:8px;display:none">Nesprávne heslo alebo nepotvrdený vek.</div>
+    <button id="authBtn"
+      style="width:100%;padding:11px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:inherit">Vstúpiť</button>
+    <div id="authErr"
+      style="color:#ef4444;font-size:.75rem;margin-top:8px;display:none">Nesprávne heslo alebo nepotvrdený vek.</div>
   </div>
 </div>
 
-<div class="app" id="app">
-  <div class="header">
-    <div class="logo">
-      <h1>Kompas tela</h1>
-      <span>The Human Maintenance · Erotická Matrica</span>
-    </div>
-  </div>
+<!-- ============ APP ============ -->
+<div class="app">
 
-  <div class="live-bar">
-    <div class="lbitem"><span class="pulse"></span><span class="lb-lbl">Teraz</span><span class="lb-val" id="lbClock">--:--</span></div>
-    <div class="lbitem"><span class="lb-lbl">Planéta dňa</span><span class="lb-val" id="lbDay">—</span></div>
-    <div class="lbitem"><span class="lb-lbl">Planétová hodina</span><span class="lb-val" id="lbHour">—</span></div>
-    <div class="lbitem"><span class="lb-lbl">Mesiac</span><span class="lb-val" id="lbMoon">—</span></div>
-  </div>
-
-  <div class="info-box">
-    <strong>🜂 Živý kompas tela & Erotická matrica</strong>
-    <p>Zadajte údaje oboch osôb. Algoritmus prepojí planetárny čas, mená a narodenie, vygeneruje unikátne rituály a odomkne interaktívnu hru s losovaním polôh z PDF.</p>
-  </div>
-
-  <div id="formSection">
-    <div class="person-block" data-p="A">
-      <div class="person-title">🜂 Osoba A</div>
-      <div class="form-group">
-        <label>Celé meno a priezvisko</label>
-        <input type="text" id="nameA" placeholder="napr. Július Kováč" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label>Dátum narodenia</label>
-        <div class="date-row">
-          <select id="dayA"><option value="">Deň</option></select>
-          <select id="monA">
-            <option value="">Mes.</option>
-            <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
-            <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
-            <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
-            <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
-          </select>
-          <select id="yearA"><option value="">Rok</option></select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Telesná polarita</label>
-        <div class="polarity" data-p="A">
-          <button class="active" data-g="m">⚔ Muž</button>
-          <button data-g="f">⚘ Žena</button>
-          <button data-g="x">⚧ Iná</button>
-        </div>
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="topbar-logo" id="topLogo">🔥 HRA · KOMPAS</div>
+      <div class="topbar-live">
+        <div class="lb"><span class="dot"></span><span class="val" id="lbClock">--:--</span></div>
+        <div class="lb"><span class="lbl">Pl.</span><span class="val" id="lbHour">—</span></div>
+        <div class="lb"><span class="lbl">Mes.</span><span class="val" id="lbMoon">—</span></div>
       </div>
     </div>
-
-    <div class="person-block" data-p="B">
-      <div class="person-title">🜄 Osoba B</div>
-      <div class="form-group">
-        <label>Celé meno a priezvisko</label>
-        <input type="text" id="nameB" placeholder="napr. Jana Kováčová" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label>Dátum narodenia</label>
-        <div class="date-row">
-          <select id="dayB"><option value="">Deň</option></select>
-          <select id="monB">
-            <option value="">Mes.</option>
-            <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
-            <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
-            <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
-            <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
-          </select>
-          <select id="yearB"><option value="">Rok</option></select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Telesná polarita</label>
-        <div class="polarity" data-p="B">
-          <button data-g="m">⚔ Muž</button>
-          <button class="active" data-g="f">⚘ Žena</button>
-          <button data-g="x">⚧ Iná</button>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-primary" id="btnRun">🜂 Odhaliť kompas & spustiť hru 🜄</button>
   </div>
 
-  <div class="results" id="results">
-    <div class="deco">⸎ ⸎ ⸎</div>
-    <div id="out"></div>
+  <!-- MAIN SCROLL -->
+  <div class="main" id="mainScroll">
 
-    <div class="game-box">
-      <div style="margin-bottom:10px">
-        <h3 style="color:var(--accent);font-size:0.9rem;font-weight:800;letter-spacing:1px">🔥 Žrebovacia hra polôh (PDF z repa)</h3>
+    <!-- ============ VIEW 1: HRA ============ -->
+    <div class="view active" id="viewGame">
+
+      <div class="game-hero">
+        <h2>Na ťahu</h2>
+        <div class="turn-display" id="turnDisplay">ONA</div>
+        <div class="turn-sub" id="turnSub">Stlač tlačidlo a vylosuj polohu</div>
       </div>
 
-      <div class="game-grid">
-        <div>
-          <div id="turnBadge" class="turn-badge">Na ťahu: <span id="turnName">Ona</span></div>
-          <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;text-align:center" id="pageInfo">Strana: — / —</div>
+      <div class="pdf-stage">
+        <div class="page-badge" id="pageBadge">— / —</div>
+        <div id="pdfLoading" class="pdf-loading">
+          <div class="spin"></div>
+          <div id="loadMsg">Načítavam PDF z repozitára...</div>
+          <div id="loadErr" class="err" style="display:none"></div>
+        </div>
+        <canvas id="pdfCanvas" style="display:none"></canvas>
+      </div>
 
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <button id="drawBtn" class="btn-primary" style="margin-top:0;padding:12px;font-size:0.85rem" disabled>🎲 Vylosovať polohu</button>
-            <button id="autoToggleBtn" class="btn-act btn-refresh" style="width:100%;padding:10px">⏱ Auto (4 min): VYP</button>
+      <div class="draw-wrap">
+        <button class="draw-btn" id="drawBtn" disabled>🎲 VYLOOSOVAŤ</button>
+      </div>
+
+      <div class="mini-actions">
+        <button class="btn-soft" id="autoToggleBtn">⏱ AUTO 4 min</button>
+        <button class="btn-soft reset" id="shuffleTurnBtn">🔄 Vymeň kolo</button>
+      </div>
+
+    </div>
+
+    <!-- ============ VIEW 2: KOMPAS ============ -->
+    <div class="view" id="viewKompas">
+
+      <div class="info-box">
+        <strong>🜂 Kompas tela · Kompatibilita</strong>
+        <p>Zadajte údaje oboch osôb. Algoritmus prepojí planetárny čas, mená a narodenie a vygeneruje unikátny kompatibilný profil — rituály, polohy, experimenty a chémiu vášho spojenia.</p>
+      </div>
+
+      <div id="formSection">
+        <div class="person-block" data-p="A">
+          <div class="person-title">🜂 Osoba A</div>
+          <div class="form-group">
+            <label>Celé meno a priezvisko</label>
+            <input type="text" id="nameA" placeholder="napr. Július Kováč" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Dátum narodenia</label>
+            <div class="date-row">
+              <select id="dayA"><option value="">Deň</option></select>
+              <select id="monA">
+                <option value="">Mes.</option>
+                <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+                <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
+                <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
+                <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
+              </select>
+              <select id="yearA"><option value="">Rok</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Telesná polarita</label>
+            <div class="polarity" data-p="A">
+              <button type="button" class="active" data-g="m">⚔ Muž</button>
+              <button type="button" data-g="f">⚘ Žena</button>
+              <button type="button" data-g="x">⚧ Iná</button>
+            </div>
           </div>
         </div>
 
-        <div class="pdf-viewer-container">
-          <div id="placeholderText" class="pdf-loading">
-            <div class="spin"></div>
-            <div id="loadMsg">Načítavam PDF z repozitára...</div>
+        <div class="person-block" data-p="B">
+          <div class="person-title">🜄 Osoba B</div>
+          <div class="form-group">
+            <label>Celé meno a priezvisko</label>
+            <input type="text" id="nameB" placeholder="napr. Jana Kováčová" autocomplete="off">
           </div>
-          <canvas id="pdfCanvas" style="display:none"></canvas>
+          <div class="form-group">
+            <label>Dátum narodenia</label>
+            <div class="date-row">
+              <select id="dayB"><option value="">Deň</option></select>
+              <select id="monB">
+                <option value="">Mes.</option>
+                <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+                <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
+                <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
+                <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
+              </select>
+              <select id="yearB"><option value="">Rok</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Telesná polarita</label>
+            <div class="polarity" data-p="B">
+              <button type="button" data-g="m">⚔ Muž</button>
+              <button type="button" class="active" data-g="f">⚘ Žena</button>
+              <button type="button" data-g="x">⚧ Iná</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btnRun">🜂 Vypočítať kompatibilitu 🜄</button>
+      </div>
+
+      <div class="results" id="results">
+        <div class="deco">⸎ ⸎ ⸎</div>
+        <div id="out"></div>
+        <div class="mini-actions" style="margin-top:14px">
+          <button class="btn-soft reset" id="btnRefresh">🎲 Pretrasť matrice</button>
+          <button class="btn-soft" id="btnRestart">↺ Nový pár</button>
         </div>
       </div>
+
+      <div class="footer"><strong>Grizzly Courage</strong> · The Human Maintenance · Ad Aeternum</div>
+
     </div>
 
-    <div class="action-row" style="margin-top:14px">
-      <button class="btn-act btn-refresh" id="btnRefresh">🎲 Pretrasť matrice</button>
-      <button class="btn-act btn-restart" id="btnRestart">↺ Nový pár</button>
-    </div>
   </div>
 
-  <div class="footer"><strong>Grizzly Courage</strong> · The Human Maintenance · Ad Aeternum</div>
+  <!-- BOTTOM NAV -->
+  <div class="navbar">
+    <button class="nav-btn active" data-view="game">
+      <span class="ico">🔥</span>
+      <span>Hra</span>
+    </button>
+    <button class="nav-btn" data-view="kompas">
+      <span class="ico">🜂</span>
+      <span>Kompas</span>
+    </button>
+  </div>
+
 </div>
 
+<!-- ============ PDF.JS — musí byť PRED hlavným skriptom ============ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
   if (window.pdfjsLib) {
@@ -301,136 +568,209 @@ opacity:.3;letter-spacing:8px;text-align:center;margin:4px 0 10px}
   }
 </script>
 
+<!-- ============ HLAVNÝ SKRIPT ============ -->
 <script>
 (function(){
 'use strict';
-const $ = id => document.getElementById(id);
+
+var $ = function(id){ return document.getElementById(id); };
 
 /* =========================================================
-   PDF JE V REPOZITÁRI AKO: positions.pdf
+   PDF V REPOZITÁRI
 ========================================================= */
-const PDF_URL = './positions.pdf';
+var PDF_URL = './positions.pdf';
 
 /* ---------- ZVUK ---------- */
-let audioCtx = null;
-function initAudio(){ if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } }
-function playTone(freq,type,dur){
+var audioCtx = null;
+function initAudio(){
+  if(!audioCtx){
+    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+  }
+}
+function playTone(freq, type, dur){
   try{
-    initAudio(); if(!audioCtx) return;
-    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-    o.type = type; o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    initAudio();
+    if(!audioCtx) return;
+    var o = audioCtx.createOscillator();
+    var g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, audioCtx.currentTime);
     g.gain.setValueAtTime(0.15, audioCtx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(); o.stop(audioCtx.currentTime + dur);
+    o.connect(g);
+    g.connect(audioCtx.destination);
+    o.start();
+    o.stop(audioCtx.currentTime + dur);
   }catch(e){}
 }
-const sClick = () => playTone(440,'sine',0.08);
-const sTick  = () => playTone(600,'triangle',0.05);
-const sWin   = () => { playTone(523.25,'sine',0.15); setTimeout(()=>playTone(659.25,'sine',0.15),150); setTimeout(()=>playTone(783.99,'sine',0.3),300); };
+function sClick(){ playTone(440, 'sine', 0.08); }
+function sTick(){ playTone(600, 'triangle', 0.05); }
+function sWin(){
+  playTone(523.25, 'sine', 0.15);
+  setTimeout(function(){ playTone(659.25, 'sine', 0.15); }, 150);
+  setTimeout(function(){ playTone(783.99, 'sine', 0.3); }, 300);
+}
 
 /* ---------- AUTH ---------- */
-const AUTH_KEY = 'kmpt_auth_v1';
+var AUTH_KEY = 'kmpt_auth_v1';
 function isAuthed(){
-  try{ const a = JSON.parse(localStorage.getItem(AUTH_KEY)||'null'); if(!a) return false;
-    return (Date.now()-a.t) < 30*24*60*60*1000; }catch(e){ return false; }
+  try{
+    var a = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
+    if(!a) return false;
+    return (Date.now() - a.t) < 30 * 24 * 60 * 60 * 1000;
+  }catch(e){ return false; }
 }
-function setAuthed(){ try{ localStorage.setItem(AUTH_KEY, JSON.stringify({t:Date.now()})); }catch(e){} }
+function setAuthed(){
+  try{ localStorage.setItem(AUTH_KEY, JSON.stringify({t: Date.now()})); }catch(e){}
+}
 
 if(isAuthed()) $('authModal').style.display = 'none';
 
-$('authBtn').addEventListener('click', () => {
-  const pass = $('accessPassword').value.trim();
-  const age = $('ageCheck').checked;
+$('authBtn').addEventListener('click', function(){
+  var pass = $('accessPassword').value.trim();
+  var age = $('ageCheck').checked;
   if(pass === '0007' && age){
-    setAuthed(); sWin(); $('authModal').style.display = 'none';
+    setAuthed();
+    sWin();
+    $('authModal').style.display = 'none';
   } else {
-    sClick(); $('authErr').style.display = 'block';
+    sClick();
+    $('authErr').style.display = 'block';
   }
 });
-$('accessPassword').addEventListener('keydown', e => { if(e.key === 'Enter') $('authBtn').click(); });
-
-/* ---------- POPULÁCIA DÁTUMOV ---------- */
-const curYear = new Date().getFullYear();
-for(let i = 1; i <= 31; i++){
-  $('dayA').innerHTML += `<option value="${i}">${i}</option>`;
-  $('dayB').innerHTML += `<option value="${i}">${i}</option>`;
-}
-for(let y = curYear; y >= 1930; y--){
-  $('yearA').innerHTML += `<option value="${y}">${y}</option>`;
-  $('yearB').innerHTML += `<option value="${y}">${y}</option>`;
-}
-
-/* ---------- POLARITA ---------- */
-document.querySelectorAll('.polarity').forEach(el => {
-  el.addEventListener('click', e => {
-    if(e.target.tagName === 'BUTTON'){
-      sClick();
-      el.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-    }
-  });
+$('accessPassword').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') $('authBtn').click();
 });
 
-/* ---------- PLANETÁRNY A LUNÁRNY ČAS ---------- */
-const CHALDEAN = ['Saturn','Jupiter','Mars','Slnko','Venuša','Merkúr','Mesiac'];
-const DAY_RULER_IDX = [3,6,2,5,1,4,0];
+/* ---------- NAVIGÁCIA ---------- */
+var navBtns = document.querySelectorAll('.nav-btn');
+for(var i = 0; i < navBtns.length; i++){
+  (function(btn){
+    btn.addEventListener('click', function(){
+      sClick();
+      var view = btn.getAttribute('data-view');
+      var allNav = document.querySelectorAll('.nav-btn');
+      for(var k = 0; k < allNav.length; k++){
+        allNav[k].classList.toggle('active', allNav[k] === btn);
+      }
+      var allViews = document.querySelectorAll('.view');
+      for(var j = 0; j < allViews.length; j++){ allViews[j].classList.remove('active'); }
+      if(view === 'game'){
+        $('viewGame').classList.add('active');
+        $('topLogo').textContent = '🔥 HRA · KOMPAS';
+      } else {
+        $('viewKompas').classList.add('active');
+        $('topLogo').textContent = '🜂 KOMPAS · HRA';
+      }
+      $('mainScroll').scrollTop = 0;
+    });
+  })(navBtns[i]);
+}
+
+/* ---------- POPULÁCIA DÁTUMOV ---------- */
+(function(){
+  var curYear = new Date().getFullYear();
+  var i, opt;
+  for(i = 1; i <= 31; i++){
+    opt = document.createElement('option'); opt.value = i; opt.textContent = i;
+    $('dayA').appendChild(opt.cloneNode(true));
+    $('dayB').appendChild(opt);
+  }
+  for(i = curYear; i >= 1930; i--){
+    opt = document.createElement('option'); opt.value = i; opt.textContent = i;
+    $('yearA').appendChild(opt.cloneNode(true));
+    $('yearB').appendChild(opt);
+  }
+})();
+
+/* ---------- POLARITA ---------- */
+(function(){
+  var poles = document.querySelectorAll('.polarity');
+  for(var i = 0; i < poles.length; i++){
+    (function(pol){
+      pol.addEventListener('click', function(e){
+        if(e.target.tagName === 'BUTTON'){
+          sClick();
+          var btns = pol.querySelectorAll('button');
+          for(var k = 0; k < btns.length; k++){ btns[k].classList.remove('active'); }
+          e.target.classList.add('active');
+        }
+      });
+    })(poles[i]);
+  }
+})();
+
+/* ---------- PLANETÁRNY + LUNÁRNY ČAS ---------- */
+var CHALDEAN = ['Saturn','Jupiter','Mars','Slnko','Venuša','Merkúr','Mesiac'];
+var DAY_RULER_IDX = [3,6,2,5,1,4,0];
 
 function getMoonPhase(date){
-  const syn = 29.530588853;
-  const known = Date.UTC(2000,0,6,18,14,0);
-  const days = (date.getTime()-known)/86400000;
-  let p = (days % syn) / syn; if(p < 0) p += 1; return p;
+  var syn = 29.530588853;
+  var known = Date.UTC(2000, 0, 6, 18, 14, 0);
+  var days = (date.getTime() - known) / 86400000;
+  var p = (days % syn) / syn;
+  if(p < 0) p += 1;
+  return p;
 }
 function moonName(p){
-  if(p<0.03) return {n:'Nov', e:'🌑'};
-  if(p<0.22) return {n:'Dorastajúci', e:'🌒'};
-  if(p<0.28) return {n:'1. Štvrť', e:'🌓'};
-  if(p<0.47) return {n:'Dorastajúci', e:'🌔'};
-  if(p<0.53) return {n:'Spln', e:'🌕'};
-  if(p<0.72) return {n:'Cúvajúci', e:'🌖'};
-  if(p<0.78) return {n:'Posl. Štvrť', e:'🌗'};
-  return {n:'Cúvajúci kosáčik', e:'🌘'};
+  if(p < 0.03) return {n:'Nov', e:'🌑'};
+  if(p < 0.22) return {n:'Dorast.', e:'🌒'};
+  if(p < 0.28) return {n:'1.Štvrť', e:'🌓'};
+  if(p < 0.47) return {n:'Dorast.', e:'🌔'};
+  if(p < 0.53) return {n:'Spln', e:'🌕'};
+  if(p < 0.72) return {n:'Cúvaj.', e:'🌖'};
+  if(p < 0.78) return {n:'Posl.Š.', e:'🌗'};
+  return {n:'Kosáčik', e:'🌘'};
 }
 function updateLiveBar(){
-  const now = new Date();
-  $('lbClock').textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-  const dayIdx = DAY_RULER_IDX[now.getDay()];
-  $('lbDay').textContent = CHALDEAN[dayIdx];
-  const hour = now.getHours() + now.getMinutes()/60;
-  const sinceSunrise = (hour - 6 + 24) % 24;
-  const hourIdx = Math.floor(sinceSunrise);
-  const planetIdx = (dayIdx + hourIdx) % 7;
+  var now = new Date();
+  $('lbClock').textContent =
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0');
+  var dayIdx = DAY_RULER_IDX[now.getDay()];
+  var hour = now.getHours() + now.getMinutes() / 60;
+  var sinceSunrise = (hour - 6 + 24) % 24;
+  var hourIdx = Math.floor(sinceSunrise);
+  var planetIdx = (dayIdx + hourIdx) % 7;
   $('lbHour').textContent = CHALDEAN[planetIdx];
-  const m = moonName(getMoonPhase(now));
+  var m = moonName(getMoonPhase(now));
   $('lbMoon').textContent = m.e + ' ' + m.n;
 }
-setInterval(updateLiveBar, 1000); updateLiveBar();
+setInterval(updateLiveBar, 1000);
+updateLiveBar();
 
 /* ---------- HASH + PRNG ---------- */
 function hash32(str){
-  let h = 2166136261>>>0;
-  for(let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
-  h ^= h>>>16; h = Math.imul(h, 2246822507); h ^= h>>>13; h = Math.imul(h, 3266489909); h ^= h>>>16;
-  return h>>>0;
+  var h = 2166136261 >>> 0;
+  for(var i = 0; i < str.length; i++){
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  h ^= h >>> 16; h = Math.imul(h, 2246822507);
+  h ^= h >>> 13; h = Math.imul(h, 3266489909);
+  h ^= h >>> 16;
+  return h >>> 0;
 }
 function mulberry32(a){
   return function(){
     a |= 0; a = a + 0x6D2B79F5 | 0;
-    let t = Math.imul(a ^ a>>>15, 1|a);
-    t = t + Math.imul(t ^ t>>>7, 61|t) ^ t;
-    return ((t ^ t>>>14) >>> 0) / 4294967296;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
   };
 }
-const pick  = (rng, arr) => arr[Math.floor(rng()*arr.length)];
+function pick(rng, arr){ return arr[Math.floor(rng() * arr.length)]; }
 function pickN(rng, arr, n){
-  const c = arr.slice(); const out = [];
-  for(let i = 0; i < n && c.length; i++){ out.push(c.splice(Math.floor(rng()*c.length),1)[0]); }
+  var c = arr.slice();
+  var out = [];
+  for(var i = 0; i < n && c.length; i++){
+    out.push(c.splice(Math.floor(rng() * c.length), 1)[0]);
+  }
   return out;
 }
 
 /* ---------- POOLY ---------- */
-const P_ATTRACT = [
+var P_ATTRACT = [
   'Tvoja prvá reakcia na tohto človeka nebola racionálna. Bola to <span class="hl2">prachová reakcia</span> – telo odpovedalo skôr než hlava.',
   'Keď ste sa prvý raz dotkli, niečo v tebe povedalo <em>toto už poznám</em>. Bunková pamäť nezabúda.',
   'Medzi vami je napätie, ktoré sa nedá vytrénovať. Buď tam je, alebo nie. A u vás <span class="hl4">je</span>.',
@@ -442,7 +782,7 @@ const P_ATTRACT = [
   'Venuša sa pri vašom prvom stretnutí nachádzala v priaznivom aspekte. Timing duší, nie náhoda.',
   'Keď sa jeden z vás pohne, druhý to cíti. Proprioceptívna synchronizácia — vzácna.'
 ];
-const P_CHEM = [
+var P_CHEM = [
   'Sexuálna chémia medzi vami je <span class="hl">elektrická</span> – telá sa hľadajú, keď sa mysle hádajú.',
   'Vaša chémia je <span class="hl">tekutá</span> – pomalá, hlboká, nie je to o výkone, je to o plynutí.',
   'Chémia je <span class="hl">ohnivá</span> – rýchla, divoká, predohra je krátka a vyvrcholenie explozívne.',
@@ -452,7 +792,7 @@ const P_CHEM = [
   'Chémia je <span class="hl">búrková</span> – intenzívna, krátka, ničivá. Po nej ste vyčerpaní ale živí.',
   'Chémia je <span class="hl">bylinková</span> – vône, dotyky, malé rituály. Nie je divoká, je presná.'
 ];
-const P_RITUAL = [
+var P_RITUAL = [
   'babylonskej <em>Ištarinej komnaty</em> – svetlo sviečok, vône kadidla, pomalé zvodné dotyky.',
   'tantrických škôl <em>Kašmíru</em> – dlhá predohra, vnímanie dychu a spoločné pulzovanie.',
   'taoistických <em>Údolí jantáru</em> – pomalý dotyk, cirkulácia energie bez ponáhľania.',
@@ -462,7 +802,7 @@ const P_RITUAL = [
   'rímskych <em>Bakchanálií</em> – divokosť, hrozno, hlasný smiech, prevrátený stôl.',
   'perzských <em>Sufistických nocí</em> – Rumiho poézia, hudba, extáza, večná túžba.'
 ];
-const P_POSITIONS = [
+var P_POSITIONS = [
   'Nebeská lastúra (Samputa) — obaja na boku, telá zrkadlovo, nohy prepletené.',
   'Divoká kobyla (Vajroli) — ona na ňom, čelom k sebe, ruky zopnuté za hlavou.',
   'Čierna včela (Bhramara) — zboku, ona vpredu, noha zohnutá. Pomalý, hlboký, dlhý.',
@@ -480,7 +820,7 @@ const P_POSITIONS = [
   'Stĺp (Stambha) — ona v stoji, on kľačí. Ona vedie, on slúži. Rituálne.',
   'Otočený kvet (Viparīta Padma) — ona v lotose, on na chrbte, vstúpi zospodu.'
 ];
-const P_HOURS = [
+var P_HOURS = [
   'Ranné svitanie (5:00–6:30) — testosterón najvyšší, divoké, inštinktívne.',
   'Ráno (7:00–9:00) — po káve, pred prácou. Rýchlovka, ktorá nakopne.',
   'Popoludnie (14:00–16:00) — vrchol telesnej teploty, ideálne na predohru.',
@@ -490,7 +830,7 @@ const P_HOURS = [
   'Daždivé popoludnie — zvuk dažďa zvyšuje oxytocin. Pomalé, teplé, bezpečné.',
   'Večer po hádke — sex, ktorý zmieruje. Divoký, ale liečivý.'
 ];
-const P_EXP = [
+var P_EXP = [
   'Hra moci: jeden je pán, druhý sluha. Dohodnite hranice. Vymeňte role.',
   'Tantrická seansa: 90 minút bez orgazmu. Len spojenie, dýchanie, oči.',
   'Slovná hra: počas milovania si šepkajte, čo cítite. Bez hanby.',
@@ -507,173 +847,198 @@ const P_EXP = [
   'Hovorte o sexe 30 minút pred. Bez hanby. Čo chcete, čo nie.'
 ];
 
-/* ---------- HLAVNÉ SPUSTENIE ---------- */
-$('btnRun').addEventListener('click', () => {
+/* =========================================================
+   KOMPAS VÝPOČET
+========================================================= */
+$('btnRun').addEventListener('click', function(){
   sClick();
-  const nA = $('nameA').value.trim();
-  const nB = $('nameB').value.trim();
-  const dA = $('dayA').value, mA = $('monA').value, yA = $('yearA').value;
-  const dB = $('dayB').value, mB = $('monB').value, yB = $('yearB').value;
+  var nA = $('nameA').value.trim();
+  var nB = $('nameB').value.trim();
+  var dA = $('dayA').value, mA = $('monA').value, yA = $('yearA').value;
+  var dB = $('dayB').value, mB = $('monB').value, yB = $('yearB').value;
 
   if(!nA || !nB || !dA || !mA || !yA || !dB || !mB || !yB){
     alert('Prosím, vyplňte obe mená a dátumy narodenia.');
     return;
   }
 
-  const now = new Date();
-  const seed = hash32(nA+'|'+nB+'|'+yA+mA+dA+'|'+yB+mB+dB+'|'+now.toISOString().slice(0,13));
-  const rng = mulberry32(seed);
-  const m = moonName(getMoonPhase(now));
+  var now = new Date();
+  var seed = hash32(nA + '|' + nB + '|' + yA + mA + dA + '|' + yB + mB + dB + '|' + now.toISOString().slice(0,13));
+  var rng = mulberry32(seed);
+  var m = moonName(getMoonPhase(now));
 
-  const pos = pickN(rng, P_POSITIONS, 3);
-  const exp = pickN(rng, P_EXP, 3);
+  var pos = pickN(rng, P_POSITIONS, 3);
+  var exp = pickN(rng, P_EXP, 3);
 
-  const out = `
-    <div class="section">
-      <div class="head"><h3>🜂 Prvotná príťažlivosť tiel</h3><span class="hl2">${nA} & ${nB}</span></div>
-      <p>${pick(rng, P_ATTRACT)}</p>
-      <p>${pick(rng, P_ATTRACT)}</p>
-    </div>
-    <div class="section s-accent2">
-      <div class="head"><h3>🜄 Sexuálna chémia & Rezonancia</h3><span class="hl2">Telesná matrica</span></div>
-      <p>${pick(rng, P_CHEM)}</p>
-      <p>${pick(rng, P_CHEM)}</p>
-    </div>
-    <div class="section s-purple">
-      <div class="head"><h3>🜁 Odporúčaný rituál predohry</h3><span class="hl3">Staroveká prax</span></div>
-      <p>Inšpirujte sa tradíciou ${pick(rng, P_RITUAL)}. Dnes večer venujte aspoň 30 minút dotykom bez ponáhľania.</p>
-    </div>
-    <div class="section s-gold">
-      <div class="head"><h3>🛏 Polohy napätia pre vás</h3><span class="hl4">Kámasútra</span></div>
-      <ul>${pos.map(x => `<li>${x}</li>`).join('')}</ul>
-    </div>
-    <div class="section s-accent2">
-      <div class="head"><h3>⏳ Posvätné hodiny</h3><span class="hl">${m.e} ${m.n}</span></div>
-      <p>${pick(rng, P_HOURS)}</p>
-      <p>${pick(rng, P_HOURS)}</p>
-    </div>
-    <div class="section s-jade">
-      <div class="head"><h3>🎭 Experimenty</h3><span class="hl5">Rozšírenie tela</span></div>
-      <ul>${exp.map(x => `<li>${x}</li>`).join('')}</ul>
-    </div>
-  `;
+  var out =
+    '<div class="section">' +
+      '<div class="head"><h3>🜂 Prvotná príťažlivosť tiel</h3><span class="hl2">' + nA + ' & ' + nB + '</span></div>' +
+      '<p>' + pick(rng, P_ATTRACT) + '</p>' +
+      '<p>' + pick(rng, P_ATTRACT) + '</p>' +
+    '</div>' +
+    '<div class="section s-accent2">' +
+      '<div class="head"><h3>🜄 Sexuálna chémia</h3><span class="hl2">Telesná matrica</span></div>' +
+      '<p>' + pick(rng, P_CHEM) + '</p>' +
+      '<p>' + pick(rng, P_CHEM) + '</p>' +
+    '</div>' +
+    '<div class="section s-purple">' +
+      '<div class="head"><h3>🜁 Rituál predohry</h3><span class="hl3">Staroveká prax</span></div>' +
+      '<p>Inšpirujte sa tradíciou ' + pick(rng, P_RITUAL) + '. Dnes večer venujte aspoň 30 minút dotykom bez ponáhľania.</p>' +
+    '</div>' +
+    '<div class="section s-gold">' +
+      '<div class="head"><h3>🛏 Polohy napätia</h3><span class="hl4">Kámasútra</span></div>' +
+      '<ul>' + pos.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>' +
+    '</div>' +
+    '<div class="section s-accent2">' +
+      '<div class="head"><h3>⏳ Posvätné hodiny</h3><span class="hl">' + m.e + ' ' + m.n + '</span></div>' +
+      '<p>' + pick(rng, P_HOURS) + '</p>' +
+      '<p>' + pick(rng, P_HOURS) + '</p>' +
+    '</div>' +
+    '<div class="section s-jade">' +
+      '<div class="head"><h3>🎭 Experimenty</h3><span class="hl5">Rozšírenie tela</span></div>' +
+      '<ul>' + exp.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>' +
+    '</div>';
 
   $('out').innerHTML = out;
   $('formSection').style.display = 'none';
   $('results').classList.add('active');
   sWin();
-  window.scrollTo({top:200, behavior:'smooth'});
+  $('mainScroll').scrollTop = 0;
 });
 
-$('btnRestart').addEventListener('click', () => {
+$('btnRestart').addEventListener('click', function(){
   sClick();
   $('results').classList.remove('active');
   $('formSection').style.display = 'block';
-  window.scrollTo({top:0, behavior:'smooth'});
+  $('mainScroll').scrollTop = 0;
 });
 
-$('btnRefresh').addEventListener('click', () => {
+$('btnRefresh').addEventListener('click', function(){
   sClick();
   $('btnRun').click();
 });
 
 /* =========================================================
-   PDF LOGIKA
+   PDF GAME
 ========================================================= */
-let pdfDoc = null;
-let pageNum = 8;
-let scale = 1.3;
-let currentTurn = 'Ona';
-let autoInterval = null;
-let isAutoRunning = false;
+var pdfDoc = null;
+var pageNum = 8;
+var currentTurn = 'ONA';
+var autoInterval = null;
+var isAutoRunning = false;
 
-const canvas = $('pdfCanvas');
-const ctx = canvas.getContext('2d');
+var canvas = $('pdfCanvas');
+var ctx = canvas.getContext('2d');
 
-function updateTurnBadgeSimple(){
-  $('turnName').textContent = currentTurn;
-  const badge = $('turnBadge');
-  badge.classList.toggle('turn-on', currentTurn === 'On');
+function updateTurnDisplay(){
+  $('turnDisplay').textContent = currentTurn;
+  $('turnSub').textContent = (currentTurn === 'ONA')
+    ? 'Ona vyberá / vedie'
+    : 'On vyberá / vedie';
 }
 
 function renderPage(num){
-  pdfDoc.getPage(num).then(page => {
-    const viewport = page.getViewport({ scale });
+  if(!pdfDoc) return;
+  pdfDoc.getPage(num).then(function(page){
+    var stage = canvas.parentElement;
+    var maxW = stage.clientWidth - 32;
+    var maxH = 520;
+    var base = page.getViewport({ scale: 1 });
+    var s = Math.min(maxW / base.width, maxH / base.height);
+    var viewport = page.getViewport({ scale: s });
     canvas.height = viewport.height;
     canvas.width = viewport.width;
-    page.render({ canvasContext: ctx, viewport }).promise.then(() => {});
+    page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function(){});
   });
-  $('pageInfo').textContent = `Strana: ${num} / ${pdfDoc.numPages}`;
+  $('pageBadge').textContent = num + ' / ' + pdfDoc.numPages;
 }
 
 function executeDraw(){
   if(!pdfDoc) return;
   sTick();
-  let counter = 0;
-  const maxCount = 12;
-  const interval = setInterval(() => {
+  var counter = 0;
+  var maxCount = 12;
+  var interval = setInterval(function(){
     counter++;
-    const tempPage = Math.floor(Math.random() * (pdfDoc.numPages - 7)) + 8;
-    $('pageInfo').textContent = `Žrebujem stranu ${tempPage}...`;
+    var tempPage = Math.floor(Math.random() * (pdfDoc.numPages - 7)) + 8;
+    $('pageBadge').textContent = '🎲 ' + tempPage + '...';
     sTick();
     if(counter >= maxCount){
       clearInterval(interval);
       pageNum = Math.floor(Math.random() * (pdfDoc.numPages - 7)) + 8;
       renderPage(pageNum);
       sWin();
-      currentTurn = (currentTurn === 'Ona') ? 'On' : 'Ona';
-      updateTurnBadgeSimple();
+      currentTurn = (currentTurn === 'ONA') ? 'ON' : 'ONA';
+      updateTurnDisplay();
     }
   }, 70);
 }
 
-async function loadRepoPdf(){
+$('shuffleTurnBtn').addEventListener('click', function(){
+  sClick();
+  currentTurn = (currentTurn === 'ONA') ? 'ON' : 'ONA';
+  updateTurnDisplay();
+});
+
+function loadRepoPdf(){
   if(!window.pdfjsLib){
-    $('loadMsg').textContent = 'Chyba: PDF.js sa nenačítal. Skontrolujte pripojenie.';
+    $('loadMsg').textContent = 'Chyba: PDF.js sa nenačítal.';
+    $('loadErr').textContent = 'Skontrolujte pripojenie.';
+    $('loadErr').style.display = 'block';
     return;
   }
-  try{
-    $('loadMsg').textContent = 'Načítavam PDF z repozitára...';
-    const loadingTask = pdfjsLib.getDocument({ url: PDF_URL });
-    const doc = await loadingTask.promise;
+  $('loadMsg').textContent = 'Načítavam PDF z repozitára...';
+  var loadingTask = pdfjsLib.getDocument({ url: PDF_URL });
+  loadingTask.promise.then(function(doc){
     pdfDoc = doc;
-
     if(pdfDoc.numPages < 8){
-      $('loadMsg').textContent = 'PDF má menej ako 8 strán.';
+      $('loadErr').textContent = 'PDF má menej ako 8 strán.';
+      $('loadErr').style.display = 'block';
       return;
     }
-
     pageNum = 8;
-    $('placeholderText').style.display = 'none';
+    $('pdfLoading').style.display = 'none';
     canvas.style.display = 'block';
     $('drawBtn').removeAttribute('disabled');
     renderPage(pageNum);
-    updateTurnBadgeSimple();
-  }catch(err){
+    updateTurnDisplay();
+  }).catch(function(err){
     console.error(err);
-    $('loadMsg').innerHTML = 'Nepodarilo sa načítať PDF.<br><span style="font-size:.65rem">Skontrolujte, či je v repe súbor <b>positions.pdf</b>.</span>';
-  }
+    $('loadMsg').textContent = 'Nepodarilo sa načítať PDF.';
+    $('loadErr').innerHTML = 'Skontrolujte, či je v repe <b>positions.pdf</b>.';
+    $('loadErr').style.display = 'block';
+  });
 }
-
 setTimeout(loadRepoPdf, 300);
 
 $('drawBtn').addEventListener('click', executeDraw);
 
-$('autoToggleBtn').addEventListener('click', () => {
+$('autoToggleBtn').addEventListener('click', function(){
   sClick();
   isAutoRunning = !isAutoRunning;
+  var btn = $('autoToggleBtn');
   if(isAutoRunning){
-    $('autoToggleBtn').textContent = '⏱ Auto (4 min): ZAP';
-    $('autoToggleBtn').style.background = 'rgba(16,185,129,.2)';
-    $('autoToggleBtn').style.color = 'var(--jade)';
-    autoInterval = setInterval(executeDraw, 4*60*1000);
+    btn.classList.add('on');
+    btn.textContent = '⏱ AUTO 4 min · ZAP';
+    autoInterval = setInterval(executeDraw, 4 * 60 * 1000);
   } else {
-    $('autoToggleBtn').textContent = '⏱ Auto (4 min): VYP';
-    $('autoToggleBtn').style.background = '';
-    $('autoToggleBtn').style.color = '';
+    btn.classList.remove('on');
+    btn.textContent = '⏱ AUTO 4 min';
     clearInterval(autoInterval);
   }
 });
+
+/* ---------- REAGUJ NA RESIZE ---------- */
+var resizeTO = null;
+window.addEventListener('resize', function(){
+  clearTimeout(resizeTO);
+  resizeTO = setTimeout(function(){
+    if(pdfDoc) renderPage(pageNum);
+  }, 300);
+});
+
+/* ---------- INIT ---------- */
+updateTurnDisplay();
 
 })();
 </script>
