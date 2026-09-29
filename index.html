@@ -5,19 +5,25 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#070410">
 <meta name="robots" content="noindex, nofollow">
-<title>Kompas tela · Hra</title>
+<title>Kompas tela</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#070410;--card:#120a1e;--card2:#1a0e2a;--border:#2a1a44;
-  --text:#f0e6ff;--muted:#7a6a9a;
-  --accent:#e11d6e;--accent2:#f59e0b;--gold:#ffb800;
-  --jade:#10b981;--purple:#a855f7;--red:#ef4444;
-  --glow:rgba(225,29,110,.18);
+  --bg:#070410;
+  --card:#120a1e;
+  --border:#2a1a44;
+  --text:#f0e6ff;
+  --muted:#7a6a9a;
+  --accent:#e11d6e;
+  --accent2:#f59e0b;
+  --gold:#ffb800;
+  --jade:#10b981;
+  --purple:#a855f7;
+  --red:#ef4444;
 }
 html,body{height:100%;overscroll-behavior:none}
 body{
-  background:#000;
+  background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   -webkit-font-smoothing:antialiased;
@@ -25,216 +31,228 @@ body{
   font-size:15px;
 }
 
-/* =========================================================
-   LAYOUT
-========================================================= */
-.app{
+/* ========== APP ========== */
+#app{
   position:fixed;inset:0;
   display:flex;flex-direction:column;
 }
 
-/* =========================================================
-   GAME VIEW — PDF FULLSCREEN
-========================================================= */
-#viewGame{
-  position:fixed;inset:0;
-  display:none;
-  flex-direction:column;
-  background:#000;
-}
-#viewGame.active{display:flex}
-
-/* PDF container */
-#pdfContainer{
-  position:absolute;
-  top:0;left:0;right:0;bottom:0;
-  overflow-y:auto;
-  overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;
-  background:
-    radial-gradient(ellipse at center,rgba(30,10,45,.5) 0%,transparent 70%),
-    #000;
-  padding-top:calc(60px + env(safe-area-inset-top,0px));
-  padding-bottom:calc(150px + env(safe-area-inset-bottom,0px));
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-}
-#pdfContainer::-webkit-scrollbar{width:3px}
-#pdfContainer::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-
-#pdfCanvas{
-  display:block;
-  width:100%;
-  max-width:420px;
-  height:auto;
-  border-radius:12px;
-  object-fit:contain;
-  box-shadow:0 8px 40px rgba(0,0,0,.9);
-  margin:0 auto;
-  background:#000;
-}
-
-#pdfLoading{
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  color:var(--muted);
-  font-size:.8rem;
-  text-align:center;
-  line-height:1.6;
-  padding:20px;
-  width:100%;
-  max-width:340px;
-}
-#pdfLoading .spin{
-  display:inline-block;width:26px;height:26px;
-  border:2px solid var(--border);border-top-color:var(--accent);
-  border-radius:50%;animation:spin 1s linear infinite;
-  margin-bottom:12px;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-#pdfLoading .err{
-  color:var(--red);font-size:.72rem;margin-top:10px;
-  line-height:1.6;background:rgba(239,68,68,.08);
-  border:1px solid rgba(239,68,68,.25);
-  padding:10px;border-radius:8px;
-  text-align:left;
-}
-#pdfLoading .err b{color:var(--accent2)}
-.fallback-box{margin-top:14px}
-.fallback-label{
-  display:inline-block;padding:11px 20px;
-  background:linear-gradient(135deg,rgba(225,29,110,.2),rgba(168,85,247,.15));
-  border:1px solid var(--accent);border-radius:10px;
-  color:#fff;font-size:.75rem;font-weight:800;
-  letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;
-  transition:.2s;
-}
-.fallback-label:hover{background:rgba(225,29,110,.3);transform:translateY(-1px)}
-.fallback-label input{display:none}
-
-/* =========================================================
-   TOP OVERLAY
-========================================================= */
-.top-overlay{
-  position:absolute;
-  top:0;left:0;right:0;
-  padding:8px 10px;
-  padding-top:calc(8px + env(safe-area-inset-top,0px));
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+/* ========== HEADER ========== */
+#header{
+  flex-shrink:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 12px;
+  padding-top:calc(10px + env(safe-area-inset-top,0px));
+  background:linear-gradient(180deg,rgba(18,10,30,.98),rgba(18,10,30,.9));
+  border-bottom:1px solid var(--border);
   gap:8px;
-  background:linear-gradient(180deg,rgba(7,4,16,.9) 0%,rgba(7,4,16,.65) 60%,transparent 100%);
-  pointer-events:none;
-  z-index:20;
+  z-index:100;
 }
-.top-overlay > *{pointer-events:auto}
-.top-left{
-  display:flex;gap:6px;align-items:center;
-  min-width:0;flex:1;
-}
-.pill{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:5px 10px;
-  background:rgba(7,4,16,.8);
-  border:1px solid var(--border);
-  border-radius:20px;
-  font-family:ui-monospace,monospace;
-  font-size:.58rem;font-weight:800;
-  color:var(--gold);letter-spacing:1px;
+#headerLogo{
+  font-size:.85rem;font-weight:900;letter-spacing:1.5px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
   white-space:nowrap;
-  backdrop-filter:blur(8px);
 }
-.pill .dot{
-  width:6px;height:6px;border-radius:50%;
-  background:var(--accent2);
-  box-shadow:0 0 8px var(--accent2);
-  animation:lp 1.6s ease-in-out infinite;
-}
-@keyframes lp{50%{opacity:.3;transform:scale(.7)}}
-.pill.mode-pill{
-  color:var(--accent);font-family:inherit;font-size:.55rem;
-  letter-spacing:1.2px;text-transform:uppercase;
-}
-
-.top-right{
+#headerActions{
   display:flex;gap:6px;align-items:center;
 }
 .icon-btn{
   width:38px;height:38px;
   border-radius:50%;
   border:1px solid var(--border);
-  background:rgba(7,4,16,.85);
-  color:var(--text);font-size:1.05rem;
-  cursor:pointer;transition:.2s;
+  background:rgba(7,4,16,.7);
+  color:var(--text);
+  font-size:1.05rem;
+  cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  backdrop-filter:blur(8px);
   font-family:inherit;
+  transition:.2s;
   flex-shrink:0;
 }
 .icon-btn:active{transform:scale(.92);background:rgba(225,29,110,.2)}
 
-/* =========================================================
-   BOTTOM OVERLAY
-========================================================= */
-.bottom-overlay{
+/* ========== MAIN ========== */
+#main{
+  flex:1;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ========== SCREENS ========== */
+.screen{
+  position:absolute;inset:0;
+  display:none;
+  flex-direction:column;
+}
+.screen.active{display:flex}
+
+/* ========== GAME SCREEN ========== */
+#gameScreen{
+  background:#000;
+}
+
+#pdfArea{
+  flex:1;
+  position:relative;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding:10px;
+}
+#pdfArea::-webkit-scrollbar{width:3px}
+#pdfArea::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+#pdfCanvas{
+  display:none;
+  max-width:100%;
+  width:auto;
+  height:auto;
+  border-radius:14px;
+  box-shadow:0 10px 40px rgba(0,0,0,.9);
+  margin:0 auto;
+}
+
+/* Loading */
+#pdfLoader{
   position:absolute;
-  bottom:0;left:0;right:0;
-  padding:14px 12px;
-  padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));
-  background:linear-gradient(0deg,rgba(7,4,16,.96) 0%,rgba(7,4,16,.9) 60%,transparent 100%);
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  padding:24px;
+  width:100%;
+  max-width:340px;
+  color:var(--muted);
+  font-size:.78rem;
+  line-height:1.6;
+}
+#pdfLoader .spin{
+  width:28px;height:28px;
+  border:2px solid var(--border);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:0 auto 14px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+#pdfLoader .err{
+  color:var(--red);
+  font-size:.7rem;
+  margin-top:12px;
+  padding:10px;
+  background:rgba(239,68,68,.08);
+  border:1px solid rgba(239,68,68,.25);
+  border-radius:8px;
+  text-align:left;
+  line-height:1.5;
+  display:none;
+}
+#pdfLoader .err b{color:var(--accent2)}
+
+.upload-btn{
+  display:inline-block;
+  margin-top:14px;
+  padding:12px 22px;
+  background:linear-gradient(135deg,rgba(225,29,110,.25),rgba(168,85,247,.2));
+  border:1px solid var(--accent);
+  border-radius:10px;
+  color:#fff;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  cursor:pointer;
+  font-family:inherit;
+  transition:.2s;
+  display:none;
+}
+.upload-btn:hover{background:rgba(225,29,110,.35)}
+.upload-btn input{display:none}
+
+/* Bottom bar (game) */
+#gameBottom{
+  flex-shrink:0;
+  padding:12px 12px;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(0deg,rgba(7,4,16,.98),rgba(7,4,16,.92));
+  border-top:1px solid var(--border);
   display:flex;
   flex-direction:column;
   gap:10px;
-  z-index:20;
-  pointer-events:none;
+  z-index:50;
 }
-.bottom-overlay > *{pointer-events:auto}
 
-.turn-row{
+#gameStatus{
   display:flex;
-  justify-content:center;
+  justify-content:space-between;
   align-items:center;
   gap:8px;
 }
-.turn-pill{
+.status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 12px;
+  background:rgba(7,4,16,.8);
+  border:1px solid var(--border);
+  border-radius:20px;
+  font-family:ui-monospace,monospace;
+  font-size:.6rem;
+  font-weight:800;
+  color:var(--gold);
+  letter-spacing:1px;
+  white-space:nowrap;
+}
+.status-pill .dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--accent2);
+  box-shadow:0 0 8px var(--accent2);
+  animation:pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{50%{opacity:.3;transform:scale(.7)}}
+
+#turnBtn{
   display:inline-flex;
   align-items:center;
   gap:6px;
-  padding:8px 18px;
+  padding:7px 16px;
   border-radius:24px;
-  background:linear-gradient(135deg,rgba(225,29,110,.22),rgba(168,85,247,.15));
+  background:linear-gradient(135deg,rgba(225,29,110,.25),rgba(168,85,247,.18));
   border:1px solid var(--accent);
   color:#fff;
-  font-size:.78rem;font-weight:900;
-  letter-spacing:2px;text-transform:uppercase;
-  box-shadow:0 0 20px rgba(225,29,110,.3);
-  font-family:inherit;
+  font-size:.72rem;
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
   cursor:pointer;
+  font-family:inherit;
   transition:.2s;
+  white-space:nowrap;
 }
-.turn-pill:active{transform:scale(.96)}
-.turn-pill .ico{font-size:.95rem;line-height:1}
+#turnBtn:active{transform:scale(.95)}
+#turnBtn .ico{font-size:.9rem}
 
-.draw-mega{
+#drawBtn{
   width:100%;
-  padding:20px;
+  padding:18px;
   border:none;
-  border-radius:18px;
+  border-radius:16px;
   background:linear-gradient(135deg,#e11d6e 0%,#a855f7 50%,#f59e0b 100%);
   background-size:200% 200%;
   color:#fff;
-  font-size:1.15rem;
+  font-size:1.1rem;
   font-weight:900;
   letter-spacing:3px;
   text-transform:uppercase;
   cursor:pointer;
-  transition:transform .2s;
-  box-shadow:0 8px 30px rgba(225,29,110,.5),0 0 60px rgba(225,29,110,.3);
-  animation:sg 6s ease infinite;
+  transition:transform .15s;
+  box-shadow:0 6px 25px rgba(225,29,110,.45),0 0 50px rgba(225,29,110,.25);
+  animation:gradient 6s ease infinite;
   font-family:inherit;
   position:relative;
   overflow:hidden;
@@ -243,151 +261,204 @@ body{
   justify-content:center;
   gap:10px;
 }
-.draw-mega::before{
+#drawBtn::before{
   content:'';
   position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.2) 50%,transparent 100%);
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.22) 50%,transparent 100%);
   transform:translateX(-100%);
   animation:shine 3s ease-in-out infinite;
 }
 @keyframes shine{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
-@keyframes sg{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.draw-mega:active{transform:scale(.97)}
-.draw-mega:disabled{
-  opacity:.4;cursor:not-allowed;
-  animation:none;box-shadow:none;
-  background:rgba(255,255,255,.1);
-}
-.draw-mega:disabled::before{display:none}
-.draw-mega .ico{font-size:1.4rem;line-height:1}
+@keyframes gradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+#drawBtn:active{transform:scale(.98)}
+#drawBtn:disabled{opacity:.4;cursor:not-allowed;animation:none;box-shadow:none;background:rgba(255,255,255,.1)}
+#drawBtn:disabled::before{display:none}
+#drawBtn .ico{font-size:1.35rem}
 
-/* =========================================================
-   KOMPAS VIEW
-========================================================= */
-#viewKompas{
-  position:fixed;inset:0;
-  display:none;
-  flex-direction:column;
+/* ========== KOMPAS SCREEN ========== */
+#kompasScreen{
+  background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
-  background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;
-  padding:10px;
-  padding-top:calc(10px + env(safe-area-inset-top,0px));
-  padding-bottom:calc(70px + env(safe-area-inset-bottom,0px));
+  padding:12px;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
 }
-#viewKompas.active{display:flex}
+#kompasScreen.active{display:block}
 
 .info-box{
   background:linear-gradient(135deg,rgba(225,29,110,.08),rgba(168,85,247,.04));
-  border:1px solid var(--border);border-left:3px solid var(--accent);
-  border-radius:11px;padding:11px 14px;
-  font-size:.75rem;line-height:1.55;color:#e2d8f0;
-  margin-bottom:10px;
+  border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:.75rem;
+  line-height:1.55;
+  color:#e2d8f0;
+  margin-bottom:14px;
 }
 .info-box strong{
-  color:var(--accent2);text-transform:uppercase;
-  letter-spacing:1px;display:block;margin-bottom:3px;font-size:.62rem;
+  color:var(--accent2);
+  text-transform:uppercase;
+  letter-spacing:1px;
+  display:block;
+  margin-bottom:4px;
+  font-size:.62rem;
 }
 
 .person-block{
-  background:rgba(255,255,255,.02);border:1px solid var(--border);
-  border-radius:11px;padding:12px 12px 4px;margin-bottom:10px;
-  position:relative;overflow:hidden;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 14px 6px;
+  margin-bottom:12px;
+  position:relative;
+  overflow:hidden;
 }
 .person-block::before{
-  content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  content:'';
+  position:absolute;top:0;left:0;width:3px;height:100%;
   background:linear-gradient(180deg,var(--accent),var(--purple));
 }
 .person-block[data-p="B"]::before{
   background:linear-gradient(180deg,var(--purple),var(--accent2));
 }
 .person-title{
-  font-size:.62rem;font-weight:800;text-transform:uppercase;
-  letter-spacing:1.5px;color:var(--accent);margin-bottom:6px;
+  font-size:.62rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  color:var(--accent);
+  margin-bottom:8px;
 }
 .person-block[data-p="B"] .person-title{color:var(--purple)}
 
-.form-group{margin-bottom:8px}
+.form-group{margin-bottom:10px}
 .form-group label{
-  display:block;font-size:.55rem;text-transform:uppercase;
-  letter-spacing:1.2px;color:var(--muted);margin-bottom:3px;font-weight:600;
+  display:block;
+  font-size:.55rem;
+  text-transform:uppercase;
+  letter-spacing:1.2px;
+  color:var(--muted);
+  margin-bottom:4px;
+  font-weight:600;
 }
 .form-group input{
-  width:100%;padding:9px 11px;background:#0a0518;
-  border:1px solid var(--border);border-radius:9px;
-  color:var(--text);font-size:.85rem;
-  transition:.3s;outline:none;font-family:inherit;
+  width:100%;
+  padding:10px 12px;
+  background:#0a0518;
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+  font-size:.88rem;
+  transition:.3s;
+  outline:none;
+  font-family:inherit;
 }
 .form-group input:focus{
-  border-color:var(--accent);box-shadow:0 0 0 3px var(--glow);
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(225,29,110,.15);
 }
-.date-row{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:5px}
+.date-row{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:6px}
 .date-row select{
-  padding:8px 4px;background:#0a0518;border:1px solid var(--border);
-  border-radius:9px;color:var(--text);font-size:.78rem;
-  outline:none;appearance:none;-webkit-appearance:none;
-  cursor:pointer;font-family:inherit;
+  padding:9px 5px;
+  background:#0a0518;
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+  font-size:.8rem;
+  outline:none;
+  appearance:none;
+  -webkit-appearance:none;
+  cursor:pointer;
+  font-family:inherit;
 }
 .polarity{
-  display:grid;grid-template-columns:1fr 1fr 1fr;
-  gap:4px;margin-top:3px;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:5px;
+  margin-top:4px;
 }
 .polarity button{
-  padding:7px 2px;border:1px solid var(--border);
-  background:#0a0518;color:var(--muted);
-  font-size:.6rem;font-weight:700;border-radius:8px;
-  cursor:pointer;transition:.2s;font-family:inherit;
+  padding:8px 2px;
+  border:1px solid var(--border);
+  background:#0a0518;
+  color:var(--muted);
+  font-size:.62rem;
+  font-weight:700;
+  border-radius:9px;
+  cursor:pointer;
+  font-family:inherit;
+  transition:.2s;
 }
 .polarity button.active{
   background:linear-gradient(135deg,var(--accent),var(--purple));
-  border-color:transparent;color:#fff;
-  box-shadow:0 0 12px var(--glow);
+  border-color:transparent;
+  color:#fff;
+  box-shadow:0 0 12px rgba(225,29,110,.3);
 }
 .btn-primary{
-  width:100%;padding:12px;
+  width:100%;
+  padding:14px;
   background:linear-gradient(135deg,var(--accent),var(--purple),var(--accent2));
-  background-size:200% 200%;border:none;border-radius:10px;
-  color:#fff;font-size:.85rem;font-weight:800;letter-spacing:1.5px;
-  cursor:pointer;transition:.3s;text-transform:uppercase;
-  margin-top:4px;box-shadow:0 0 28px var(--glow);
-  animation:sg 6s ease infinite;font-family:inherit;
+  background-size:200% 200%;
+  border:none;
+  border-radius:12px;
+  color:#fff;
+  font-size:.9rem;
+  font-weight:800;
+  letter-spacing:1.5px;
+  cursor:pointer;
+  text-transform:uppercase;
+  margin-top:6px;
+  box-shadow:0 0 28px rgba(225,29,110,.3);
+  animation:gradient 6s ease infinite;
+  font-family:inherit;
 }
 .btn-primary:active{transform:scale(.98)}
 
-.results{display:none;margin-top:4px}
-.results.active{display:block}
+#results{display:none;margin-top:14px}
+#results.active{display:block}
+
 .section{
   background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.01));
-  border:1px solid var(--border);border-radius:12px;
-  padding:14px 14px 12px;margin-bottom:9px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:10px;
   border-left:3px solid var(--accent);
 }
 .section.s-accent2{border-left-color:var(--accent2)}
 .section.s-gold{border-left-color:var(--gold)}
 .section.s-purple{border-left-color:var(--purple)}
 .section.s-jade{border-left-color:var(--jade)}
-.section .head{
-  display:flex;justify-content:space-between;align-items:flex-start;
-  margin-bottom:6px;gap:6px;flex-wrap:wrap;
+.section h3{
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:8px;
 }
-.section .head h3{
-  font-size:.72rem;font-weight:800;letter-spacing:1.2px;
-  text-transform:uppercase;color:var(--accent);margin-bottom:2px;
-}
-.section.s-accent2 .head h3{color:var(--accent2)}
-.section.s-gold .head h3{color:var(--gold)}
-.section.s-purple .head h3{color:var(--purple)}
-.section.s-jade .head h3{color:var(--jade)}
-.section p{font-size:.82rem;line-height:1.7;color:#d8d0e8;margin-bottom:7px}
+.section.s-accent2 h3{color:var(--accent2)}
+.section.s-gold h3{color:var(--gold)}
+.section.s-purple h3{color:var(--purple)}
+.section.s-jade h3{color:var(--jade)}
+.section p{font-size:.85rem;line-height:1.7;color:#d8d0e8;margin-bottom:7px}
 .section p:last-child{margin-bottom:0}
-.section ul{margin:6px 0 0 0;padding-left:0;list-style:none}
+.section ul{margin:6px 0 0;padding-left:0;list-style:none}
 .section ul li{
-  padding:5px 0 5px 18px;position:relative;
-  font-size:.8rem;line-height:1.65;color:#d8d0e8;
+  padding:5px 0 5px 20px;
+  position:relative;
+  font-size:.82rem;
+  line-height:1.6;
+  color:#d8d0e8;
 }
 .section ul li::before{
-  content:'◈';position:absolute;left:0;top:5px;
-  color:var(--accent2);font-size:.6rem;
+  content:'◈';
+  position:absolute;
+  left:0;top:5px;
+  color:var(--accent2);
+  font-size:.62rem;
 }
 .hl{color:var(--accent2);font-weight:700}
 .hl2{color:var(--accent);font-weight:700}
@@ -395,33 +466,68 @@ body{
 .hl4{color:var(--gold);font-weight:700}
 .hl5{color:var(--jade);font-weight:700}
 .deco{
-  font-family:ui-monospace,monospace;font-size:.6rem;
-  color:var(--accent2);opacity:.35;letter-spacing:6px;
-  text-align:center;margin:2px 0 8px;
+  font-family:ui-monospace,monospace;
+  font-size:.65rem;
+  color:var(--accent2);
+  opacity:.35;
+  letter-spacing:6px;
+  text-align:center;
+  margin:4px 0 10px;
 }
-
-/* =========================================================
-   BOTTOM NAV
-========================================================= */
-.navbar{
-  position:fixed;
-  bottom:0;left:0;right:0;
-  display:grid;grid-template-columns:1fr 1fr;
-  background:linear-gradient(0deg,rgba(18,10,30,.98),rgba(18,10,30,.92));
-  border-top:1px solid var(--border);
-  padding:5px 6px calc(5px + env(safe-area-inset-bottom,0px));
-  backdrop-filter:blur(14px);
-  z-index:30;
+.results-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:14px;
 }
-.nav-btn{
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  padding:6px 4px;background:transparent;border:none;
-  color:var(--muted);font-size:.58rem;font-weight:800;
-  letter-spacing:1.2px;text-transform:uppercase;
-  cursor:pointer;transition:.25s;border-radius:9px;
+.btn-soft{
+  padding:12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(225,29,110,.08);
+  color:var(--accent);
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  cursor:pointer;
   font-family:inherit;
 }
-.nav-btn .ico{font-size:1.05rem;line-height:1}
+.btn-soft.secondary{
+  background:transparent;
+  color:var(--muted);
+}
+
+/* ========== BOTTOM NAV ========== */
+#navbar{
+  flex-shrink:0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:linear-gradient(0deg,rgba(18,10,30,.99),rgba(18,10,30,.95));
+  border-top:1px solid var(--border);
+  padding:6px;
+  padding-bottom:calc(6px + env(safe-area-inset-bottom,0px));
+  z-index:100;
+}
+.nav-btn{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  padding:8px 4px;
+  background:transparent;
+  border:none;
+  color:var(--muted);
+  font-size:.6rem;
+  font-weight:800;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  cursor:pointer;
+  font-family:inherit;
+  border-radius:10px;
+  transition:.25s;
+}
+.nav-btn .ico{font-size:1.15rem;line-height:1}
 .nav-btn.active{
   color:#fff;
   background:linear-gradient(135deg,rgba(225,29,110,.18),rgba(168,85,247,.12));
@@ -429,411 +535,448 @@ body{
 }
 .nav-btn.active .ico{filter:drop-shadow(0 0 6px var(--accent))}
 
-/* =========================================================
-   MODAL
-========================================================= */
+/* ========== MODAL ========== */
 .modal{
-  position:fixed;inset:0;z-index:9998;
-  background:rgba(7,4,16,.88);
+  position:fixed;
+  inset:0;
+  z-index:9000;
+  background:rgba(7,4,16,.85);
   backdrop-filter:blur(8px);
-  display:none;align-items:flex-end;justify-content:center;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
 }
-.modal.open{display:flex;animation:modalIn .25s ease}
-@keyframes modalIn{0%{opacity:0}100%{opacity:1}}
+.modal.open{display:flex}
 .modal-sheet{
-  background:linear-gradient(180deg,var(--card2),var(--card));
-  border-top-left-radius:22px;border-top-right-radius:22px;
-  border:1px solid var(--border);border-bottom:none;
-  padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px));
-  width:100%;max-width:840px;
-  max-height:88vh;overflow-y:auto;
+  background:linear-gradient(180deg,#1a0e2a,#120a1e);
+  border-top-left-radius:22px;
+  border-top-right-radius:22px;
+  border:1px solid var(--border);
+  border-bottom:none;
+  padding:18px 16px;
+  padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  width:100%;
+  max-width:840px;
+  max-height:88vh;
+  overflow-y:auto;
   animation:sheetIn .3s cubic-bezier(.2,.9,.3,1);
 }
-@keyframes sheetIn{
-  0%{transform:translateY(100%)}
-  100%{transform:translateY(0)}
-}
+@keyframes sheetIn{0%{transform:translateY(100%)}100%{transform:translateY(0)}}
 .modal-head{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
 }
 .modal-head h2{
-  font-size:.95rem;font-weight:900;letter-spacing:1.5px;
+  font-size:.95rem;
+  font-weight:900;
+  letter-spacing:1.5px;
   text-transform:uppercase;
   background:linear-gradient(135deg,var(--accent2),var(--accent));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
   background-clip:text;
 }
 .modal-close{
-  width:32px;height:32px;border-radius:50%;
-  border:1px solid var(--border);background:transparent;
-  color:var(--muted);font-size:1.1rem;cursor:pointer;
+  width:34px;height:34px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--muted);
+  font-size:1.1rem;
+  cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   font-family:inherit;
 }
-.setting-group{margin-bottom:16px}
+.setting-group{margin-bottom:18px}
 .setting-group > label{
-  display:block;font-size:.6rem;text-transform:uppercase;
-  letter-spacing:1.4px;color:var(--muted);margin-bottom:8px;
+  display:block;
+  font-size:.6rem;
+  text-transform:uppercase;
+  letter-spacing:1.4px;
+  color:var(--muted);
+  margin-bottom:8px;
   font-weight:700;
 }
-
-.mode-grid{
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;
-}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
 .mode-card{
   padding:12px 6px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.02);
   border-radius:10px;
   color:var(--muted);
-  font-size:.6rem;font-weight:800;
-  letter-spacing:.6px;
+  font-size:.6rem;
+  font-weight:800;
+  letter-spacing:.5px;
   text-transform:uppercase;
   cursor:pointer;
-  transition:.2s;
   font-family:inherit;
+  transition:.2s;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:4px;
+  gap:5px;
   text-align:center;
 }
 .mode-card .ico{font-size:1.2rem;line-height:1}
 .mode-card.active{
   background:linear-gradient(135deg,rgba(225,29,110,.2),rgba(168,85,247,.15));
-  border-color:var(--accent);color:#fff;
+  border-color:var(--accent);
+  color:#fff;
   box-shadow:0 0 14px rgba(225,29,110,.3);
 }
-
-.auto-grid{
-  display:grid;grid-template-columns:repeat(5,1fr);gap:5px;
-}
+.auto-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
 .auto-card{
-  padding:9px 2px;
+  padding:10px 2px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.02);
   border-radius:9px;
   color:var(--muted);
-  font-size:.6rem;font-weight:800;
-  letter-spacing:.5px;
-  cursor:pointer;transition:.2s;
+  font-size:.6rem;
+  font-weight:800;
+  cursor:pointer;
   font-family:inherit;
-  display:flex;flex-direction:column;align-items:center;gap:2px;
+  transition:.2s;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
 }
 .auto-card .ico{font-size:1rem;line-height:1}
 .auto-card.active{
-  background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(16,185,129,.1));
-  border-color:var(--jade);color:var(--jade);
+  background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(16,185,129,.08));
+  border-color:var(--jade);
+  color:var(--jade);
   box-shadow:0 0 12px rgba(16,185,129,.3);
 }
-
-.setting-row{
-  display:grid;grid-template-columns:1fr 1fr;gap:8px;
-}
+.setting-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .setting-input{
-  width:100%;padding:10px 12px;
-  background:#0a0518;border:1px solid var(--border);
-  border-radius:9px;color:var(--text);font-size:.85rem;
-  outline:none;font-family:ui-monospace,monospace;font-weight:700;
+  width:100%;
+  padding:10px;
+  background:#0a0518;
+  border:1px solid var(--border);
+  border-radius:9px;
+  color:var(--text);
+  font-size:.85rem;
+  outline:none;
+  font-family:ui-monospace,monospace;
+  font-weight:700;
   text-align:center;
 }
-.setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.setting-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(225,29,110,.15)}
 .toggle-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:11px 12px;background:rgba(255,255,255,.02);
-  border:1px solid var(--border);border-radius:9px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--border);
+  border-radius:10px;
   margin-bottom:8px;
 }
-.toggle-row-label{
-  display:flex;flex-direction:column;gap:2px;
-}
+.toggle-row-label{display:flex;flex-direction:column;gap:2px}
 .toggle-row-label .t{font-size:.72rem;font-weight:800;color:var(--text)}
 .toggle-row-label .s{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
 .switch{
-  width:44px;height:24px;border-radius:20px;
+  width:46px;height:26px;
+  border-radius:20px;
   background:rgba(255,255,255,.1);
-  position:relative;transition:.25s;
-  cursor:pointer;flex-shrink:0;
+  position:relative;
+  transition:.25s;
+  cursor:pointer;
+  flex-shrink:0;
   border:1px solid var(--border);
 }
 .switch::after{
-  content:'';position:absolute;top:2px;left:2px;
-  width:18px;height:18px;border-radius:50%;
-  background:var(--muted);transition:.25s;
+  content:'';
+  position:absolute;
+  top:2px;left:2px;
+  width:20px;height:20px;
+  border-radius:50%;
+  background:var(--muted);
+  transition:.25s;
 }
-.switch.on{background:rgba(16,185,129,.3);border-color:var(--jade)}
+.switch.on{background:rgba(16,185,129,.35);border-color:var(--jade)}
 .switch.on::after{left:22px;background:var(--jade);box-shadow:0 0 8px var(--jade)}
 .btn-danger{
-  width:100%;padding:11px;border-radius:9px;
+  width:100%;
+  padding:12px;
+  border-radius:10px;
   border:1px solid rgba(239,68,68,.4);
   background:rgba(239,68,68,.08);
-  color:var(--red);font-size:.68rem;font-weight:800;
-  letter-spacing:1.2px;text-transform:uppercase;
-  cursor:pointer;font-family:inherit;transition:.2s;
+  color:var(--red);
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  cursor:pointer;
+  font-family:inherit;
 }
-.btn-danger:active{transform:scale(.98);background:rgba(239,68,68,.15)}
 .stats-box{
-  padding:11px 12px;background:rgba(255,255,255,.02);
-  border:1px solid var(--border);border-radius:9px;
-  font-family:ui-monospace,monospace;font-size:.65rem;
-  color:var(--muted);line-height:1.7;
+  padding:12px;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-family:ui-monospace,monospace;
+  font-size:.65rem;
+  color:var(--muted);
+  line-height:1.7;
 }
 .stats-box .num{color:var(--accent2);font-weight:800}
 .stats-box .num2{color:var(--jade);font-weight:800}
-.history-list{
-  max-height:250px;overflow-y:auto;
-  font-family:ui-monospace,monospace;font-size:.62rem;
+.history-list{max-height:250px;overflow-y:auto}
+.h-item{
+  padding:8px 10px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  font-family:ui-monospace,monospace;
+  font-size:.62rem;
   color:var(--muted);
 }
-.history-list .h-item{
-  padding:7px 10px;border-bottom:1px solid var(--border);
-  display:flex;justify-content:space-between;
-}
-.history-list .h-item:last-child{border-bottom:none}
-.history-list .h-item .p{color:var(--gold);font-weight:800}
+.h-item:last-child{border-bottom:none}
+.h-item .p{color:var(--gold);font-weight:800}
 
-/* TOAST */
+/* ========== TOAST ========== */
 #toast{
   position:fixed;
-  bottom:calc(200px + env(safe-area-inset-bottom,0px));
-  left:50%;transform:translateX(-50%) translateY(20px);
+  bottom:calc(160px + env(safe-area-inset-bottom,0px));
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
   background:rgba(18,10,30,.96);
-  border:1px solid var(--border);border-radius:20px;
-  padding:9px 18px;
-  font-size:.72rem;font-weight:700;letter-spacing:.8px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:10px 20px;
+  font-size:.72rem;
+  font-weight:700;
   color:var(--text);
   box-shadow:0 8px 30px rgba(0,0,0,.7);
-  opacity:0;pointer-events:none;
+  opacity:0;
+  pointer-events:none;
   transition:all .3s cubic-bezier(.2,.9,.3,1);
-  z-index:9999;white-space:nowrap;
+  z-index:9999;
+  white-space:nowrap;
   backdrop-filter:blur(10px);
 }
-#toast.show{
-  opacity:1;transform:translateX(-50%) translateY(0);
-}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.accent{border-color:var(--accent);color:var(--accent)}
 #toast.gold{border-color:var(--accent2);color:var(--accent2)}
 #toast.jade{border-color:var(--jade);color:var(--jade)}
 
-/* AUTH */
+/* ========== AUTH ========== */
 #authModal{
-  position:fixed;inset:0;z-index:9999;
+  position:fixed;
+  inset:0;
+  z-index:9999;
   background:rgba(7,4,16,.97);
   backdrop-filter:blur(10px);
-  display:flex;align-items:center;justify-content:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   padding:16px;
 }
-#authModal .modal-box{
-  background:var(--card);
+#authModal.hidden{display:none}
+.auth-box{
+  background:#120a1e;
   border:1px solid rgba(225,29,110,.4);
-  border-radius:20px;padding:24px;
-  max-width:400px;width:100%;text-align:center;
+  border-radius:20px;
+  padding:26px 22px;
+  max-width:400px;
+  width:100%;
+  text-align:center;
   box-shadow:0 20px 60px rgba(0,0,0,.9);
 }
 .auth-input{
-  width:100%;padding:10px;background:#070410;
-  border:1px solid var(--border);border-radius:10px;
-  color:#fff;margin-bottom:12px;outline:none;
-  text-align:center;font-size:1.3rem;letter-spacing:6px;
+  width:100%;
+  padding:11px;
+  background:#070410;
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:#fff;
+  margin-bottom:12px;
+  outline:none;
+  text-align:center;
+  font-size:1.3rem;
+  letter-spacing:6px;
   font-family:inherit;
 }
-.auth-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
-
-/* DESKTOP */
-@media (min-width:700px){
-  .draw-mega{padding:22px;font-size:1.3rem;letter-spacing:4px}
-  #pdfContainer{padding-top:70px;padding-bottom:170px}
-}
+.auth-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(225,29,110,.15)}
 </style>
 </head>
 <body>
 
-<!-- AUTH -->
+<!-- ========== AUTH ========== -->
 <div id="authModal">
-  <div class="modal-box">
+  <div class="auth-box">
     <div style="font-size:2.5rem;margin-bottom:8px">🔞</div>
-    <h2 style="color:var(--accent);font-size:1.3rem;margin-bottom:6px">Vstupné overenie (18+)</h2>
-    <p style="color:var(--muted);font-size:.8rem;margin-bottom:16px">Obsah je chránený. Zadajte štvorciferné heslo.</p>
-    <input type="password" id="accessPassword" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="••••" class="auth-input">
+    <h2 style="color:var(--accent);font-size:1.25rem;margin-bottom:6px">Vstupné overenie (18+)</h2>
+    <p style="color:var(--muted);font-size:.78rem;margin-bottom:16px">Obsah je chránený. Zadajte štvorciferné heslo.</p>
+    <input type="password" id="authPass" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="••••" class="auth-input">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;justify-content:center">
-      <input type="checkbox" id="ageCheck" style="accent-color:var(--accent);width:16px;height:16px">
-      <label for="ageCheck" style="font-size:.75rem;color:var(--text);cursor:pointer">Mám 18 rokov alebo viac</label>
+      <input type="checkbox" id="authAge" style="accent-color:var(--accent);width:16px;height:16px">
+      <label for="authAge" style="font-size:.72rem;color:var(--text);cursor:pointer">Mám 18 rokov alebo viac</label>
     </div>
-    <button id="authBtn" style="width:100%;padding:11px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-family:inherit">Vstúpiť</button>
-    <div id="authErr" style="color:#ef4444;font-size:.75rem;margin-top:8px;display:none">Nesprávne heslo alebo nepotvrdený vek.</div>
+    <button id="authBtn" style="width:100%;padding:12px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;text-transform:uppercase;letter-spacing:1.2px;font-family:inherit;font-size:.78rem">Vstúpiť</button>
+    <div id="authErr" style="color:#ef4444;font-size:.72rem;margin-top:10px;display:none">Nesprávne heslo alebo nepotvrdený vek.</div>
   </div>
 </div>
 
-<div class="app">
+<!-- ========== APP ========== -->
+<div id="app">
 
-<!-- =============================================================
-     HRA
-============================================================== -->
-<div id="viewGame">
+  <div id="header">
+    <div id="headerLogo">🔥 KOMPAS TELA</div>
+    <div id="headerActions">
+      <button class="icon-btn" id="btnSettings" title="Nastavenia">⚙️</button>
+      <button class="icon-btn" id="btnHistory" title="História">📜</button>
+    </div>
+  </div>
 
-  <div id="pdfContainer">
-    <canvas id="pdfCanvas" style="display:none"></canvas>
-    <div id="pdfLoading">
-      <div class="spin"></div>
-      <div id="loadMsg">Načítavam PDF z repozitára...</div>
-      <div id="loadErr" class="err" style="display:none"></div>
-      <div class="fallback-box" id="fallbackBox" style="display:none">
-        <label class="fallback-label">
-          📁 Vybrať PDF z telefónu
-          <input type="file" id="pdfUpload" accept="application/pdf">
-        </label>
+  <div id="main">
+
+    <!-- HRA -->
+    <div class="screen active" id="gameScreen">
+      <div id="pdfArea">
+        <canvas id="pdfCanvas"></canvas>
+        <div id="pdfLoader">
+          <div class="spin"></div>
+          <div id="loaderMsg">Načítavam PDF z repozitára...</div>
+          <div class="err" id="loaderErr"></div>
+          <label class="upload-btn" id="uploadBtn">
+            📁 Vybrať PDF z telefónu
+            <input type="file" id="pdfUpload" accept="application/pdf">
+          </label>
+        </div>
+      </div>
+
+      <div id="gameBottom">
+        <div id="gameStatus">
+          <div class="status-pill"><span class="dot"></span><span id="pageBadge">— / —</span></div>
+          <button id="turnBtn"><span class="ico">👤</span><span id="turnText">ONA</span></button>
+        </div>
+        <button id="drawBtn" disabled>
+          <span class="ico">🎲</span>
+          <span>VYLOOSOVAŤ</span>
+        </button>
       </div>
     </div>
+
+    <!-- KOMPAS -->
+    <div class="screen" id="kompasScreen">
+      <div class="info-box">
+        <strong>🜂 Kompas tela · Kompatibilita</strong>
+        <p>Zadajte údaje oboch osôb. Algoritmus prepojí planetárny čas, mená a narodenie a vygeneruje unikátny kompatibilitný profil.</p>
+      </div>
+
+      <div id="kompasForm">
+        <div class="person-block" data-p="A">
+          <div class="person-title">🜂 Osoba A</div>
+          <div class="form-group">
+            <label>Meno a priezvisko</label>
+            <input type="text" id="nameA" placeholder="napr. Július Kováč" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Dátum narodenia</label>
+            <div class="date-row">
+              <select id="dayA"><option value="">Deň</option></select>
+              <select id="monA">
+                <option value="">Mes.</option>
+                <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+                <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
+                <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
+                <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
+              </select>
+              <select id="yearA"><option value="">Rok</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Telesná polarita</label>
+            <div class="polarity" data-p="A">
+              <button type="button" class="active" data-g="m">⚔ Muž</button>
+              <button type="button" data-g="f">⚘ Žena</button>
+              <button type="button" data-g="x">⚧ Iná</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="person-block" data-p="B">
+          <div class="person-title">🜄 Osoba B</div>
+          <div class="form-group">
+            <label>Meno a priezvisko</label>
+            <input type="text" id="nameB" placeholder="napr. Jana Kováčová" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Dátum narodenia</label>
+            <div class="date-row">
+              <select id="dayB"><option value="">Deň</option></select>
+              <select id="monB">
+                <option value="">Mes.</option>
+                <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+                <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
+                <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
+                <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
+              </select>
+              <select id="yearB"><option value="">Rok</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Telesná polarita</label>
+            <div class="polarity" data-p="B">
+              <button type="button" data-g="m">⚔ Muž</button>
+              <button type="button" class="active" data-g="f">⚘ Žena</button>
+              <button type="button" data-g="x">⚧ Iná</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btnRun">🜂 Vypočítať kompatibilitu 🜄</button>
+      </div>
+
+      <div id="results">
+        <div class="deco">⸎ ⸎ ⸎</div>
+        <div id="out"></div>
+        <div class="results-actions">
+          <button class="btn-soft" id="btnRefresh">🎲 Pretrasť</button>
+          <button class="btn-soft secondary" id="btnRestart">↺ Nový pár</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="top-overlay">
-    <div class="top-left">
-      <div class="pill"><span class="dot"></span><span id="pageBadge">— / —</span></div>
-      <div class="pill mode-pill" id="modePill">🚫 Bez opakovania</div>
-    </div>
-    <div class="top-right">
-      <button class="icon-btn" id="settingsBtn" title="Nastavenia">⚙️</button>
-      <button class="icon-btn" id="historyBtn" title="História">📜</button>
-    </div>
-  </div>
-
-  <div class="bottom-overlay">
-    <div class="turn-row">
-      <button class="turn-pill" id="turnBtn">
-        <span class="ico">👤</span>
-        <span id="turnText">ONA</span>
-      </button>
-    </div>
-    <button class="draw-mega" id="drawBtn" disabled>
-      <span class="ico">🎲</span>
-      <span>VYLOOSOVAŤ</span>
+  <div id="navbar">
+    <button class="nav-btn active" data-screen="game">
+      <span class="ico">🔥</span>
+      <span>Hra</span>
+    </button>
+    <button class="nav-btn" data-screen="kompas">
+      <span class="ico">🜂</span>
+      <span>Kompas</span>
     </button>
   </div>
 
 </div>
 
-<!-- =============================================================
-     KOMPAS
-============================================================== -->
-<div id="viewKompas">
-
-  <div class="info-box">
-    <strong>🜂 Kompas tela · Kompatibilita</strong>
-    <p>Zadajte údaje oboch osôb. Algoritmus prepojí planetárny čas, mená a narodenie a vygeneruje unikátny kompatibilitný profil.</p>
-  </div>
-
-  <div id="formSection">
-    <div class="person-block" data-p="A">
-      <div class="person-title">🜂 Osoba A</div>
-      <div class="form-group">
-        <label>Meno a priezvisko</label>
-        <input type="text" id="nameA" placeholder="napr. Július Kováč" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label>Dátum narodenia</label>
-        <div class="date-row">
-          <select id="dayA"><option value="">Deň</option></select>
-          <select id="monA">
-            <option value="">Mes.</option>
-            <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
-            <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
-            <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
-            <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
-          </select>
-          <select id="yearA"><option value="">Rok</option></select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Telesná polarita</label>
-        <div class="polarity" data-p="A">
-          <button type="button" class="active" data-g="m">⚔ Muž</button>
-          <button type="button" data-g="f">⚘ Žena</button>
-          <button type="button" data-g="x">⚧ Iná</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="person-block" data-p="B">
-      <div class="person-title">🜄 Osoba B</div>
-      <div class="form-group">
-        <label>Meno a priezvisko</label>
-        <input type="text" id="nameB" placeholder="napr. Jana Kováčová" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label>Dátum narodenia</label>
-        <div class="date-row">
-          <select id="dayB"><option value="">Deň</option></select>
-          <select id="monB">
-            <option value="">Mes.</option>
-            <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
-            <option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option>
-            <option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option>
-            <option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option>
-          </select>
-          <select id="yearB"><option value="">Rok</option></select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Telesná polarita</label>
-        <div class="polarity" data-p="B">
-          <button type="button" data-g="m">⚔ Muž</button>
-          <button type="button" class="active" data-g="f">⚘ Žena</button>
-          <button type="button" data-g="x">⚧ Iná</button>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-primary" id="btnRun">🜂 Vypočítať kompatibilitu 🜄</button>
-  </div>
-
-  <div class="results" id="results">
-    <div class="deco">⸎ ⸎ ⸎</div>
-    <div id="out"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px">
-      <button id="btnRefresh" style="padding:11px;border-radius:10px;border:1px solid var(--border);background:rgba(225,29,110,.08);color:var(--accent);font-size:.68rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;font-family:inherit">🎲 Pretrasť</button>
-      <button id="btnRestart" style="padding:11px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.68rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;cursor:pointer;font-family:inherit">↺ Nový pár</button>
-    </div>
-  </div>
-
-</div>
-
-</div>
-
-<!-- BOTTOM NAV -->
-<div class="navbar" id="navbar" style="display:none">
-  <button class="nav-btn active" data-view="game">
-    <span class="ico">🔥</span>
-    <span>Hra</span>
-  </button>
-  <button class="nav-btn" data-view="kompas">
-    <span class="ico">🜂</span>
-    <span>Kompas</span>
-  </button>
-</div>
-
-<!-- SETTINGS MODAL -->
-<div class="modal" id="settingsModal">
+<!-- ========== SETTINGS MODAL ========== -->
+<div class="modal" id="modalSettings">
   <div class="modal-sheet">
     <div class="modal-head">
       <h2>⚙️ Nastavenia</h2>
-      <button class="modal-close" data-close="settingsModal">✕</button>
+      <button class="modal-close" data-close="modalSettings">✕</button>
     </div>
 
     <div class="setting-group">
       <label>Režim hry</label>
       <div class="mode-grid" id="modeGrid">
         <button class="mode-card active" data-mode="no-repeat">
-          <span class="ico">🚫</span>
-          <span>Bez opakovania</span>
+          <span class="ico">🚫</span><span>Bez opakovania</span>
         </button>
         <button class="mode-card" data-mode="classic">
-          <span class="ico">🎲</span>
-          <span>Klasický</span>
+          <span class="ico">🎲</span><span>Klasický</span>
         </button>
         <button class="mode-card" data-mode="sequential">
-          <span class="ico">📖</span>
-          <span>Sekvenčný</span>
+          <span class="ico">📖</span><span>Sekvenčný</span>
         </button>
       </div>
     </div>
@@ -851,14 +994,14 @@ body{
 
     <div class="setting-group">
       <label>Vlastný interval (minúty)</label>
-      <input type="number" class="setting-input" id="setCustomInterval" placeholder="napr. 7" min="1" max="120">
+      <input type="number" class="setting-input" id="setCustom" placeholder="napr. 7" min="1" max="120">
     </div>
 
     <div class="setting-group">
       <label>Rozsah strán</label>
       <div class="setting-row">
-        <input type="number" class="setting-input" id="setStartPage" placeholder="Od" min="1">
-        <input type="number" class="setting-input" id="setEndPage" placeholder="Do" min="1">
+        <input type="number" class="setting-input" id="setStart" placeholder="Od" min="1">
+        <input type="number" class="setting-input" id="setEnd" placeholder="Do" min="1">
       </div>
     </div>
 
@@ -882,28 +1025,25 @@ body{
 
     <div class="setting-group">
       <label>Štatistika</label>
-      <div class="stats-box" id="statsBox">
-        Videných strán: <span class="num">0</span> / <span class="num2">0</span><br>
-        Zostáva: <span class="num">0</span> · Videných: <span class="num2">0%</span>
-      </div>
+      <div class="stats-box" id="statsBox">Videných: 0 / 0<br>Zostáva: 0</div>
     </div>
 
     <div class="setting-group">
       <label>Reset</label>
-      <button class="btn-danger" id="resetHistory">🗑 Vymazať históriu a videné strany</button>
+      <button class="btn-danger" id="btnReset">🗑 Vymazať históriu a videné strany</button>
     </div>
 
   </div>
 </div>
 
-<!-- HISTORY MODAL -->
-<div class="modal" id="historyModal">
+<!-- ========== HISTORY MODAL ========== -->
+<div class="modal" id="modalHistory">
   <div class="modal-sheet">
     <div class="modal-head">
       <h2>📜 História</h2>
-      <button class="modal-close" data-close="historyModal">✕</button>
+      <button class="modal-close" data-close="modalHistory">✕</button>
     </div>
-    <div class="stats-box history-list" id="historyListFull">
+    <div class="stats-box history-list" id="historyList">
       <div style="text-align:center;color:var(--muted);padding:20px">Zatiaľ žiadne záznamy</div>
     </div>
   </div>
@@ -914,48 +1054,45 @@ body{
 <!-- PDF.JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
-  if(window.pdfjsLib){
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  }
+if(window.pdfjsLib){
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
 </script>
 
 <script>
 (function(){
 'use strict';
 
-var PDF_URL = './positions.pdf';
-var LS_SEEN = 'kmpt_seen_v4';
-var LS_SETTINGS = 'kmpt_settings_v4';
-var LS_HISTORY = 'kmpt_history_v4';
-var AUTH_KEY = 'kmpt_auth_v4';
-var CROP_RATIO = 0.78; /* Koľko hornej časti PDF zobraziť (0.78 = 78%) */
-
 var $ = function(id){ return document.getElementById(id); };
 
-var STATE = {
+var PDF_URL = './positions.pdf';
+var CROP_RATIO = 0.78;
+
+/* ========== STATE ========== */
+var ST = {
   pdfDoc: null,
   totalPages: 0,
   currentPage: 0,
   mode: 'no-repeat',
-  autoMinutes: 0,
-  customAutoMinutes: 7,
+  autoMin: 0,
+  customAuto: 7,
   autoTimer: null,
-  currentTurn: 'ONA',
-  alternateTurns: true,
-  soundOn: true,
+  turn: 'ONA',
+  alternate: true,
+  sound: true,
   startPage: 8,
   endPage: 0,
   seen: [],
   history: [],
-  isDrawing: false
+  drawing: false
 };
 
-/* LS */
-function lsGet(k, d){ try{ var v=localStorage.getItem(k); return v===null?d:JSON.parse(v); }catch(e){ return d; } }
+/* ========== LS ========== */
+function lsGet(k, d){ try{ var v = localStorage.getItem(k); return v===null?d:JSON.parse(v); }catch(e){ return d; } }
 function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 
-/* TOAST */
-var toastTO = null;
+/* ========== TOAST ========== */
+var toastTO;
 function toast(msg, type){
   var el = $('toast');
   el.textContent = msg;
@@ -964,7 +1101,7 @@ function toast(msg, type){
   toastTO = setTimeout(function(){ el.className = ''; }, 2200);
 }
 
-/* AUDIO */
+/* ========== AUDIO ========== */
 var audioCtx = null;
 function initAudio(){
   if(!audioCtx){
@@ -974,8 +1111,8 @@ function initAudio(){
     try{ audioCtx.resume(); }catch(e){}
   }
 }
-function playTone(freq, type, dur){
-  if(!STATE.soundOn) return;
+function beep(freq, type, dur){
+  if(!ST.sound) return;
   try{
     initAudio();
     if(!audioCtx) return;
@@ -985,19 +1122,22 @@ function playTone(freq, type, dur){
     o.frequency.setValueAtTime(freq, audioCtx.currentTime);
     g.gain.setValueAtTime(0.15, audioCtx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(); o.stop(audioCtx.currentTime + dur);
+    o.connect(g);
+    g.connect(audioCtx.destination);
+    o.start();
+    o.stop(audioCtx.currentTime + dur);
   }catch(e){}
 }
-function sClick(){ playTone(440, 'sine', 0.08); }
-function sTick(){ playTone(600, 'triangle', 0.05); }
+function sClick(){ beep(440, 'sine', 0.08); }
+function sTick(){ beep(600, 'triangle', 0.05); }
 function sWin(){
-  playTone(523.25, 'sine', 0.15);
-  setTimeout(function(){ playTone(659.25, 'sine', 0.15); }, 150);
-  setTimeout(function(){ playTone(783.99, 'sine', 0.3); }, 300);
+  beep(523.25, 'sine', 0.15);
+  setTimeout(function(){ beep(659.25, 'sine', 0.15); }, 150);
+  setTimeout(function(){ beep(783.99, 'sine', 0.3); }, 300);
 }
 
-/* AUTH */
+/* ========== AUTH ========== */
+var AUTH_KEY = 'kmpt_auth_v5';
 function isAuthed(){
   try{
     var a = JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
@@ -1005,53 +1145,54 @@ function isAuthed(){
     return (Date.now() - a.t) < 30*24*60*60*1000;
   }catch(e){ return false; }
 }
-function setAuthed(){ try{ localStorage.setItem(AUTH_KEY, JSON.stringify({t: Date.now()})); }catch(e){} }
-if(isAuthed()) $('authModal').style.display = 'none';
+if(isAuthed()){
+  $('authModal').classList.add('hidden');
+}
 
 $('authBtn').addEventListener('click', function(){
-  var pass = $('accessPassword').value.trim();
-  var age = $('ageCheck').checked;
+  var pass = $('authPass').value.trim();
+  var age = $('authAge').checked;
   if(pass === '0007' && age){
-    setAuthed(); sWin();
-    $('authModal').style.display = 'none';
+    try{ localStorage.setItem(AUTH_KEY, JSON.stringify({t: Date.now()})); }catch(e){}
+    sWin();
+    $('authModal').classList.add('hidden');
     initAudio();
   } else {
     sClick();
     $('authErr').style.display = 'block';
   }
 });
-$('accessPassword').addEventListener('keydown', function(e){
+$('authPass').addEventListener('keydown', function(e){
   if(e.key === 'Enter') $('authBtn').click();
 });
 
-/* NAVIGÁCIA */
-var navBtns = document.querySelectorAll('.nav-btn');
-for(var i = 0; i < navBtns.length; i++){
-  (function(btn){
-    btn.addEventListener('click', function(){
-      sClick();
-      var view = btn.getAttribute('data-view');
-      var allNav = document.querySelectorAll('.nav-btn');
-      for(var k = 0; k < allNav.length; k++){
-        allNav[k].classList.toggle('active', allNav[k] === btn);
-      }
-      if(view === 'game'){
-        $('viewGame').classList.add('active');
-        $('viewKompas').classList.remove('active');
-      } else {
-        $('viewGame').classList.remove('active');
-        $('viewKompas').classList.add('active');
-      }
+/* ========== NAVIGÁCIA ========== */
+document.querySelectorAll('.nav-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    sClick();
+    var screen = btn.getAttribute('data-screen');
+    document.querySelectorAll('.nav-btn').forEach(function(b){
+      b.classList.toggle('active', b === btn);
     });
-  })(navBtns[i]);
-}
+    document.querySelectorAll('.screen').forEach(function(s){
+      s.classList.remove('active');
+    });
+    if(screen === 'game'){
+      $('gameScreen').classList.add('active');
+      $('headerLogo').textContent = '🔥 KOMPAS TELA';
+    } else {
+      $('kompasScreen').classList.add('active');
+      $('headerLogo').textContent = '🜂 KOMPAS TELA';
+    }
+  });
+});
 
-/* PLANETÁRNY ČAS — title */
+/* ========== PLANETÁRNY ČAS (title) ========== */
 var CHALDEAN = ['Saturn','Jupiter','Mars','Slnko','Venuša','Merkúr','Mesiac'];
-var DAY_RULER_IDX = [3,6,2,5,1,4,0];
-function getMoonPhase(date){
+var DAY_RULER = [3,6,2,5,1,4,0];
+function moonPhase(date){
   var syn = 29.530588853;
-  var known = Date.UTC(2000, 0, 6, 18, 14, 0);
+  var known = Date.UTC(2000,0,6,18,14,0);
   var days = (date.getTime() - known) / 86400000;
   var p = (days % syn) / syn;
   if(p < 0) p += 1;
@@ -1069,17 +1210,17 @@ function moonName(p){
 }
 function updateTitle(){
   var now = new Date();
-  var dayIdx = DAY_RULER_IDX[now.getDay()];
-  var hour = now.getHours() + now.getMinutes()/60;
-  var hourIdx = Math.floor((hour - 6 + 24) % 24);
-  var planetIdx = (dayIdx + hourIdx) % 7;
-  var m = moonName(getMoonPhase(now));
-  document.title = '🔥 ' + CHALDEAN[planetIdx] + ' · ' + m.e + ' · Kompas tela';
+  var dIdx = DAY_RULER[now.getDay()];
+  var h = now.getHours() + now.getMinutes()/60;
+  var hIdx = Math.floor((h - 6 + 24) % 24);
+  var pIdx = (dIdx + hIdx) % 7;
+  var m = moonName(moonPhase(now));
+  document.title = '🔥 ' + CHALDEAN[pIdx] + ' · ' + m.e;
 }
 setInterval(updateTitle, 30000);
 updateTitle();
 
-/* HASH + PRNG */
+/* ========== HASH + PRNG ========== */
 function hash32(str){
   var h = 2166136261 >>> 0;
   for(var i = 0; i < str.length; i++){
@@ -1117,7 +1258,7 @@ function shuffle(arr){
   return a;
 }
 
-/* POOLY */
+/* ========== POOLY ========== */
 var P_ATTRACT = [
   'Tvoja prvá reakcia na tohto človeka nebola racionálna. Bola to <span class="hl2">prachová reakcia</span> – telo odpovedalo skôr než hlava.',
   'Keď ste sa prvý raz dotkli, niečo v tebe povedalo <em>toto už poznám</em>. Bunková pamäť nezabúda.',
@@ -1182,7 +1323,7 @@ var P_EXP = [
   'Hra moci: jeden je pán, druhý sluha. Dohodnite hranice. Vymeňte role.',
   'Tantrická seansa: 90 minút bez orgazmu. Len spojenie, dýchanie, oči.',
   'Slovná hra: počas milovania si šepkajte, čo cítite. Bez hanby.',
-  'Zmena miesta: kuchyňa, kúpeľňa, balkón, výťah. Miesto mení archetyp.',
+  'Zmena miesta: kuchyňa, kúpeľňa, balkón, výťah.',
   'Zmena rolí: aktívny je pasívny. Uvidíte svoje telo v zrkadle.',
   'Zaviazané oči: jeden vedie, druhý je slepý. 20 minút. Potom výmena.',
   'Kocka ľadu: prejdite ľadom po tele. Reakcia je inštinktívna.',
@@ -1195,36 +1336,32 @@ var P_EXP = [
   'Hovorte o sexe 30 minút pred. Bez hanby.'
 ];
 
-/* KOMPAS FORMULÁR */
+/* ========== KOMPAS FORM ========== */
 (function(){
   var curYear = new Date().getFullYear();
   var i, opt;
   for(i = 1; i <= 31; i++){
-    opt = document.createElement('option'); opt.value = i; opt.textContent = i;
+    opt = document.createElement('option');
+    opt.value = i; opt.textContent = i;
     $('dayA').appendChild(opt.cloneNode(true));
     $('dayB').appendChild(opt);
   }
   for(i = curYear; i >= 1930; i--){
-    opt = document.createElement('option'); opt.value = i; opt.textContent = i;
+    opt = document.createElement('option');
+    opt.value = i; opt.textContent = i;
     $('yearA').appendChild(opt.cloneNode(true));
     $('yearB').appendChild(opt);
   }
 })();
-(function(){
-  var poles = document.querySelectorAll('.polarity');
-  for(var i = 0; i < poles.length; i++){
-    (function(pol){
-      pol.addEventListener('click', function(e){
-        if(e.target.tagName === 'BUTTON'){
-          sClick();
-          var btns = pol.querySelectorAll('button');
-          for(var k = 0; k < btns.length; k++){ btns[k].classList.remove('active'); }
-          e.target.classList.add('active');
-        }
-      });
-    })(poles[i]);
-  }
-})();
+document.querySelectorAll('.polarity').forEach(function(pol){
+  pol.addEventListener('click', function(e){
+    if(e.target.tagName === 'BUTTON'){
+      sClick();
+      pol.querySelectorAll('button').forEach(function(b){ b.classList.remove('active'); });
+      e.target.classList.add('active');
+    }
+  });
+});
 
 $('btnRun').addEventListener('click', function(){
   sClick();
@@ -1239,51 +1376,51 @@ $('btnRun').addEventListener('click', function(){
   var now = new Date();
   var seed = hash32(nA + '|' + nB + '|' + yA + mA + dA + '|' + yB + mB + dB + '|' + now.toISOString().slice(0,13));
   var rng = mulberry32(seed);
-  var m = moonName(getMoonPhase(now));
+  var m = moonName(moonPhase(now));
   var pos = pickN(rng, P_POSITIONS, 3);
   var exp = pickN(rng, P_EXP, 3);
 
-  var out =
+  var html =
     '<div class="section">' +
-      '<div class="head"><h3>🜂 Prvotná príťažlivosť</h3><span class="hl2">' + nA + ' & ' + nB + '</span></div>' +
+      '<h3>🜂 Prvotná príťažlivosť · ' + nA + ' & ' + nB + '</h3>' +
       '<p>' + pick(rng, P_ATTRACT) + '</p>' +
       '<p>' + pick(rng, P_ATTRACT) + '</p>' +
     '</div>' +
     '<div class="section s-accent2">' +
-      '<div class="head"><h3>🜄 Sexuálna chémia</h3><span class="hl2">Telesná matrica</span></div>' +
+      '<h3>🜄 Sexuálna chémia</h3>' +
       '<p>' + pick(rng, P_CHEM) + '</p>' +
       '<p>' + pick(rng, P_CHEM) + '</p>' +
     '</div>' +
     '<div class="section s-purple">' +
-      '<div class="head"><h3>🜁 Rituál predohry</h3><span class="hl3">Staroveká prax</span></div>' +
-      '<p>Inšpirujte sa tradíciou ' + pick(rng, P_RITUAL) + '.</p>' +
+      '<h3>🜁 Rituál predohry</h3>' +
+      '<p>Inšpirujte sa tradíciou ' + pick(rng, P_RITUAL) + '</p>' +
     '</div>' +
     '<div class="section s-gold">' +
-      '<div class="head"><h3>🛏 Polohy napätia</h3><span class="hl4">Kámasútra</span></div>' +
+      '<h3>🛏 Polohy napätia (Kámasútra)</h3>' +
       '<ul>' + pos.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>' +
     '</div>' +
     '<div class="section s-accent2">' +
-      '<div class="head"><h3>⏳ Posvätné hodiny</h3><span class="hl">' + m.e + ' ' + m.n + '</span></div>' +
+      '<h3>⏳ Posvätné hodiny · ' + m.e + ' ' + m.n + '</h3>' +
       '<p>' + pick(rng, P_HOURS) + '</p>' +
       '<p>' + pick(rng, P_HOURS) + '</p>' +
     '</div>' +
     '<div class="section s-jade">' +
-      '<div class="head"><h3>🎭 Experimenty</h3><span class="hl5">Rozšírenie tela</span></div>' +
+      '<h3>🎭 Experimenty</h3>' +
       '<ul>' + exp.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>' +
     '</div>';
 
-  $('out').innerHTML = out;
-  $('formSection').style.display = 'none';
+  $('out').innerHTML = html;
+  $('kompasForm').style.display = 'none';
   $('results').classList.add('active');
   sWin();
-  $('viewKompas').scrollTop = 0;
+  $('kompasScreen').scrollTop = 0;
 });
 
 $('btnRestart').addEventListener('click', function(){
   sClick();
   $('results').classList.remove('active');
-  $('formSection').style.display = 'block';
-  $('viewKompas').scrollTop = 0;
+  $('kompasForm').style.display = 'block';
+  $('kompasScreen').scrollTop = 0;
 });
 $('btnRefresh').addEventListener('click', function(){
   sClick();
@@ -1295,157 +1432,129 @@ $('btnRefresh').addEventListener('click', function(){
 ========================================================= */
 var canvas = $('pdfCanvas');
 var ctx = canvas.getContext('2d');
-var pdfContainer = $('pdfContainer');
+var pdfArea = $('pdfArea');
 
-/* Načítanie nastavení */
+/* Load settings */
 (function(){
-  var s = lsGet(LS_SETTINGS, null);
+  var s = lsGet('kmpt_set_v5', null);
   if(s){
-    if(typeof s.mode === 'string') STATE.mode = s.mode;
-    if(typeof s.autoMinutes === 'number') STATE.autoMinutes = s.autoMinutes;
-    if(typeof s.customAutoMinutes === 'number') STATE.customAutoMinutes = s.customAutoMinutes;
-    if(typeof s.alternateTurns === 'boolean') STATE.alternateTurns = s.alternateTurns;
-    if(typeof s.soundOn === 'boolean') STATE.soundOn = s.soundOn;
-    if(typeof s.startPage === 'number') STATE.startPage = s.startPage;
+    if(typeof s.mode === 'string') ST.mode = s.mode;
+    if(typeof s.autoMin === 'number') ST.autoMin = s.autoMin;
+    if(typeof s.customAuto === 'number') ST.customAuto = s.customAuto;
+    if(typeof s.alternate === 'boolean') ST.alternate = s.alternate;
+    if(typeof s.sound === 'boolean') ST.sound = s.sound;
+    if(typeof s.startPage === 'number') ST.startPage = s.startPage;
   }
-  STATE.seen = lsGet(LS_SEEN, []);
-  STATE.history = lsGet(LS_HISTORY, []);
+  ST.seen = lsGet('kmpt_seen_v5', []);
+  ST.history = lsGet('kmpt_hist_v5', []);
 })();
 
 function saveSettings(){
-  lsSet(LS_SETTINGS, {
-    mode: STATE.mode,
-    autoMinutes: STATE.autoMinutes,
-    customAutoMinutes: STATE.customAutoMinutes,
-    alternateTurns: STATE.alternateTurns,
-    soundOn: STATE.soundOn,
-    startPage: STATE.startPage
+  lsSet('kmpt_set_v5', {
+    mode: ST.mode,
+    autoMin: ST.autoMin,
+    customAuto: ST.customAuto,
+    alternate: ST.alternate,
+    sound: ST.sound,
+    startPage: ST.startPage
   });
 }
 
-function updateTurnUI(){
-  $('turnText').textContent = STATE.currentTurn;
+function updateTurn(){
+  $('turnText').textContent = ST.turn;
 }
-function updateModePill(){
-  var m = STATE.mode;
-  var txt = m === 'no-repeat' ? '🚫 Bez opakovania' :
-            m === 'classic' ? '🎲 Klasický' : '📖 Sekvenčný';
-  $('modePill').textContent = txt;
-}
-function updatePageBadge(){
-  if(!STATE.pdfDoc){
-    $('pageBadge').textContent = '— / —';
-    return;
-  }
-  $('pageBadge').textContent = STATE.currentPage + ' / ' + STATE.totalPages;
+function updateBadge(){
+  if(!ST.pdfDoc){ $('pageBadge').textContent = '— / —'; return; }
+  $('pageBadge').textContent = ST.currentPage + ' / ' + ST.totalPages;
 }
 
-/* =========================================================
-   RENDER PDF — s orezaním spodku (78 %)
-========================================================= */
+/* ========== RENDER PDF ========== */
 function renderPage(num){
-  if(!STATE.pdfDoc) return;
-  STATE.pdfDoc.getPage(num).then(function(page){
-
-    /* 1) Šírka, ktorú má PDF zaberať (max 420px) */
-    var containerW = Math.min(pdfContainer.clientWidth, 420);
+  if(!ST.pdfDoc) return;
+  ST.pdfDoc.getPage(num).then(function(page){
+    var areaW = pdfArea.clientWidth - 20;
     var base = page.getViewport({ scale: 1 });
-    var scale = containerW / base.width;
-
-    /* 2) Viewport pri tomto scale */
+    var scale = Math.min(areaW / base.width, 2);
     var vp = page.getViewport({ scale: scale });
+    var cropH = Math.floor(vp.height * CROP_RATIO);
 
-    /* 3) Orežeme spodok — chceme len horných 78 % (obrázok, nie text) */
-    var cropHeight = Math.floor(vp.height * CROP_RATIO);
-
-    /* 4) Canvas má len výšku cropu */
     canvas.width = vp.width;
-    canvas.height = cropHeight;
-    canvas.style.width = containerW + 'px';
+    canvas.height = cropH;
+    canvas.style.width = vp.width + 'px';
     canvas.style.height = 'auto';
 
-    /* 5) Render — canvas odsekne spodnú časť */
     page.render({ canvasContext: ctx, viewport: vp }).promise.then(function(){
-      STATE.currentPage = num;
-      updatePageBadge();
-      pdfContainer.scrollTop = 0;
+      ST.currentPage = num;
+      updateBadge();
+      pdfArea.scrollTop = 0;
     });
   }).catch(function(err){
     console.error('Render error:', err);
-    toast('Chyba pri zobrazení strany', 'accent');
+    toast('Chyba pri zobrazení', 'accent');
   });
 }
 
 function pickNextPage(){
-  var start = STATE.startPage;
-  var end = STATE.endPage;
+  var start = ST.startPage;
+  var end = ST.endPage;
   if(end < start) return start;
 
-  if(STATE.mode === 'sequential'){
-    var next = STATE.currentPage + 1;
+  if(ST.mode === 'sequential'){
+    var next = ST.currentPage + 1;
     if(next > end) next = start;
     return next;
   }
 
-  if(STATE.mode === 'no-repeat'){
+  if(ST.mode === 'no-repeat'){
     var all = [];
     for(var i = start; i <= end; i++) all.push(i);
     var seenSet = {};
-    for(var k = 0; k < STATE.seen.length; k++) seenSet[STATE.seen[k]] = true;
-    var remaining = [];
-    for(var j = 0; j < all.length; j++){
-      if(!seenSet[all[j]]) remaining.push(all[j]);
-    }
+    ST.seen.forEach(function(p){ seenSet[p] = true; });
+    var remaining = all.filter(function(p){ return !seenSet[p]; });
     if(remaining.length === 0){
-      STATE.seen = [];
-      lsSet(LS_SEEN, []);
+      ST.seen = [];
+      lsSet('kmpt_seen_v5', []);
       toast('🎉 Všetky strany videné — reštart!', 'gold');
       remaining = all.slice();
     }
     return shuffle(remaining)[0];
   }
 
-  var range = end - start + 1;
-  return Math.floor(Math.random() * range) + start;
+  return Math.floor(Math.random() * (end - start + 1)) + start;
 }
 
 function executeDraw(){
-  if(!STATE.pdfDoc || STATE.isDrawing) return;
-  STATE.isDrawing = true;
+  if(!ST.pdfDoc || ST.drawing) return;
+  ST.drawing = true;
   sClick();
 
   var counter = 0;
-  var maxCount = 14;
-  var interval = setInterval(function(){
+  var iv = setInterval(function(){
     counter++;
-    var tempPage = Math.floor(Math.random() * (STATE.endPage - STATE.startPage + 1)) + STATE.startPage;
-    $('pageBadge').textContent = '🎲 ' + tempPage + '...';
+    var tmp = Math.floor(Math.random() * (ST.endPage - ST.startPage + 1)) + ST.startPage;
+    $('pageBadge').textContent = '🎲 ' + tmp + '...';
     sTick();
-    if(counter >= maxCount){
-      clearInterval(interval);
+    if(counter >= 14){
+      clearInterval(iv);
       var finalPage = pickNextPage();
       renderPage(finalPage);
-
-      if(STATE.seen.indexOf(finalPage) === -1){
-        STATE.seen.push(finalPage);
-        lsSet(LS_SEEN, STATE.seen);
+      if(ST.seen.indexOf(finalPage) === -1){
+        ST.seen.push(finalPage);
+        lsSet('kmpt_seen_v5', ST.seen);
       }
-
-      STATE.history.unshift({
+      ST.history.unshift({
         page: finalPage,
         time: new Date().toISOString(),
-        turn: STATE.currentTurn
+        turn: ST.turn
       });
-      STATE.history = STATE.history.slice(0, 50);
-      lsSet(LS_HISTORY, STATE.history);
-
+      ST.history = ST.history.slice(0, 50);
+      lsSet('kmpt_hist_v5', ST.history);
       sWin();
-
-      if(STATE.alternateTurns){
-        STATE.currentTurn = (STATE.currentTurn === 'ONA') ? 'ON' : 'ONA';
-        updateTurnUI();
+      if(ST.alternate){
+        ST.turn = (ST.turn === 'ONA') ? 'ON' : 'ONA';
+        updateTurn();
       }
-      STATE.isDrawing = false;
+      ST.drawing = false;
     }
   }, 70);
 }
@@ -1453,76 +1562,63 @@ function executeDraw(){
 $('drawBtn').addEventListener('click', executeDraw);
 $('turnBtn').addEventListener('click', function(){
   sClick();
-  STATE.currentTurn = (STATE.currentTurn === 'ONA') ? 'ON' : 'ONA';
-  updateTurnUI();
-  toast('Na ťahu: ' + STATE.currentTurn, 'accent');
+  ST.turn = (ST.turn === 'ONA') ? 'ON' : 'ONA';
+  updateTurn();
+  toast('Na ťahu: ' + ST.turn, 'accent');
 });
 
-/* REŽIM v settings */
-(function(){
-  var cards = document.querySelectorAll('#modeGrid .mode-card');
-  for(var i = 0; i < cards.length; i++){
-    (function(c){
-      c.addEventListener('click', function(){
-        sClick();
-        for(var k = 0; k < cards.length; k++) cards[k].classList.remove('active');
-        c.classList.add('active');
-        STATE.mode = c.getAttribute('data-mode');
-        updateModePill();
-        saveSettings();
-        toast('Režim: ' + c.textContent.trim(), 'accent');
-      });
-      if(c.getAttribute('data-mode') === STATE.mode){
-        for(var k = 0; k < cards.length; k++) cards[k].classList.remove('active');
-        c.classList.add('active');
-      }
-    })(cards[i]);
+/* ========== MODE cards ========== */
+document.querySelectorAll('#modeGrid .mode-card').forEach(function(c){
+  c.addEventListener('click', function(){
+    sClick();
+    document.querySelectorAll('#modeGrid .mode-card').forEach(function(x){ x.classList.remove('active'); });
+    c.classList.add('active');
+    ST.mode = c.getAttribute('data-mode');
+    saveSettings();
+    toast('Režim: ' + c.textContent.trim(), 'accent');
+  });
+  if(c.getAttribute('data-mode') === ST.mode){
+    document.querySelectorAll('#modeGrid .mode-card').forEach(function(x){ x.classList.remove('active'); });
+    c.classList.add('active');
   }
-})();
+});
 
-/* AUTO */
+/* ========== AUTO ========== */
 function stopAuto(){
-  if(STATE.autoTimer){ clearInterval(STATE.autoTimer); STATE.autoTimer = null; }
+  if(ST.autoTimer){ clearInterval(ST.autoTimer); ST.autoTimer = null; }
 }
-function startAuto(minutes){
+function startAuto(min){
   stopAuto();
-  STATE.autoTimer = setInterval(executeDraw, minutes * 60 * 1000);
-  toast('⏱ Auto každých ' + minutes + ' min', 'jade');
+  ST.autoTimer = setInterval(executeDraw, min * 60 * 1000);
+  toast('⏱ Auto každých ' + min + ' min', 'jade');
 }
-(function(){
-  var cards = document.querySelectorAll('#autoGrid .auto-card');
-  for(var i = 0; i < cards.length; i++){
-    (function(c){
-      c.addEventListener('click', function(){
-        sClick();
-        for(var k = 0; k < cards.length; k++) cards[k].classList.remove('active');
-        c.classList.add('active');
-        var val = c.getAttribute('data-auto');
-        if(val === '0'){
-          STATE.autoMinutes = 0; stopAuto();
-          toast('Auto vypnuté', 'accent');
-        } else if(val === 'custom'){
-          STATE.autoMinutes = -1;
-          $('setCustomInterval').focus();
-        } else {
-          STATE.autoMinutes = parseInt(val, 10);
-          startAuto(STATE.autoMinutes);
-        }
-        saveSettings();
-      });
-      var val2 = c.getAttribute('data-auto');
-      if(val2 === String(STATE.autoMinutes)){
-        for(var k = 0; k < cards.length; k++) cards[k].classList.remove('active');
-        c.classList.add('active');
-        if(STATE.autoMinutes > 0) startAuto(STATE.autoMinutes);
-      }
-    })(cards[i]);
+document.querySelectorAll('#autoGrid .auto-card').forEach(function(c){
+  c.addEventListener('click', function(){
+    sClick();
+    document.querySelectorAll('#autoGrid .auto-card').forEach(function(x){ x.classList.remove('active'); });
+    c.classList.add('active');
+    var val = c.getAttribute('data-auto');
+    if(val === '0'){
+      ST.autoMin = 0; stopAuto(); toast('Auto vypnuté', 'accent');
+    } else if(val === 'custom'){
+      ST.autoMin = -1;
+      $('setCustom').focus();
+    } else {
+      ST.autoMin = parseInt(val, 10);
+      startAuto(ST.autoMin);
+    }
+    saveSettings();
+  });
+  if(c.getAttribute('data-auto') === String(ST.autoMin)){
+    document.querySelectorAll('#autoGrid .auto-card').forEach(function(x){ x.classList.remove('active'); });
+    c.classList.add('active');
+    if(ST.autoMin > 0) startAuto(ST.autoMin);
   }
-})();
+});
 
-/* MODALS */
-function openModal(id){ var m = $(id); if(m) m.classList.add('open'); }
-function closeModal(id){ var m = $(id); if(m) m.classList.remove('open'); }
+/* ========== MODALS ========== */
+function openModal(id){ $(id).classList.add('open'); }
+function closeModal(id){ $(id).classList.remove('open'); }
 document.querySelectorAll('.modal-close').forEach(function(b){
   b.addEventListener('click', function(){
     sClick();
@@ -1536,149 +1632,136 @@ document.querySelectorAll('.modal').forEach(function(m){
 });
 
 function openSettings(){
-  $('setStartPage').value = STATE.startPage;
-  $('setEndPage').value = STATE.endPage || '';
-  $('setCustomInterval').value = STATE.customAutoMinutes;
-  $('swSound').classList.toggle('on', STATE.soundOn);
-  $('swAlternate').classList.toggle('on', STATE.alternateTurns);
-  updateStatsBox();
-  openModal('settingsModal');
+  $('setStart').value = ST.startPage;
+  $('setEnd').value = ST.endPage || '';
+  $('setCustom').value = ST.customAuto;
+  $('swSound').classList.toggle('on', ST.sound);
+  $('swAlternate').classList.toggle('on', ST.alternate);
+  updateStats();
+  openModal('modalSettings');
 }
-$('settingsBtn').addEventListener('click', function(){ sClick(); openSettings(); });
-$('historyBtn').addEventListener('click', function(){ sClick(); updateHistoryFull(); openModal('historyModal'); });
+$('btnSettings').addEventListener('click', function(){ sClick(); openSettings(); });
+$('btnHistory').addEventListener('click', function(){ sClick(); updateHistoryFull(); openModal('modalHistory'); });
 
-$('setStartPage').addEventListener('change', function(){
+$('setStart').addEventListener('change', function(){
   var v = parseInt(this.value, 10);
-  if(!isNaN(v) && v >= 1 && v <= STATE.totalPages){
-    STATE.startPage = v; saveSettings();
-    if(STATE.pdfDoc) renderPage(Math.max(STATE.startPage, Math.min(STATE.currentPage || STATE.startPage, STATE.endPage)));
+  if(!isNaN(v) && v >= 1 && v <= ST.totalPages){
+    ST.startPage = v; saveSettings();
+    if(ST.pdfDoc) renderPage(Math.max(ST.startPage, Math.min(ST.currentPage || ST.startPage, ST.endPage)));
     toast('Od strany ' + v, 'jade');
   }
 });
-$('setEndPage').addEventListener('change', function(){
+$('setEnd').addEventListener('change', function(){
   var v = parseInt(this.value, 10);
-  if(!isNaN(v) && v >= STATE.startPage && v <= STATE.totalPages){
-    STATE.endPage = v;
+  if(!isNaN(v) && v >= ST.startPage && v <= ST.totalPages){
+    ST.endPage = v;
     toast('Do strany ' + v, 'jade');
   }
 });
-$('setCustomInterval').addEventListener('change', function(){
+$('setCustom').addEventListener('change', function(){
   var v = parseInt(this.value, 10);
   if(!isNaN(v) && v >= 1 && v <= 120){
-    STATE.customAutoMinutes = v; saveSettings();
+    ST.customAuto = v; saveSettings();
     toast('Vlastný interval: ' + v + ' min', 'jade');
-    if(STATE.autoMinutes === -1){ STATE.autoMinutes = v; startAuto(v); saveSettings(); }
+    if(ST.autoMin === -1){ ST.autoMin = v; startAuto(v); saveSettings(); }
   }
 });
 
 $('swSound').addEventListener('click', function(){
-  STATE.soundOn = !STATE.soundOn;
-  this.classList.toggle('on', STATE.soundOn);
+  ST.sound = !ST.sound;
+  this.classList.toggle('on', ST.sound);
   saveSettings();
-  toast(STATE.soundOn ? '🔊 Zvuk ON' : '🔇 Zvuk OFF', 'accent');
+  toast(ST.sound ? '🔊 Zvuk ON' : '🔇 Zvuk OFF', 'accent');
 });
 $('swAlternate').addEventListener('click', function(){
-  STATE.alternateTurns = !STATE.alternateTurns;
-  this.classList.toggle('on', STATE.alternateTurns);
+  ST.alternate = !ST.alternate;
+  this.classList.toggle('on', ST.alternate);
   saveSettings();
-  toast(STATE.alternateTurns ? '🔄 Striedanie ON' : '⏸ Striedanie OFF', 'accent');
+  toast(ST.alternate ? '🔄 Striedanie ON' : '⏸ Striedanie OFF', 'accent');
 });
-
-$('resetHistory').addEventListener('click', function(){
+$('btnReset').addEventListener('click', function(){
   sClick();
-  if(!confirm('Vymazať históriu a zoznam videných strán?')) return;
-  STATE.seen = []; STATE.history = [];
-  lsSet(LS_SEEN, []); lsSet(LS_HISTORY, []);
-  updateStatsBox(); updateHistoryFull();
-  toast('🗑 História vymazaná', 'gold');
+  if(!confirm('Vymazať históriu a videné strany?')) return;
+  ST.seen = []; ST.history = [];
+  lsSet('kmpt_seen_v5', []); lsSet('kmpt_hist_v5', []);
+  updateStats(); updateHistoryFull();
+  toast('🗑 Vymazané', 'gold');
 });
 
-function updateStatsBox(){
-  var total = STATE.endPage - STATE.startPage + 1;
-  var seenInRange = 0;
-  for(var i = 0; i < STATE.seen.length; i++){
-    if(STATE.seen[i] >= STATE.startPage && STATE.seen[i] <= STATE.endPage) seenInRange++;
-  }
-  var remaining = Math.max(0, total - seenInRange);
+function updateStats(){
+  var total = ST.endPage - ST.startPage + 1;
+  var seenInRange = ST.seen.filter(function(p){ return p >= ST.startPage && p <= ST.endPage; }).length;
+  var rem = Math.max(0, total - seenInRange);
   var pct = total > 0 ? Math.round((seenInRange / total) * 100) : 0;
   $('statsBox').innerHTML =
     'Videných: <span class="num">' + seenInRange + '</span> / <span class="num2">' + total + '</span><br>' +
-    'Zostáva: <span class="num">' + remaining + '</span> · <span class="num2">' + pct + '%</span>';
+    'Zostáva: <span class="num">' + rem + '</span> · <span class="num2">' + pct + '%</span>';
 }
-function formatTime(iso){
+function fmtTime(iso){
   try{
     var d = new Date(iso);
     return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
   }catch(e){ return '—'; }
 }
 function updateHistoryFull(){
-  var h = STATE.history;
-  if(!h.length){
-    $('historyListFull').innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px">Zatiaľ žiadne záznamy</div>';
+  if(!ST.history.length){
+    $('historyList').innerHTML = '<div style="text-align:center;color:var(--muted);padding:20px">Zatiaľ žiadne záznamy</div>';
     return;
   }
-  $('historyListFull').innerHTML = h.map(function(item){
-    return '<div class="h-item"><span>Strana <span class="p">' + item.page + '</span></span><span>' + formatTime(item.time) + ' · ' + (item.turn || '—') + '</span></div>';
+  $('historyList').innerHTML = ST.history.map(function(item){
+    return '<div class="h-item"><span>Strana <span class="p">' + item.page + '</span></span><span>' + fmtTime(item.time) + ' · ' + (item.turn || '—') + '</span></div>';
   }).join('');
 }
 
-/* =========================================================
-   PDF NAČÍTANIE
-========================================================= */
-function applyLoadedPdf(doc){
-  STATE.pdfDoc = doc;
-  STATE.totalPages = doc.numPages;
+/* ========== LOAD PDF ========== */
+function applyLoaded(doc){
+  ST.pdfDoc = doc;
+  ST.totalPages = doc.numPages;
 
-  if(STATE.totalPages < 8){
-    $('loadMsg').textContent = 'PDF má menej ako 8 strán';
-    $('loadErr').textContent = 'PDF má ' + STATE.totalPages + ' strán, potrebuje aspoň 8.';
-    $('loadErr').style.display = 'block';
-    $('fallbackBox').style.display = 'block';
+  if(ST.totalPages < 8){
+    $('loaderMsg').textContent = 'PDF má menej ako 8 strán';
+    $('loaderErr').textContent = 'PDF má ' + ST.totalPages + ' strán, potrebuje aspoň 8.';
+    $('loaderErr').style.display = 'block';
+    $('uploadBtn').style.display = 'inline-block';
     return;
   }
 
-  if(!STATE.endPage || STATE.endPage > STATE.totalPages){
-    STATE.endPage = STATE.totalPages;
-  }
-  if(STATE.startPage < 1) STATE.startPage = 8;
-  if(STATE.startPage > STATE.totalPages) STATE.startPage = 8;
+  if(!ST.endPage || ST.endPage > ST.totalPages) ST.endPage = ST.totalPages;
+  if(ST.startPage < 1) ST.startPage = 8;
+  if(ST.startPage > ST.totalPages) ST.startPage = 8;
 
-  $('pdfLoading').style.display = 'none';
-  $('fallbackBox').style.display = 'none';
+  $('pdfLoader').style.display = 'none';
+  $('uploadBtn').style.display = 'none';
   canvas.style.display = 'block';
   $('drawBtn').removeAttribute('disabled');
 
-  renderPage(STATE.startPage);
-  STATE.currentPage = STATE.startPage;
+  renderPage(ST.startPage);
+  ST.currentPage = ST.startPage;
 
-  updateTurnUI();
-  updateModePill();
+  updateTurn();
   saveSettings();
-
-  toast('✅ PDF · ' + STATE.totalPages + ' strán', 'jade');
+  toast('✅ PDF · ' + ST.totalPages + ' strán', 'jade');
 }
 
 function loadRepoPdf(){
   if(!window.pdfjsLib){
-    $('loadMsg').textContent = 'PDF.js sa nenačítal';
-    $('loadErr').textContent = 'Skontrolujte internet.';
-    $('loadErr').style.display = 'block';
-    $('fallbackBox').style.display = 'block';
+    $('loaderMsg').textContent = 'PDF.js sa nenačítal';
+    $('loaderErr').textContent = 'Skontrolujte internet.';
+    $('loaderErr').style.display = 'block';
+    $('uploadBtn').style.display = 'inline-block';
     return;
   }
-  $('loadMsg').textContent = 'Načítavam PDF z repozitára...';
-  $('loadErr').style.display = 'none';
+  $('loaderMsg').textContent = 'Načítavam PDF z repozitára...';
+  $('loaderErr').style.display = 'none';
 
-  var loadingTask = pdfjsLib.getDocument({ url: PDF_URL });
-  loadingTask.promise.then(function(doc){
-    applyLoadedPdf(doc);
+  pdfjsLib.getDocument({ url: PDF_URL }).promise.then(function(doc){
+    applyLoaded(doc);
   }).catch(function(err){
-    console.error('PDF load error:', err);
-    $('loadMsg').textContent = 'PDF z repozitára sa nenačítal';
-    $('loadErr').innerHTML =
-      'Skontrolujte <b>positions.pdf</b> v repe<br>alebo nahrajte PDF ručne:';
-    $('loadErr').style.display = 'block';
-    $('fallbackBox').style.display = 'block';
+    console.error('PDF error:', err);
+    $('loaderMsg').textContent = 'PDF z repozitára sa nenačítal';
+    $('loaderErr').innerHTML = 'Skontrolujte <b>positions.pdf</b> v repe, alebo nahrajte PDF ručne nižšie:';
+    $('loaderErr').style.display = 'block';
+    $('uploadBtn').style.display = 'inline-block';
   });
 }
 
@@ -1689,21 +1772,21 @@ $('pdfUpload').addEventListener('change', function(e){
     toast('Musí byť PDF', 'accent');
     return;
   }
-  $('loadMsg').textContent = 'Načítavam...';
-  $('loadErr').style.display = 'none';
-  $('fallbackBox').style.display = 'none';
+  $('loaderMsg').textContent = 'Načítavam vybraný PDF...';
+  $('loaderErr').style.display = 'none';
+  $('uploadBtn').style.display = 'none';
 
   var reader = new FileReader();
   reader.onload = function(){
     var typedArray = new Uint8Array(this.result);
     pdfjsLib.getDocument({ data: typedArray }).promise.then(function(doc){
-      applyLoadedPdf(doc);
+      applyLoaded(doc);
     }).catch(function(err){
       console.error('PDF error:', err);
-      $('loadMsg').textContent = 'PDF sa nepodarilo načítať';
-      $('loadErr').textContent = 'Súbor je poškodený alebo nie je PDF.';
-      $('loadErr').style.display = 'block';
-      $('fallbackBox').style.display = 'block';
+      $('loaderMsg').textContent = 'PDF sa nepodarilo načítať';
+      $('loaderErr').textContent = 'Súbor je poškodený alebo nie je PDF.';
+      $('loaderErr').style.display = 'block';
+      $('uploadBtn').style.display = 'inline-block';
     });
   };
   reader.readAsArrayBuffer(file);
@@ -1712,19 +1795,18 @@ $('pdfUpload').addEventListener('change', function(e){
 setTimeout(loadRepoPdf, 400);
 
 /* RESIZE */
-var resizeTO = null;
+var resizeTO;
 window.addEventListener('resize', function(){
   clearTimeout(resizeTO);
   resizeTO = setTimeout(function(){
-    if(STATE.pdfDoc && STATE.currentPage){
-      renderPage(STATE.currentPage);
-    }
+    if(ST.pdfDoc && ST.currentPage) renderPage(ST.currentPage);
   }, 250);
 });
 
 /* INIT */
-updateTurnUI();
-updateModePill();
+updateTurn();
+updateBadge();
+updateStats();
 
 })();
 </script>
