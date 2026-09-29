@@ -12,6 +12,8 @@
 html,body{height:100%;overscroll-behavior:none}
 body{background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;font-size:15px}
 .app{position:fixed;inset:0;display:flex;flex-direction:column;max-width:840px;margin:0 auto}
+
+/* HEADER */
 .topbar{flex-shrink:0;padding:8px 12px 6px;padding-top:calc(8px + env(safe-area-inset-top,0px));background:linear-gradient(180deg,rgba(18,10,30,.96),rgba(18,10,30,.88));border-bottom:1px solid var(--border);backdrop-filter:blur(10px);z-index:10}
 .topbar-row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .topbar-logo{font-size:.88rem;font-weight:900;letter-spacing:1.5px;background:linear-gradient(135deg,var(--accent2),var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap}
@@ -21,6 +23,8 @@ body{background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;c
 .topbar-live .val{color:var(--gold);font-weight:800}
 .topbar-live .dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);box-shadow:0 0 8px var(--accent2);animation:lp 1.6s ease-in-out infinite}
 @keyframes lp{50%{opacity:.3;transform:scale(.7)}}
+
+/* MAIN */
 .main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;position:relative}
 .view{display:none;padding:10px;padding-bottom:16px;min-height:100%}
 .view.active{display:flex;flex-direction:column;gap:10px;animation:viewIn .3s ease}
@@ -54,11 +58,6 @@ body{background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;c
 .draw-btn:active{transform:scale(.98)}
 .draw-btn:disabled{opacity:.35;cursor:not-allowed;animation:none;box-shadow:none}
 .draw-btn:disabled::before{display:none}
-.chip-row{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;flex-shrink:0}
-.chip-row::-webkit-scrollbar{display:none}
-.chip{flex:1;min-width:fit-content;white-space:nowrap;padding:8px 10px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--muted);font-size:.6rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:.2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px}
-.chip .ico{font-size:.85rem;line-height:1}
-.chip.active{background:linear-gradient(135deg,rgba(225,29,110,.2),rgba(168,85,247,.15));border-color:var(--accent);color:#fff;box-shadow:0 0 14px rgba(225,29,110,.3)}
 .actions-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;flex-shrink:0}
 .btn-act{padding:10px 4px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.58rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:.2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px}
 .btn-act .ico{font-size:.85rem;line-height:1}
@@ -187,13 +186,13 @@ body{background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;c
   .draw-btn{padding:20px;font-size:1.15rem;letter-spacing:3px}
   .pdf-stage{min-height:400px}
   .game-hero{padding:14px 18px}
-  .chip{padding:10px 16px;font-size:.65rem}
   .btn-act{padding:12px 6px;font-size:.62rem}
 }
 </style>
 </head>
 <body>
 
+<!-- AUTH -->
 <div id="authModal">
   <div class="auth-box">
     <div style="font-size:2.5rem;margin-bottom:8px">🔞</div>
@@ -211,162 +210,190 @@ body{background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;c
 
 <div class="app">
 
-<div class="topbar">
-  <div class="topbar-row">
-    <div class="topbar-logo" id="topLogo">🔥 HRA</div>
-    <div class="topbar-live">
-      <div class="lb"><span class="dot"></span><span class="val" id="lbClock">--:--</span></div>
-      <div class="lb"><span class="lbl">Pl.</span><span class="val" id="lbHour">—</span></div>
-      <div class="lb"><span class="lbl">Mes.</span><span class="val" id="lbMoon">—</span></div>
-    </div>
-  </div>
-</div>
-
-<div class="main" id="mainScroll">
-
-<div class="view active" id="viewGame">
-  <div class="game-hero">
-    <div class="game-hero-left">
-      <h2>Na ťahu</h2>
-      <div class="turn-display" id="turnDisplay">ONA</div>
-      <div class="turn-sub" id="turnSub">Ona vyberá</div>
-    </div>
-    <div class="stat-pill" id="statPill">— / —</div>
-  </div>
-
-  <div class="pdf-stage" id="pdfStage">
-    <div class="page-badge" id="pageBadge">— / —</div>
-    <div id="pdfLoading" class="pdf-loading">
-      <div class="spin"></div>
-      <div id="loadMsg">Načítavam PDF z repozitára...</div>
-      <div id="loadErr" class="err" style="display:none"></div>
-      <div class="fallback-box" id="fallbackBox" style="display:none">
-        <label class="fallback-label">📁 Vybrať PDF z telefónu<input type="file" id="pdfUpload" accept="application/pdf"></label>
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="topbar-logo" id="topLogo">🔥 HRA</div>
+      <div class="topbar-live">
+        <div class="lb"><span class="dot"></span><span class="val" id="lbClock">--:--</span></div>
+        <div class="lb"><span class="lbl">Pl.</span><span class="val" id="lbHour">—</span></div>
+        <div class="lb"><span class="lbl">Mes.</span><span class="val" id="lbMoon">—</span></div>
       </div>
     </div>
-    <canvas id="pdfCanvas" style="display:none"></canvas>
   </div>
 
-  <button class="draw-btn" id="drawBtn" disabled>🎲 VYLOOSOVAŤ</button>
+  <!-- MAIN -->
+  <div class="main" id="mainScroll">
 
-  <div class="chip-row" id="modesRow">
-    <button class="chip active" data-mode="no-repeat"><span class="ico">🚫</span>Bez opak.</button>
-    <button class="chip" data-mode="classic"><span class="ico">🎲</span>Klasický</button>
-    <button class="chip" data-mode="sequential"><span class="ico">📖</span>Sekvenčný</button>
-  </div>
+    <!-- HRA -->
+    <div class="view active" id="viewGame">
+      <div class="game-hero">
+        <div class="game-hero-left">
+          <h2>Na ťahu</h2>
+          <div class="turn-display" id="turnDisplay">ONA</div>
+          <div class="turn-sub" id="turnSub">Ona vyberá</div>
+        </div>
+        <div class="stat-pill" id="statPill">— / —</div>
+      </div>
 
-  <div class="chip-row" id="autoRow">
-    <button class="chip active" data-auto="0"><span class="ico">⏸</span>OFF</button>
-    <button class="chip" data-auto="2"><span class="ico">⏱</span>2 min</button>
-    <button class="chip" data-auto="4"><span class="ico">⏱</span>4 min</button>
-    <button class="chip" data-auto="10"><span class="ico">⏱</span>10 min</button>
-    <button class="chip" data-auto="custom"><span class="ico">⚙️</span>Vlastné</button>
-  </div>
+      <div class="pdf-stage" id="pdfStage">
+        <div class="page-badge" id="pageBadge">— / —</div>
+        <div id="pdfLoading" class="pdf-loading">
+          <div class="spin"></div>
+          <div id="loadMsg">Načítavam PDF z repozitára...</div>
+          <div id="loadErr" class="err" style="display:none"></div>
+          <div class="fallback-box" id="fallbackBox" style="display:none">
+            <label class="fallback-label">📁 Vybrať PDF z telefónu<input type="file" id="pdfUpload" accept="application/pdf"></label>
+          </div>
+        </div>
+        <canvas id="pdfCanvas" style="display:none"></canvas>
+      </div>
 
-  <div class="actions-row">
-    <button class="btn-act" id="shuffleTurnBtn"><span class="ico">🔄</span>Vymeň kolo</button>
-    <button class="btn-act" id="historyBtn"><span class="ico">📜</span>História</button>
-    <button class="btn-act" id="settingsBtn"><span class="ico">⚙️</span>Nastavenia</button>
-  </div>
-</div>
+      <button class="draw-btn" id="drawBtn" disabled>🎲 VYLOOSOVAŤ</button>
 
-<div class="view" id="viewKompas">
-  <div class="info-box">
-    <strong>🜂 Kompas tela · Maximálna matrica</strong>
-    <p>Planetárny čas · lunárny cyklus · biorytmus · numerológia · staroveké systémy · pocity oboch · kde držať · polohy · rituály · karmická sexualita — všetko v reálnom čase.</p>
-  </div>
+      <div class="actions-row">
+        <button class="btn-act" id="shuffleTurnBtn"><span class="ico">🔄</span>Vymeň kolo</button>
+        <button class="btn-act" id="historyBtn"><span class="ico">📜</span>História</button>
+        <button class="btn-act" id="settingsBtn"><span class="ico">⚙️</span>Nastavenia</button>
+      </div>
+    </div>
 
-  <div id="formSection">
-    <div class="person-block" data-p="A">
-      <div class="person-title">🜂 Osoba A</div>
-      <div class="form-group"><label>Meno a priezvisko</label><input type="text" id="nameA" placeholder="napr. Július Kováč" autocomplete="off"></div>
-      <div class="form-group">
-        <label>Dátum narodenia</label>
-        <div class="date-row">
-          <select id="dayA"><option value="">Deň</option></select>
-          <select id="monA"><option value="">Mes.</option><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option><option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option></select>
-          <select id="yearA"><option value="">Rok</option></select>
+    <!-- KOMPAS -->
+    <div class="view" id="viewKompas">
+      <div class="info-box">
+        <strong>🜂 Kompas tela · Maximálna matrica</strong>
+        <p>Planetárny čas · lunárny cyklus · biorytmus · numerológia · staroveké systémy · pocity oboch · kde držať · polohy · rituály — všetko v reálnom čase.</p>
+      </div>
+
+      <div id="formSection">
+        <div class="person-block" data-p="A">
+          <div class="person-title">🜂 Osoba A</div>
+          <div class="form-group"><label>Meno a priezvisko</label><input type="text" id="nameA" placeholder="napr. Július Kováč" autocomplete="off"></div>
+          <div class="form-group">
+            <label>Dátum narodenia</label>
+            <div class="date-row">
+              <select id="dayA"><option value="">Deň</option></select>
+              <select id="monA"><option value="">Mes.</option><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option><option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option></select>
+              <select id="yearA"><option value="">Rok</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Telesná polarita</label>
+            <div class="polarity" data-p="A">
+              <button type="button" class="active" data-g="m">⚔ Muž</button>
+              <button type="button" data-g="f">⚘ Žena</button>
+              <button type="button" data-g="x">⚧ Iná</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="person-block" data-p="B">
+          <div class="person-title">🜄 Osoba B</div>
+          <div class="form-group"><label>Meno a priezvisko</label><input type="text" id="nameB" placeholder="napr. Jana Kováčová" autocomplete="off"></div>
+          <div class="form-group">
+            <label>Dátum narodenia</label>
+            <div class="date-row">
+              <select id="dayB"><option value="">Deň</option></select>
+              <select id="monB"><option value="">Mes.</option><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option><option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option></select>
+              <select id="yearB"><option value="">Rok</option></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Telesná polarita</label>
+            <div class="polarity" data-p="B">
+              <button type="button" data-g="m">⚔ Muž</button>
+              <button type="button" class="active" data-g="f">⚘ Žena</button>
+              <button type="button" data-g="x">⚧ Iná</button>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btnRun">🜂 Vypočítať úplnú matricu 🜄</button>
+      </div>
+
+      <div class="results" id="results">
+        <div class="deco">⸎ ⸎ ⸎</div>
+        <div id="out"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px">
+          <button class="btn-act" id="btnRefresh" style="padding:11px">🎲 Pretrasť</button>
+          <button class="btn-act" id="btnRestart" style="padding:11px">↺ Nový pár</button>
         </div>
       </div>
-      <div class="form-group">
-        <label>Telesná polarita</label>
-        <div class="polarity" data-p="A">
-          <button type="button" class="active" data-g="m">⚔ Muž</button>
-          <button type="button" data-g="f">⚘ Žena</button>
-          <button type="button" data-g="x">⚧ Iná</button>
-        </div>
-      </div>
-    </div>
 
-    <div class="person-block" data-p="B">
-      <div class="person-title">🜄 Osoba B</div>
-      <div class="form-group"><label>Meno a priezvisko</label><input type="text" id="nameB" placeholder="napr. Jana Kováčová" autocomplete="off"></div>
-      <div class="form-group">
-        <label>Dátum narodenia</label>
-        <div class="date-row">
-          <select id="dayB"><option value="">Deň</option></select>
-          <select id="monB"><option value="">Mes.</option><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">Máj</option><option value="6">Jún</option><option value="7">Júl</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Okt</option><option value="11">Nov</option><option value="12">Dec</option></select>
-          <select id="yearB"><option value="">Rok</option></select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Telesná polarita</label>
-        <div class="polarity" data-p="B">
-          <button type="button" data-g="m">⚔ Muž</button>
-          <button type="button" class="active" data-g="f">⚘ Žena</button>
-          <button type="button" data-g="x">⚧ Iná</button>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-primary" id="btnRun">🜂 Vypočítať úplnú matricu 🜄</button>
-  </div>
-
-  <div class="results" id="results">
-    <div class="deco">⸎ ⸎ ⸎</div>
-    <div id="out"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px">
-      <button class="btn-act" id="btnRefresh" style="padding:11px">🎲 Pretrasť</button>
-      <button class="btn-act" id="btnRestart" style="padding:11px">↺ Nový pár</button>
+      <div class="footer"><strong>Grizzly Courage</strong> · The Human Maintenance · Ad Aeternum</div>
     </div>
   </div>
 
-  <div class="footer"><strong>Grizzly Courage</strong> · The Human Maintenance · Ad Aeternum</div>
-</div>
-</div>
-
-<div class="navbar">
-  <button class="nav-btn active" data-view="game"><span class="ico">🔥</span><span>Hra</span></button>
-  <button class="nav-btn" data-view="kompas"><span class="ico">🜂</span><span>Kompas</span></button>
-</div>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <button class="nav-btn active" data-view="game"><span class="ico">🔥</span><span>Hra</span></button>
+    <button class="nav-btn" data-view="kompas"><span class="ico">🜂</span><span>Kompas</span></button>
+  </div>
 </div>
 
+<!-- SETTINGS MODAL -->
 <div class="modal" id="modalSettings">
   <div class="modal-sheet">
     <div class="modal-head"><h2>⚙️ Nastavenia</h2><button class="modal-close" data-close="modalSettings">✕</button></div>
-    <div class="setting-group"><label>Režim hry</label><div class="mode-grid" id="modeGrid">
-      <button class="mode-card active" data-mode="no-repeat"><span class="ico">🚫</span><span>Bez opak.</span></button>
-      <button class="mode-card" data-mode="classic"><span class="ico">🎲</span><span>Klasický</span></button>
-      <button class="mode-card" data-mode="sequential"><span class="ico">📖</span><span>Sekvenčný</span></button>
-    </div></div>
-    <div class="setting-group"><label>Auto interval</label><div class="auto-grid" id="autoGrid">
-      <button class="auto-card active" data-auto="0"><span class="ico">⏸</span>OFF</button>
-      <button class="auto-card" data-auto="2"><span class="ico">⏱</span>2m</button>
-      <button class="auto-card" data-auto="4"><span class="ico">⏱</span>4m</button>
-      <button class="auto-card" data-auto="10"><span class="ico">⏱</span>10m</button>
-      <button class="auto-card" data-auto="custom"><span class="ico">⚙️</span>Vl.</button>
-    </div></div>
-    <div class="setting-group"><label>Vlastný interval (min)</label><input type="number" class="setting-input" id="setCustom" min="1" max="120" placeholder="7"></div>
-    <div class="setting-group"><label>Rozsah strán</label><div class="setting-row"><input type="number" class="setting-input" id="setStart" placeholder="Od" min="1"><input type="number" class="setting-input" id="setEnd" placeholder="Do" min="1"></div></div>
-    <div class="setting-group"><label>Možnosti</label>
-      <div class="toggle-row"><div class="toggle-row-label"><span class="t">🔊 Zvuk</span><span class="s">Zvuky pri losovaní</span></div><div class="switch on" id="swSound"></div></div>
-      <div class="toggle-row"><div class="toggle-row-label"><span class="t">🔄 Striedanie</span><span class="s">ONA ↔ ON</span></div><div class="switch on" id="swAlternate"></div></div>
+
+    <div class="setting-group">
+      <label>Režim hry</label>
+      <div class="mode-grid" id="modeGrid">
+        <button class="mode-card active" data-mode="no-repeat"><span class="ico">🚫</span><span>Bez opakovania</span></button>
+        <button class="mode-card" data-mode="classic"><span class="ico">🎲</span><span>Klasický</span></button>
+        <button class="mode-card" data-mode="sequential"><span class="ico">📖</span><span>Sekvenčný</span></button>
+      </div>
     </div>
-    <div class="setting-group"><label>Štatistika</label><div class="stats-box" id="statsBox">Videných: 0 / 0</div></div>
-    <div class="setting-group"><button class="btn-danger" id="resetHistory">🗑 Vymazať históriu</button></div>
+
+    <div class="setting-group">
+      <label>Automatické losovanie</label>
+      <div class="auto-grid" id="autoGrid">
+        <button class="auto-card active" data-auto="0"><span class="ico">⏸</span>OFF</button>
+        <button class="auto-card" data-auto="2"><span class="ico">⏱</span>2m</button>
+        <button class="auto-card" data-auto="4"><span class="ico">⏱</span>4m</button>
+        <button class="auto-card" data-auto="10"><span class="ico">⏱</span>10m</button>
+        <button class="auto-card" data-auto="custom"><span class="ico">⚙️</span>Vl.</button>
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <label>Vlastný interval (minúty)</label>
+      <input type="number" class="setting-input" id="setCustom" min="1" max="120" placeholder="7">
+    </div>
+
+    <div class="setting-group">
+      <label>Rozsah strán</label>
+      <div class="setting-row">
+        <input type="number" class="setting-input" id="setStart" placeholder="Od" min="1">
+        <input type="number" class="setting-input" id="setEnd" placeholder="Do" min="1">
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <label>Možnosti</label>
+      <div class="toggle-row">
+        <div class="toggle-row-label"><span class="t">🔊 Zvuk</span><span class="s">Zvuky pri losovaní</span></div>
+        <div class="switch on" id="swSound"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-row-label"><span class="t">🔄 Striedanie kôl</span><span class="s">ONA ↔ ON po každom losovaní</span></div>
+        <div class="switch on" id="swAlternate"></div>
+      </div>
+    </div>
+
+    <div class="setting-group">
+      <label>Štatistika</label>
+      <div class="stats-box" id="statsBox">Videných: 0 / 0</div>
+    </div>
+
+    <div class="setting-group">
+      <label>Reset</label>
+      <button class="btn-danger" id="resetHistory">🗑 Vymazať históriu a videné strany</button>
+    </div>
   </div>
 </div>
 
+<!-- HISTORY MODAL -->
 <div class="modal" id="modalHistory">
   <div class="modal-sheet">
     <div class="modal-head"><h2>📜 História</h2><button class="modal-close" data-close="modalHistory">✕</button></div>
@@ -376,6 +403,7 @@ body{background:radial-gradient(ellipse at top,#1a0a2e 0%,#070410 60%),#070410;c
 
 <div id="toast"></div>
 
+<!-- PDF.JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}
@@ -384,26 +412,44 @@ if(window.pdfjsLib){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudf
 <script>
 (function(){
 'use strict';
-var $=function(id){return document.getElementById(id);};
-var PDF_URL='./positions.pdf';
-var CROP_RATIO=0.78;
-var AUTH_KEY='kmpt_auth_max2';
 
-var ST={pdfDoc:null,totalPages:0,currentPage:0,mode:'no-repeat',autoMin:0,customAuto:7,autoTimer:null,turn:'ONA',alternate:true,sound:true,startPage:8,endPage:0,seen:[],history:[],drawing:false};
+var $ = function(id){ return document.getElementById(id); };
+var PDF_URL = './positions.pdf';
+var AUTH_KEY = 'kmpt_auth_final_v6';
 
+/* =========================================================
+   STATE
+========================================================= */
+var ST = {
+  pdfDoc:null, totalPages:0, currentPage:0,
+  mode:'no-repeat', autoMin:0, customAuto:7, autoTimer:null,
+  turn:'ONA', alternate:true, sound:true,
+  startPage:8, endPage:0,
+  seen:[], history:[], drawing:false
+};
+
+/* =========================================================
+   LS / TOAST / AUDIO
+========================================================= */
 function lsGet(k,d){try{var v=localStorage.getItem(k);return v===null?d:JSON.parse(v);}catch(e){return d;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 
 var toastTO;
-function toast(msg,type){var el=$('toast');el.textContent=msg;el.className='show '+(type||'accent');clearTimeout(toastTO);toastTO=setTimeout(function(){el.className='';},2200);}
+function toast(msg,type){
+  var el=$('toast');el.textContent=msg;el.className='show '+(type||'accent');
+  clearTimeout(toastTO);toastTO=setTimeout(function(){el.className='';},2200);
+}
 
 var audioCtx=null;
 function initAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(audioCtx&&audioCtx.state==='suspended'){try{audioCtx.resume();}catch(e){}}}
-function beep(f,t,d){if(!ST.sound)return;try{initAudio();if(!audioCtx)return;var o=audioCtx.createOscillator();var g=audioCtx.createGain();o.type=t;o.frequency.setValueAtTime(f,audioCtx.currentTime);g.gain.setValueAtTime(0.15,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
+function beep(f,t,d){if(!ST.sound)return;try{initAudio();if(!audioCtx)return;var o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.setValueAtTime(f,audioCtx.currentTime);g.gain.setValueAtTime(0.15,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d);}catch(e){}}
 function sClick(){beep(440,'sine',.08);}
 function sTick(){beep(600,'triangle',.05);}
 function sWin(){beep(523.25,'sine',.15);setTimeout(function(){beep(659.25,'sine',.15);},150);setTimeout(function(){beep(783.99,'sine',.3);},300);}
 
+/* =========================================================
+   AUTH
+========================================================= */
 function isAuthed(){try{var a=JSON.parse(localStorage.getItem(AUTH_KEY)||'null');if(!a)return false;return(Date.now()-a.t)<30*24*60*60*1000;}catch(e){return false;}}
 if(isAuthed())$('authModal').classList.add('hidden');
 $('authBtn').addEventListener('click',function(){
@@ -413,6 +459,9 @@ $('authBtn').addEventListener('click',function(){
 });
 $('authPass').addEventListener('keydown',function(e){if(e.key==='Enter')$('authBtn').click();});
 
+/* =========================================================
+   NAVIGÁCIA
+========================================================= */
 document.querySelectorAll('.nav-btn').forEach(function(b){
   b.addEventListener('click',function(){
     sClick();
@@ -425,6 +474,9 @@ document.querySelectorAll('.nav-btn').forEach(function(b){
   });
 });
 
+/* =========================================================
+   PLANETÁRNY A LUNÁRNY ČAS
+========================================================= */
 var CHALDEAN=['Saturn','Jupiter','Mars','Slnko','Venuša','Merkúr','Mesiac'];
 var CHALDEAN_SYM={Saturn:'♄',Jupiter:'♃',Mars:'♂',Slnko:'☉',Venuša:'♀',Merkúr:'☿',Mesiac:'☽'};
 var CHALDEAN_Q={Saturn:'disciplína, hranice, výdrž',Jupiter:'hojnosť, expanzia, radosť',Mars:'vášeň, akcia, priebojnosť',Slnko:'vitalita, jas, vedenie',Venuša:'láska, krása, zmyselnosť',Merkúr:'komunikácia, hravosť',Mesiac:'intuícia, emócia, cyklus'};
@@ -446,7 +498,7 @@ function getPlanetary(date){
   var h=date.getHours()+date.getMinutes()/60;
   var hIdx=Math.floor((h-6+24)%24);
   var pIdx=(dIdx+hIdx)%7;
-  return{dayPlanet:CHALDEAN[dIdx],hourPlanet:CHALDEAN[pIdx],hourNumber:hIdx+1,dayIdx:dIdx,planetIdx:pIdx};
+  return{dayPlanet:CHALDEAN[dIdx],hourPlanet:CHALDEAN[pIdx],hourNumber:hIdx+1};
 }
 function getBiorhythm(birthDate,now){
   var days=Math.floor((now-birthDate)/86400000);
@@ -462,6 +514,9 @@ function updateLiveBar(){
 }
 setInterval(updateLiveBar,1000);updateLiveBar();
 
+/* =========================================================
+   HASH + PRNG + NUMEROLÓGIA
+========================================================= */
 function hash32(s){var h=2166136261>>>0;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}h^=h>>>16;h=Math.imul(h,2246822507);h^=h>>>13;h=Math.imul(h,3266489909);h^=h>>>16;return h>>>0;}
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function pick(r,a){return a[Math.floor(r()*a.length)];}
@@ -475,35 +530,36 @@ function numName(s){var t=0,c=s.toLowerCase().replace(/[^a-záäčďéěíňóô
 function numVow(s){var t=0,c=s.toLowerCase().replace(/[^a-záäčďéěíňóôřšťúůýž]/g,'');for(var i=0;i<c.length;i++)if(VOWELS.indexOf(c[i])>-1)t+=LETTERS[c[i]]||0;return reduce(t);}
 function numCons(s){var t=0,c=s.toLowerCase().replace(/[^a-záčďéěíňóôřšťúůýž]/g,'');for(var i=0;i<c.length;i++)if(VOWELS.indexOf(c[i])===-1&&LETTERS[c[i]])t+=LETTERS[c[i]];return reduce(t);}
 
-/* POOLY */
+/* =========================================================
+   POOLY
+========================================================= */
 var P_ATTRACT=[
   'Prvá reakcia na tohto človeka nebola racionálna. Telo odpovedalo skôr než hlava — <span class="hl2">prachová reakcia</span>, ktorá sa nedá vytrénovať.',
-  'Keď ste sa prvý raz dotkli, niečo v tele povedalo <em>toto už poznám</em>. Bunková pamäť nezabúda — <span class="hl3">fyzické rozpoznanie</span> predchádza vedomé.',
-  'Medzi vami je napätie, ktoré nejde vyrobiť. Buď tam je, alebo nie. A u vás <span class="hl4">je</span> — v priestore medzi telami.',
-  'Vzduch okolo vás zhustne, keď ste v jednej miestnosti. Elektromagnetické pole vašich tiel rezonuje na <span class="hl">frekvencii, ktorá patrí len vám</span>.',
-  'Prvý kontakt očí trval dlhšie, než je obvyklé. Oboch vás to zarazilo — a hlboko pritiahlo.',
+  'Keď ste sa prvý raz dotkli, niečo v tele povedalo <em>toto už poznám</em>. Bunková pamäť nezabúda.',
+  'Medzi vami je napätie, ktoré nejde vyrobiť. Buď tam je, alebo nie. A u vás <span class="hl4">je</span>.',
+  'Vzduch okolo vás zhustne, keď ste v jednej miestnosti. Elektromagnetické pole vašich tiel rezonuje.',
+  'Prvý kontakt očí trval dlhšie, než je obvyklé. Oboch vás to zarazilo a hlboko pritiahlo.',
   'Babylončania by povedali, že ste sa narodili v rovnakom <em>zodickom dome tela</em>.',
   'Gréci by povedali, že vás spojila <em>Ananké</em> — nevyhnutnosť, nie voľba.',
-  'Egyptská tradícia hovorí, že vaše <em>ka</em> (dvojníci duše) sa poznali už v podsvetí.',
-  'Venuša sa pri vašom prvom stretnutí nachádzala v priaznivom aspekte voči vašim osám. <span class="hl4">Timing duší</span>.',
-  'Keď sa jeden z vás pohne, druhý to cíti. <span class="hl3">Zrkadlové neuróny</span> pracujú na 3× vyššej úrovni než u bežných párov.',
+  'Egyptská tradícia hovorí, že vaše <em>ka</em> sa poznali už v podsvetí.',
+  'Venuša sa pri vašom prvom stretnutí nachádzala v priaznivom aspekte. <span class="hl4">Timing duší</span>.',
+  'Keď sa jeden z vás pohne, druhý to cíti. <span class="hl3">Zrkadlové neuróny</span> na 3× vyššej úrovni.',
   'Váš prvý dotyk nebol náhodný. Bol to test kompatibility — a telo ho <span class="hl5">označilo ako bezpečný</span>.',
-  'Nie ste kompatibilní. Ste <span class="hl2">nutní</span>. Rozdiel je v tom, že kompatibilita sa dá nahradiť, ale nutnosť sa nedá.',
+  'Nie ste kompatibilní. Ste <span class="hl2">nutní</span>. Nutnosť sa nedá nahradiť.',
   'Toto nie je zamilovanosť. Je to <span class="hl3">rozpoznanie</span>. Ako keď pes zďaleka cíti svoj druh.',
-  'Existuje dôvod, prečo si pamätáš, čo mal na sebe. To nie je detail. To je <span class="hl4">záznam tela</span>.',
-  'Váš tep sa pri sebe spomalí. Telo považuje toho druhého za bezpečie — najsilnejšia forma príťažlivosti.'
+  'Existuje dôvod, prečo si pamätáš, čo mal na sebe. To je <span class="hl4">záznam tela</span>.',
+  'Váš tep sa pri sebe spomalí. Telo považuje toho druhého za bezpečie.'
 ];
 var P_CHEM=[
   'Sexuálna chémia je <span class="hl">elektrická</span> — telá sa hľadajú aj vtedy, keď sa mysle hádajú.',
-  'Chémia je <span class="hl">tekutá</span> — pomalá, vlhká, hlboká. Milovanie môže trvať hodinu a vy ani neviete, kedy ste začali.',
+  'Chémia je <span class="hl">tekutá</span> — pomalá, vlhká, hlboká. Milovanie môže trvať hodinu.',
   'Chémia je <span class="hl">ohnivá</span> — rýchla, divoká, hlasná. Predohra je krátka, orgazmus je explózia.',
-  'Chémia je <span class="hl">zemská</span> — stabilná, hlboká, verná. Telo si pamätá ruky toho druhého naspamäť.',
+  'Chémia je <span class="hl">zemská</span> — stabilná, hlboká, verná. Telo si pamätá ruky naspamäť.',
   'Chémia je <span class="hl">éterická</span> — pri milovaní nie ste dvaja. Ste jedno pole.',
   'Chémia je <span class="hl">hodvábna</span> — jemná, dotyková, kĺzavá. Plynulý prechod kože po koži.',
-  'Chémia je <span class="hl">búrková</span> — intenzívna, krátka, ničivá. Po nej ste vyčerpaní, ale živí.',
-  'Chémia je <span class="hl">bylinková</span> — vône, dotyky, malé rituály. Každý dotyk má svoj zámer.'
+  'Chémia je <span class="hl">búrková</span> — intenzívna, krátka, ničivá.',
+  'Chémia je <span class="hl">bylinková</span> — vône, dotyky, malé rituály. Každý dotyk má zámer.'
 ];
-var ELEM_NAMES=['Oheň','Voda','Vzduch','Zem','Éter'];
 var P_ELEM=[
   'Dominuje <span class="hl2">oheň</span>. Všetko robíte intenzívne — buď naplno, alebo vôbec.',
   'Dominuje <span class="hl3">voda</span>. Nie je to o rýchlosti, je to o hĺbke.',
@@ -511,71 +567,71 @@ var P_ELEM=[
   'Dominuje <span class="hl5">zem</span>. Stabilní, hlbokí, verní. Sex je pre vás rituál.',
   'Dominuje <span class="hl4">éter</span>. Niekedy pri milovaní cítite, že ste jedna bytosť.'
 ];
-var MALE_ANIMALS={1:'Býk (Vršabha) — mohutný, pomalý, vytrvalý',2:'Jeleň (Hariṇa) — húževnatý, rýchly',3:'Zajac (Śaśaka) — jemný, rýchly, precízny',4:'Kôň (Aśva) — statný, divoký, neúnavný',5:'Zajac (Śaśaka) — drobný, rýchly',6:'Jeleň (Hariṇa) — pružný, hravý',7:'Kôň (Aśva) — silný, temperamentný',8:'Býk (Vršabha) — mohutný, vládnuci',9:'Slon (Gaja) — obrovský, hlboký, starostlivý',11:'Býk',22:'Slon',33:'Slon'};
-var FEMALE_ANIMALS={1:'Kobyla (Vaḍavā) — šľachetná, divoká, verná',2:'Srna (Mṛgī) — jemná, plachá, hlboká',3:'Slonica (Karī) — mohutná, múdra',4:'Kobyla — elegantná, silná, hrdá',5:'Srna — drobná, rýchla, zmyselná',6:'Slonica — teplá, ochranná',7:'Kobyla — divoká, slobodná, ohnivá',8:'Srna — nežná, intuitívna',9:'Slonica — veľkorysá, posvätná',11:'Slonica',22:'Kobyla',33:'Slonica'};
+var MALE_ANIMALS={1:'Býk (Vršabha)',2:'Jeleň (Hariṇa)',3:'Zajac (Śaśaka)',4:'Kôň (Aśva)',5:'Zajac (Śaśaka)',6:'Jeleň (Hariṇa)',7:'Kôň (Aśva)',8:'Býk (Vršabha)',9:'Slon (Gaja)',11:'Býk',22:'Slon',33:'Slon'};
+var FEMALE_ANIMALS={1:'Kobyla (Vaḍavā)',2:'Srna (Mṛgī)',3:'Slonica (Karī)',4:'Kobyla (Vaḍavā)',5:'Srna (Mṛgī)',6:'Slonica (Karī)',7:'Kobyla (Vaḍavā)',8:'Srna (Mṛgī)',9:'Slonica (Karī)',11:'Slonica',22:'Kobyla',33:'Slonica'};
 var P_ANIMALS=[
-  'Keď sa stretnú dva rovnaké typy, sex je prirodzený ako dýchanie. Žiadne trenie — len rezonancia.',
-  'Keď sa stretnú nerovnaké typy, musíte objaviť svoje uhly. Najlepšie polohy sú tie, kde sa jeden nechá viesť.',
-  'Vaše zvieratá si rozumejú cez pach. Nerozmýšľate — reagujete. To je prastaré.',
-  'Kámasútra hovorí: ak sa typy líšia, pravidlá určuje ten menší. On je navigátor, ten väčší je motor.',
+  'Keď sa stretnú dva rovnaké typy, sex je prirodzený ako dýchanie.',
+  'Keď sa stretnú nerovnaké typy, musíte objaviť svoje uhly.',
+  'Vaše zvieratá si rozumejú cez pach. Nerozmýšľate — reagujete.',
+  'Kámasútra hovorí: ak sa typy líšia, pravidlá určuje ten menší.',
   'Vaše zvieratá vytvárajú kruh — každé ovláda inú fázu milovania.',
-  'Toto je vzácna kombinácia — Vátsjájana by povedal, že ste sa našli v správnom čase.'
+  'Toto je vzácna kombinácia — našli ste sa v správnom čase.'
 ];
 var P_FEELS_HER=[
-  'Cíti ťa <span class="hl2">v celom tele</span> ešte hodiny po tom, čo ste sa rozišli. Nie je to spomienka — je to fyzická prítomnosť, ktorá sa nedá vytrhnúť z kože.',
+  'Cíti ťa <span class="hl2">v celom tele</span> ešte hodiny po tom, čo ste sa rozišli.',
   'Keď sa jej dotkneš na pravom mieste, jej myseľ sa vyprázdni. Zostane len <span class="hl3">telo a ty v ňom</span>.',
-  'Chce cítiť tvoju váhu. <span class="hl4">Fyzický tlak</span> ju upokojuje — potrebuje vedieť, kde si.',
-  'V hlave má neustály dialóg. Ty si jediný, kto dokáže <span class="hl5">vypnúť ten hluk</span>.',
-  'Keď ju držíš za vlasy pri milovaní, <span class="hl6">nie je to o bolesti</span> — je to o odovzdaní kontroly.',
-  'Túži po <span class="hl2">pohľade, ktorý trvá príliš dlho</span>. Nie sex. Oči, ktoré ju vidia takú, akú ju nikto nevidel.',
-  'Chce, aby si ju viedol — ale iba preto, aby sa mohla nechať viesť.',
-  'Po milovaní potrebuje <span class="hl3">ticho</span> aspoň 5 minút. Telo ešte nie je hotové.',
-  'Keď sa jej dotkneš bez toho, aby si niečo chcel, cíti to ako dar. <span class="hl4">Dotyk bez účelu</span> je najsilnejší jazyk lásky.',
-  'V posteli myslí na tvoje ruky, aj keď nie sú na jej tele. <span class="hl5">Vie, kde sú</span>.',
-  'Chce byť videná, keď je najzraniteľnejšia. Keď sa schová, <span class="hl6">hľadaj ju</span>.',
-  'Jej najerotickejšie pásmo nie je medzi nohami — je <span class="hl2">za uchom, na krku, na vnútornom zápästí</span>.'
+  'Chce cítiť tvoju váhu. <span class="hl4">Fyzický tlak</span> ju upokojuje.',
+  'V hlave má neustály dialóg. Ty dokážeš <span class="hl5">vypnúť ten hluk</span>.',
+  'Keď ju držíš za vlasy, <span class="hl6">nie je to o bolesti</span> — je to o odovzdaní kontroly.',
+  'Túži po <span class="hl2">pohľade, ktorý trvá príliš dlho</span>.',
+  'Chce, aby si ju viedol — aby sa mohla nechať viesť.',
+  'Po milovaní potrebuje <span class="hl3">ticho</span> aspoň 5 minút.',
+  'Dotyk bez účelu je pre ňu najsilnejší jazyk lásky.',
+  'V posteli myslí na tvoje ruky, aj keď nie sú na jej tele.',
+  'Chce byť videná, keď je najzraniteľnejšia.',
+  'Jej najerotickejšie pásmo je <span class="hl2">za uchom, na krku, na vnútornom zápästí</span>.'
 ];
 var P_FEELS_HIS=[
-  'Cíti sa pri tebe <span class="hl2">bezpečne</span> prvýkrát v živote — a to je pre muža erotickejšie než čokoľvek iné.',
-  'Keď mu priložíš ruku na hruď, <span class="hl3">spomalí sa mu tep</span>. Telo reaguje skôr, než hlava.',
+  'Cíti sa pri tebe <span class="hl2">bezpečne</span> prvýkrát v živote.',
+  'Keď mu priložíš ruku na hruď, <span class="hl3">spomalí sa mu tep</span>.',
   'Chce ťa vidieť <span class="hl4">v extáze</span> viac než chce vlastný orgazmus.',
-  'V hlave má tlak — <em>musím byť dobrý, musím vydržať, musím viesť</em>. Tvoje uvoľnenie ho <span class="hl5">oslobodzuje od výkonu</span>.',
-  'Keď ho držíš za zápästie a vedieš ho, cíti sa <span class="hl6">žiadaný</span> — silnejšie ako byť ten, kto vedie.',
+  'V hlave má tlak — <em>musím byť dobrý</em>. Tvoje uvoľnenie ho <span class="hl5">oslobodzuje od výkonu</span>.',
+  'Keď ho držíš za zápästie a vedieš ho, cíti sa <span class="hl6">žiadaný</span>.',
   'Túži po <span class="hl2">tvojom hlase</span> viac ako po tvojom tele.',
-  'Chce sa o teba starať. Nie preto, že si slabá — preto, že jeho mužskosť je postavená na <span class="hl3">ochrane a službe</span>.',
-  'Po milovaní sa cíti zraniteľný. <span class="hl4">Nechaj ho spať na svojej hrudi</span>. Nič viac nepotrebuje.',
-  'V posteli má strach, že ťa sklame. <span class="hl5">Povedz mu, že je dobrý</span> — úprimne, počas, nie po.',
-  'Keď ho chytíš za vlasy a povieš mu, čo chceš, <span class="hl6">je to pre neho úľava</span>.',
-  'Chce ťa cítiť mokrú — telo je pre neho <span class="hl2">pravdivejšie než slová</span>.',
+  'Chce sa o teba starať. Jeho mužskosť je postavená na ochrane.',
+  'Po milovaní sa cíti zraniteľný. <span class="hl4">Nechaj ho spať na hrudi</span>.',
+  'V posteli má strach, že ťa sklame. <span class="hl5">Povedz mu, že je dobrý</span>.',
+  'Keď ho chytíš za vlasy a povieš mu, čo chceš, <span class="hl6">je to úľava</span>.',
+  'Chce ťa cítiť mokrú — telo je pre neho pravdivejšie než slová.',
   'Jeho najerotickejšie pásmo je <span class="hl3">vnútorná strana stehien, spodok chrbta a ucho</span>.'
 ];
 var P_HOLD_HER=[
-  '<strong>Za vlasy na temene</strong> — nie ťahať, ale <span class="hl2">držať s istotou</span>. Najsilnejší bod kontroly a odovzdania.',
-  '<strong>Za zápästia</strong> — obe ruky, tlak na tep. <span class="hl3">Kontrolovaná nehybnosť</span> počas predohry.',
-  '<strong>Okolo pása</strong> — celá dlaň, tlak do stredu. <span class="hl4">Uzemňujúci bod</span>, ktorý jej dáva pocit prítomnosti.',
-  '<strong>Za krk zozadu</strong> — jemne, prsty na šiji. <span class="hl5">Aktivuje parasympatikus</span>, zvyšuje dôveru.',
+  '<strong>Za vlasy na temene</strong> — <span class="hl2">držať s istotou</span>. Najsilnejší bod kontroly.',
+  '<strong>Za zápästia</strong> — obe ruky, tlak na tep. <span class="hl3">Kontrolovaná nehybnosť</span>.',
+  '<strong>Okolo pása</strong> — celá dlaň, tlak do stredu. <span class="hl4">Uzemňujúci bod</span>.',
+  '<strong>Za krk zozadu</strong> — prsty na šiji. <span class="hl5">Aktivuje parasympatikus</span>.',
   '<strong>Za vnútorné stehná</strong> — zospodu, keď otváraš nohy. <span class="hl6">Otváraš priestor</span>.',
-  '<strong>Dlaňou na srdce</strong> — počas milovania, keď je na chrbte. <span class="hl2">Uzemňuje ju to</span>.',
-  '<strong>Za boky</strong> — zozadu, pri doggy style. Miesto <span class="hl3">vedenia</span> — pohybu aj rytmu.',
-  '<strong>Za zátylok v lone</strong> — keď jej hlava spočíva na tvojej hrudi. Najhlbšia forma <span class="hl4">ochrany</span>.',
-  '<strong>Za palce na nohách</strong> — pri pomalom milovaní. <span class="hl5">Aktivuje reflexné body</span> celého tela.',
-  '<strong>Okolo hrudníka zozadu</strong> — keď je na tebe. <span class="hl6">Kompletné obopnutie</span> tela.'
+  '<strong>Dlaňou na srdce</strong> — počas milovania, keď je na chrbte.',
+  '<strong>Za boky</strong> — zozadu. Miesto <span class="hl3">vedenia</span>.',
+  '<strong>Za zátylok v lone</strong> — keď jej hlava spočíva na tvojej hrudi.',
+  '<strong>Za palce na nohách</strong> — pri pomalom milovaní. Aktivuje reflexy.',
+  '<strong>Okolo hrudníka zozadu</strong> — keď je na tebe. Kompletné obopnutie.'
 ];
 var P_HOLD_HIM=[
-  '<strong>Za vlasy pri tele</strong> — jemne ťahá, keď ho vedie. Jeho mužskosť potrebuje <span class="hl2">smerovanie</span>.',
-  '<strong>Za krk zozadu</strong> — nechty jemne, ale cítiť. <span class="hl3">Prvý bod, ktorý ho okamžite zapne</span>.',
-  '<strong>Za spodok chrbta</strong> — obe ruky. Drží ho, keď je v nej hlboko. <span class="hl4">Stabilita pre jeho rytmus</span>.',
-  '<strong>Za hruď zospodu</strong> — keď je na nej. <span class="hl5">Necháva ho cítiť sa mocného</span>.',
-  '<strong>Za vnútornú stranu stehien</strong> — keď ho vedie do seba. <span class="hl6">Pozvánka aj kontrola</span>.',
-  '<strong>Za zápästie</strong> — keď ho chce zastaviť v pohybe. Jeho telo <span class="hl2">okamžite reaguje</span>.',
-  '<strong>Za ucho a šiju</strong> — jemnými prstami pri predohre. <span class="hl3">Erotogénne pásmo, ktoré muži skrývajú</span>.',
-  '<strong>Za vnútornú stranu lýtok</strong> — keď je medzi jej nohami. <span class="hl4">Urýchľuje jeho dýchanie</span>.',
-  '<strong>Okolo hrudníka zozadu</strong> — pri pomalej predohre. <span class="hl5">Celé telo na telo</span>.',
-  '<strong>Za tvár oboma rukami</strong> — pred bozkom. <span class="hl6">Maximálna prítomnosť</span>.'
+  '<strong>Za vlasy pri tele</strong> — jemne. Jeho mužskosť potrebuje <span class="hl2">smerovanie</span>.',
+  '<strong>Za krk zozadu</strong> — nechty jemne. <span class="hl3">Prvý bod, ktorý ho zapne</span>.',
+  '<strong>Za spodok chrbta</strong> — obe ruky. <span class="hl4">Stabilita pre jeho rytmus</span>.',
+  '<strong>Za hruď zospodu</strong> — <span class="hl5">Necháva ho cítiť sa mocného</span>.',
+  '<strong>Za vnútornú stranu stehien</strong> — <span class="hl6">Pozvánka aj kontrola</span>.',
+  '<strong>Za zápästie</strong> — keď ho chce zastaviť. Telo <span class="hl2">okamžite reaguje</span>.',
+  '<strong>Za ucho a šiju</strong> — <span class="hl3">Erotogénne pásmo, ktoré muži skrývajú</span>.',
+  '<strong>Za vnútornú stranu lýtok</strong> — <span class="hl4">Urýchľuje dýchanie</span>.',
+  '<strong>Okolo hrudníka zozadu</strong> — celé telo na telo.',
+  '<strong>Za tvár oboma rukami</strong> — pred bozkom. Maximálna prítomnosť.'
 ];
 var P_RITUAL=[
   'babylonskej <em>Ištarinej komnaty</em> — svetlo sviečok, vône kadidla, pomalé zvodné dotyky.',
-  'tantrických škôl <em>Kašmíru</em> — 64 minút predohry, jantra pred očami, mantry v hlave.',
+  'tantrických škôl <em>Kašmíru</em> — 64 minút predohry, jantra pred očami, mantry.',
   'taoistických <em>Údolí jantáru</em> — pomalý dotyk, cirkulácia energie, zadržanie semena.',
   'egyptskej <em>Hathorskej školy</em> — oleje na koži, zvuk harfy, zrkadlá, kadidlo myrhy.',
   'gréckych <em>Afroditiných mystérií</em> — víno, ovocie, kúpele, olej s ružovým kvetom.',
@@ -586,35 +642,35 @@ var P_RITUAL=[
 var P_RITUAL_STEPS=[
   'Začnite <strong>v inej miestnosti</strong>, nie v spálni. Prvý dotyk až po 10 minútach očného kontaktu.',
   'Predohra minimálne <strong>45 minút</strong> — hrajte sa, nie ponáhľajte.',
-  'Použite <strong>jeden kus oblečenia</strong> ako vodítko (hodvábna šatka, kožený opasok).',
+  'Použite <strong>jeden kus oblečenia</strong> ako vodítko.',
   'Začnite <strong>spoločnou kúpeľou</strong> — horúca voda, soľ, sviečky, ticho.',
-  'Predohra <strong>20–30 minút</strong>, zameraná na krk, zápästia, vnútorné stehná.',
-  'Použite <strong>teplý olej</strong> s ylang-ylang alebo santalovým drevom.',
-  'Začnite <strong>masážou chodidiel</strong> — reflexné body prebúdzajú celé telo.',
-  'Zaviazte si oči <strong>jednému z vás</strong>. Druhý vedie. Vymeňte po 10 minútach.',
+  'Predohra <strong>20–30 minút</strong>, krk, zápästia, vnútorné stehná.',
+  'Použite <strong>teplý olej</strong> s ylang-ylang.',
+  'Začnite <strong>masážou chodidiel</strong> — reflexné body.',
+  'Zaviazte oči <strong>jednému z vás</strong>. Vymeňte po 10 minútach.',
   'Dýchajte <strong>spolu 4-4-4-4</strong> 5 minút pred.',
-  'Postavte sa <strong>chrbtom k sebe</strong>, dotýkajte sa len lopatkami. 3 minúty.'
+  'Postavte sa <strong>chrbtom k sebe</strong>, dotýkajte sa len lopatkami.'
 ];
 var P_POSITIONS=[
-  {n:'Nebeská lastúra (Samputa)',d:'Obaja na boku, telá zrkadlovo, nohy prepletené. Ruky voľné na celom tele. Najlepšia poloha na milovanie, nie sex.'},
-  {n:'Divoká kobyla (Vajroli)',d:'Ona na ňom, čelom k sebe, ruky zopnuté za hlavou. Maximálna dominancia oboch.'},
+  {n:'Nebeská lastúra (Samputa)',d:'Obaja na boku, telá zrkadlovo, nohy prepletené. Najlepšia poloha na milovanie, nie sex.'},
+  {n:'Divoká kobyla (Vajroli)',d:'Ona na ňom, čelom k sebe, ruky zopnuté za hlavou.'},
   {n:'Čierna včela (Bhramara)',d:'Zboku, ona vpredu, noha zohnutá. Pomalý, hlboký, dlhý.'},
-  {n:'Žena-slimák (Kaurmika)',d:'Ona na bruchu s vankúšom pod panvou, on na nej zhora. Veľmi hlboké, veľmi intímne.'},
-  {n:'Obojstranný oblak (Maudža)',d:'Obojstranné bočné spojenie s nohami prekríženými. Jemné, ale intenzívne.'},
-  {n:'Stojaci kvet (Sthita)',d:'Ona v stoji o stenu, jedna noha zdvihnutá. Rýchle, spontánne.'},
-  {n:'Pevná skala (Sthira)',d:'On sedí, ona na ňom obkročmo. Hlboké, kontrolované. Skúšajte s dýchaním 4-4-4.'},
-  {n:'Harmónia (Sankocha)',d:'V sede oproti sebe, iba ruky a ústa 20 minút, až potom spojenie.'},
-  {n:'Rozpätie krídel (Pakšini)',d:'Ona na okraji postele, nohy na jeho ramenách. Hlboké, intenzívne.'},
-  {n:'Spútaný lotos (Bandha Padma)',d:'V lotosovom sede, čelom k sebe. Pomalé, meditatívne.'},
-  {n:'Most (Setu)',d:'Ona v moste, on kľačí pred ňou. Obojstranná kontrola.'},
-  {n:'Zrkadlo (Darpana)',d:'Pred zrkadlom, ona vpredu, on vzadu, obaja sa pozerajú.'},
-  {n:'Vták v letu (Khangha)',d:'On kľačí, ona sa spustí zozadu dole. Vzácne, odmeňujúce.'},
-  {n:'Zvíjajúci sa had (Sarpa)',d:'Ona vpredu na bruchu, on na boku za ňou. Pomalé, hlboké.'},
+  {n:'Žena-slimák (Kaurmika)',d:'Ona na bruchu s vankúšom pod panvou, on zhora. Veľmi hlboké.'},
+  {n:'Obojstranný oblak (Maudža)',d:'Obojstranné bočné spojenie s nohami prekríženými.'},
+  {n:'Stojaci kvet (Sthita)',d:'Ona v stoji o stenu, jedna noha zdvihnutá.'},
+  {n:'Pevná skala (Sthira)',d:'On sedí, ona na ňom obkročmo. Dýchanie 4-4-4.'},
+  {n:'Harmónia (Sankocha)',d:'V sede oproti sebe, iba ruky a ústa 20 minút.'},
+  {n:'Rozpätie krídel (Pakšini)',d:'Ona na okraji postele, nohy na jeho ramenách.'},
+  {n:'Spútaný lotos (Bandha Padma)',d:'V lotosovom sede, čelom k sebe. Meditatívne.'},
+  {n:'Most (Setu)',d:'Ona v moste, on kľačí pred ňou.'},
+  {n:'Zrkadlo (Darpana)',d:'Pred zrkadlom, ona vpredu, on vzadu.'},
+  {n:'Vták v letu (Khangha)',d:'On kľačí, ona sa spustí zozadu dole.'},
+  {n:'Zvíjajúci sa had (Sarpa)',d:'Ona vpredu na bruchu, on na boku za ňou.'},
   {n:'Stĺp (Stambha)',d:'Ona v stoji, on kľačí. Ona vedie, on slúži.'},
-  {n:'Otočený kvet (Viparīta Padma)',d:'Ona v lotose, on na chrbte, vstúpi zospodu. Extrémne hlboké.'},
-  {n:'Kolíska (Dola)',d:'Obaja v sede, ona na ňom, on ju hojdá. Neskutočne pomalé, éterické.'},
-  {n:'Divoký kôň (Aśva)',d:'Ona na štyroch, on vzadu. Zvieracie, rýchle, prvotné.'},
-  {n:'Motýľ (Tittibha)',d:'Obaja v sede, telá zakliesnené, nohy prekrížené.'},
+  {n:'Otočený kvet (Viparīta Padma)',d:'Ona v lotose, on na chrbte, vstúpi zospodu.'},
+  {n:'Kolíska (Dola)',d:'Obaja v sede, ona na ňom, on ju hojdá. Pomalé.'},
+  {n:'Divoký kôň (Aśva)',d:'Ona na štyroch, on vzadu. Prvotné.'},
+  {n:'Motýľ (Tittibha)',d:'Obaja v sede, telá zakliesnené.'},
   {n:'Tanec Šivy (Nataradža)',d:'Kombinácia stojky a kľaku. Akrobatické.'}
 ];
 var P_HOURS=[
@@ -652,23 +708,23 @@ var P_EXP=[
   'Rituál kúpeľa: 45 minút v horúcej vode, potom sex bez osušenia.'
 ];
 var P_KARMIC=[
-  'Vaša karmická lekcia je <strong>odovzdanie sa</strong>. Jeden z vás sa príliš kontroluje. V posteli musí dovoliť druhému viesť.',
-  'Vaša karmická lekcia je <strong>hranice</strong>. Jeden dáva príliš, druhý berie. V posteli musíte povedať „nie“ aj „áno“ — nahlas.',
-  'Vaša karmická lekcia je <strong>radosť bez viny</strong>. Jeden sa hanbí za to, čo cíti.',
-  'Vaša karmická lekcia je <strong>prítomnosť</strong>. Jeden je v posteli myšlienkami inde.',
-  'Vaša karmická lekcia je <strong>dôvera</strong>. Jeden neverí, že druhý zostane.',
+  'Vaša karmická lekcia je <strong>odovzdanie sa</strong>. Jeden z vás sa príliš kontroluje.',
+  'Vaša karmická lekcia je <strong>hranice</strong>. Jeden dáva príliš, druhý berie.',
+  'Vaša karmická lekcia je <strong>radosť bez viny</strong>.',
+  'Vaša karmická lekcia je <strong>prítomnosť</strong>.',
+  'Vaša karmická lekcia je <strong>dôvera</strong>.',
   'Vaša karmická lekcia je <strong>hnev</strong>. Jeden nosí v tele starý hnev.',
   'Vaša karmická lekcia je <strong>túžba</strong>. Jeden sa bojí chcieť.',
   'Vaša karmická lekcia je <strong>telo</strong>. Jeden sa hanbí za svoje telo.',
   'Vaša karmická lekcia je <strong>hlas</strong>. Jeden v posteli mlčí.',
-  'Vaša karmická lekcia je <strong>zraniteľnosť</strong>. Jeden sa bojí byť zranený.'
+  'Vaša karmická lekcia je <strong>zraniteľnosť</strong>.'
 ];
 var P_KARMIC_PRACTICE=[
-  'Skúste 30 dní hovoriť v posteli iba pravdu. Žiadne „som v poriadku“, keď nie ste.',
+  'Skúste 30 dní hovoriť v posteli iba pravdu.',
   'Skúste raz za týždeň milovanie s úplnou tmou.',
-  'Skúste sa pozerať do očí 5 minút bez toho, aby ste sa dotkli.',
+  'Skúste sa pozerať do očí 5 minút bez dotyku.',
   'Skúste sa dotýkať 20 minút bez preniknutia.',
-  'Skúste sa milovať, keď sa nechcete. Zistíte, čo sa skrýva pod nechuťou.',
+  'Skúste sa milovať, keď sa nechcete.',
   'Skúste sa nemilovať, keď sa chcete.',
   'Skúste povedať „nie“ v posteli.',
   'Skúste povedať „áno“ v posteli bez rozmýšľania.',
@@ -677,15 +733,15 @@ var P_KARMIC_PRACTICE=[
 ];
 var P_CYCLE=[
   '<strong>Fáza 1 — Rozpálenie (0–3 mesiace).</strong> 5× za týždeň, niekedy 3× za noc.',
-  '<strong>Fáza 2 — Osvojenie (3–12 mesiacov).</strong> 2–3× za týždeň. Už viete, čo ten druhý chce.',
-  '<strong>Fáza 3 — Oheň a popol (1–3 roky).</strong> Buď exploduje nová vášeň, alebo vzťah vyhasne.',
+  '<strong>Fáza 2 — Osvojenie (3–12 mesiacov).</strong> 2–3× za týždeň.',
+  '<strong>Fáza 3 — Oheň a popol (1–3 roky).</strong> Buď exploduje nová vášeň, alebo vyhasne.',
   '<strong>Fáza 4 — Hlboká vášeň (3–10 rokov).</strong> Úroveň, ktorú 90% párov nikdy neuvidí.',
-  '<strong>Fáza 3b — Stabilizácia (1–5 rokov).</strong> Niekedy 1× za týždeň, ale je to kvalitné.',
+  '<strong>Fáza 3b — Stabilizácia (1–5 rokov).</strong> Niekedy 1× za týždeň, ale kvalitné.',
   '<strong>Fáza 4b — Rituál (5+ rokov).</strong> Vaše telá sa poznajú naspamäť.',
-  '<strong>Fáza 5 — Znovuzrodenie (10+ rokov).</strong> Prišla nová vášeň. Hĺbka, nie mladosť.'
+  '<strong>Fáza 5 — Znovuzrodenie (10+ rokov).</strong> Prišla nová vášeň.'
 ];
 var P_CYCLE_NOTE=[
-  'Rada starých: Nikdy sa nemilujte v rovnakom čase dva dni po sebe. Telo si musí pamätať, čo stratilo.',
+  'Rada starých: Nikdy sa nemilujte v rovnakom čase dva dni po sebe.',
   'Raz za mesiac si sadnite nahí oproti sebe a 30 minút sa iba rozprávajte o sexe.',
   'Raz za štvrťrok urobte niečo, čo ste nikdy nerobili. V posteli.',
   'Ak prejdete 1 rok bez nového experimentu, vzťah začína umierať.',
@@ -693,48 +749,51 @@ var P_CYCLE_NOTE=[
   'Ak máte deti, nájdite si 2 hodiny týždenne bez nich.'
 ];
 var P_FRICTIONS=[
-  'RÝCHLOSŤ: Jeden chce vždy rýchlo, druhý pomaly. Riešenie: prvých 15 minút patrí pomalému.',
-  'VÝDRŽ: Jeden má nižšiu výdrž. Riešenie: viac predohry, menej tlaku na výkon.',
-  'KONTROLA: Jeden chce vždy viesť. Riešenie: striedanie rolí každý druhý raz.',
-  'INICIATÍVA: Jeden nikdy nezačne. Riešenie: dohodnuté signály.',
-  'FREKVENCIA: Jeden chce viac, druhý menej. Riešenie: striedajte týždne.',
-  'ČAS: Jeden chce ráno, druhý večer. Riešenie: striedanie dní.',
-  'HLASITOSŤ: Jeden je hlasný, druhý tichý. Riešenie: nájdite spoločnú hladinu.',
-  'OČI: Jeden chce mať otvorené oči, druhý zatvorené. Kompromis.',
-  'POZÍCIA: Jeden chce len jednu, druhý variovať. Riešenie: 1× klasika, 2× nové.',
-  'PO PREDOHRE: Jeden chce hneď, druhý potrebuje 30 minút. Predohra podľa pomalšieho.',
-  'PO ORGAZME: Jeden chce spať, druhý hovoriť. 5 minút ticha, potom 5 minút reči.',
+  'RÝCHLOSŤ: Jeden chce vždy rýchlo, druhý pomaly. Prvých 15 minút patrí pomalému.',
+  'VÝDRŽ: Jeden má nižšiu výdrž. Viac predohry, menej tlaku na výkon.',
+  'KONTROLA: Jeden chce vždy viesť. Striedanie rolí každý druhý raz.',
+  'INICIATÍVA: Jeden nikdy nezačne. Dohodnuté signály.',
+  'FREKVENCIA: Jeden chce viac, druhý menej. Striedajte týždne.',
+  'ČAS: Jeden chce ráno, druhý večer. Striedanie dní.',
+  'HLASITOSŤ: Jeden je hlasný, druhý tichý. Nájdite spoločnú hladinu.',
+  'OČI: Jeden chce mať otvorené, druhý zatvorené. Kompromis.',
+  'POZÍCIA: Jeden chce len jednu, druhý variovať. 1× klasika, 2× nové.',
+  'PO PREDOHRE: Jeden chce hneď, druhý potrebuje 30 minút. Podľa pomalšieho.',
+  'PO ORGAZME: Jeden chce spať, druhý hovoriť. 5 minút ticha, potom 5 reči.',
   'VYČERPANIE: Jeden po sexe nemôže vstať, druhý je svieži. Rešpektujte.'
 ];
 var P_LEARNING=[
   '<strong>Rôzne duše, rovnaké telá.</strong> Vaše duše túžia po inom, ale telá sa milujú.',
   '<strong>Hĺbka cez slzy.</strong> Niekedy pri milovaní plačete. To je očista.',
-  '<strong>Hlas je liek.</strong> Hovorte viac. Slovo v posteli je modlitba.',
-  '<strong>Oheň, ktorý nezhasne.</strong> Vášeň nie je o intenzite, ale o udržaní.',
-  '<strong>Dych je most.</strong> Dýchajte spolu. 4-4-4-4.',
+  '<strong>Hlas je liek.</strong> Slovo v posteli je modlitba.',
+  '<strong>Oheň, ktorý nezhasne.</strong> Vášeň je o udržaní.',
+  '<strong>Dych je most.</strong> Dýchajte spolu 4-4-4-4.',
   '<strong>Oči sú brány.</strong> Milujte sa s otvorenými očami.',
   '<strong>Ticho po.</strong> Po milovaní nehovorte nič 5 minút.',
-  '<strong>Slovo „nie“ je dar.</strong> Dávate tomu druhému hranicu.',
-  '<strong>Smiech je erotický.</strong> Smiech v posteli je forma extázy.',
-  '<strong>Pomalosť je luxus.</strong> V posteli je posvätná.',
-  '<strong>Zraniteľnosť je sila.</strong> Najväčšia odvaha.',
-  '<strong>Prítomnosť je všetko.</strong> Ak nie ste v prítomnosti, nie ste v posteli.'
+  '<strong>Slovo „nie“ je dar.</strong>',
+  '<strong>Smiech je erotický.</strong>',
+  '<strong>Pomalosť je luxus.</strong>',
+  '<strong>Zraniteľnosť je sila.</strong>',
+  '<strong>Prítomnosť je všetko.</strong>'
 ];
 
-/* FORM */
+/* =========================================================
+   FORM
+========================================================= */
 (function(){
   var cy=new Date().getFullYear(),i,opt;
   for(i=1;i<=31;i++){opt=document.createElement('option');opt.value=i;opt.textContent=i;$('dayA').appendChild(opt.cloneNode(true));$('dayB').appendChild(opt);}
   for(i=cy;i>=1930;i--){opt=document.createElement('option');opt.value=i;opt.textContent=i;$('yearA').appendChild(opt.cloneNode(true));$('yearB').appendChild(opt);}
 })();
-
 document.querySelectorAll('.polarity').forEach(function(pol){
   pol.addEventListener('click',function(e){
     if(e.target.tagName==='BUTTON'){sClick();pol.querySelectorAll('button').forEach(function(b){b.classList.remove('active');});e.target.classList.add('active');}
   });
 });
 
-/* HLAVNÝ VÝPOČET */
+/* =========================================================
+   HLAVNÝ VÝPOČET KOMPASU
+========================================================= */
 $('btnRun').addEventListener('click',function(){
   sClick();
   var nA=$('nameA').value.trim()||'Osoba A',nB=$('nameB').value.trim()||'Osoba B';
@@ -762,7 +821,6 @@ $('btnRun').addEventListener('click',function(){
   var water=reduce(soulA+soulB);
   var earth=reduce(persA+persB+destA+destB);
   var air=reduce(persA+persB);
-  var voidN=reduce(chA+chB);
   var union=reduce(lpA+lpB+soulA+soulB);
 
   var bAd=new Date(yA,mA-1,dA);
@@ -800,75 +858,52 @@ $('btnRun').addEventListener('click',function(){
   var holdHer=pickN(rng,P_HOLD_HER,5);
   var holdHim=pickN(rng,P_HOLD_HIM,5);
 
-  var liveMoon=moon;
-  var livePlanet=p;
   var bioAState=bioA.physical>0.3?'stúpa':(bioA.physical<-0.3?'klesá':'na vrchole');
   var bioBState=bioB.physical>0.3?'stúpa':(bioB.physical<-0.3?'klesá':'na vrchole');
 
   var html='';
 
-  /* 1 */
   html+='<div class="section s-accent2"><div class="head"><h3>🧬 Matica duše · Numerológia</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Cesta A</span><span class="val">'+lpA+'</span></div><div class="stat-box"><span class="lbl">Osud A</span><span class="val">'+destA+'</span></div><div class="stat-box"><span class="lbl">Duša A</span><span class="val">'+soulA+'</span></div><div class="stat-box"><span class="lbl">Cesta B</span><span class="val">'+lpB+'</span></div><div class="stat-box"><span class="lbl">Osud B</span><span class="val">'+destB+'</span></div><div class="stat-box"><span class="lbl">Duša B</span><span class="val">'+soulB+'</span></div></div><p><span class="hl2">'+nA+'</span> — cesta <strong>'+lpA+'</strong>, osud <strong>'+destA+'</strong>, duša <strong>'+soulA+'</strong>, osobnosť <strong>'+persA+'</strong>.</p><p><span class="hl3">'+nB+'</span> — cesta <strong>'+lpB+'</strong>, osud <strong>'+destB+'</strong>, duša <strong>'+soulB+'</strong>, osobnosť <strong>'+persB+'</strong>.</p><p>Spojenie vašich čísel: <span class="hl">'+union+'</span>.</p></div>';
 
-  /* 2 */
-  html+='<div class="section s-purple"><div class="head"><h3>🪐 Planetárna hodina · reálny čas</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Planéta dňa</span><span class="val">'+CHALDEAN_SYM[livePlanet.dayPlanet]+' '+livePlanet.dayPlanet+'</span></div><div class="stat-box"><span class="lbl">Planéta hodiny</span><span class="val">'+CHALDEAN_SYM[livePlanet.hourPlanet]+' '+livePlanet.hourPlanet+'</span></div><div class="stat-box"><span class="lbl">Hodina</span><span class="val">'+livePlanet.hourNumber+'/12</span></div></div><p>Práve teraz vládne <span class="hl3">'+livePlanet.hourPlanet+'</span> — '+CHALDEAN_Q[livePlanet.hourPlanet]+'.</p><p>Toto je ideálny čas pre: <em>'+pick(rng,['pomalé milovanie','rýchlovku','tantrickú seansu','predohru s olejom','milovanie v tme','experiment s ľadom','rituál kúpeľa','hru moci'])+'</em>.</p></div>';
+  html+='<div class="section s-purple"><div class="head"><h3>🪐 Planetárna hodina · reálny čas</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Planéta dňa</span><span class="val">'+CHALDEAN_SYM[p.dayPlanet]+' '+p.dayPlanet+'</span></div><div class="stat-box"><span class="lbl">Planéta hodiny</span><span class="val">'+CHALDEAN_SYM[p.hourPlanet]+' '+p.hourPlanet+'</span></div><div class="stat-box"><span class="lbl">Hodina</span><span class="val">'+p.hourNumber+'/12</span></div></div><p>Práve teraz vládne <span class="hl3">'+p.hourPlanet+'</span> — '+CHALDEAN_Q[p.hourPlanet]+'.</p><p>Toto je ideálny čas pre: <em>'+pick(rng,['pomalé milovanie','rýchlovku','tantrickú seansu','predohru s olejom','milovanie v tme','experiment s ľadom','rituál kúpeľa','hru moci'])+'</em>.</p></div>';
 
-  /* 3 */
-  html+='<div class="section s-gold"><div class="head"><h3>🌙 Lunárny cyklus</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Fáza</span><span class="val">'+liveMoon.e+' '+liveMoon.n+'</span></div><div class="stat-box"><span class="lbl">Kvalita</span><span class="val" style="font-size:.7rem">'+liveMoon.q+'</span></div></div><p>Luna práve <span class="hl4">'+liveMoon.q.toLowerCase()+'</span>. '+(getMoonPhase(now)<0.5?'Rastúca fáza — ideálne na začiatky, experimenty, plánovanie.':'Klesajúca fáza — ideálne na ukončenia, očisty, spomalenie.')+'</p></div>';
+  html+='<div class="section s-gold"><div class="head"><h3>🌙 Lunárny cyklus</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Fáza</span><span class="val">'+moon.e+' '+moon.n+'</span></div><div class="stat-box"><span class="lbl">Kvalita</span><span class="val" style="font-size:.7rem">'+moon.q+'</span></div></div><p>Luna práve <span class="hl4">'+moon.q.toLowerCase()+'</span>. '+(getMoonPhase(now)<0.5?'Rastúca fáza — ideálne na začiatky, experimenty.':'Klesajúca fáza — ideálne na očisty, spomalenie.')+'</p></div>';
 
-  /* 4 */
-  html+='<div class="section s-jade"><div class="head"><h3>📊 Biorytmus · reálne cykly</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Fyz. A</span><span class="val">'+Math.round(bioA.physical*100)+'%</span></div><div class="stat-box"><span class="lbl">Emoc. A</span><span class="val">'+Math.round(bioA.emotional*100)+'%</span></div><div class="stat-box"><span class="lbl">Intel. A</span><span class="val">'+Math.round(bioA.intellectual*100)+'%</span></div></div><div class="stat-row"><div class="stat-box"><span class="lbl">Fyz. B</span><span class="val">'+Math.round(bioB.physical*100)+'%</span></div><div class="stat-box"><span class="lbl">Emoc. B</span><span class="val">'+Math.round(bioB.emotional*100)+'%</span></div><div class="stat-box"><span class="lbl">Intel. B</span><span class="val">'+Math.round(bioB.intellectual*100)+'%</span></div></div><p><span class="hl5">'+nA+'</span> — fyzický cyklus <span class="hl">'+bioAState+'</span> ('+bioA.days+' dní od narodenia).</p><p><span class="hl5">'+nB+'</span> — fyzický cyklus <span class="hl">'+bioBState+'</span> ('+bioB.days+' dní od narodenia).</p><p>Pozitívny biorytmus = vyššia chuť, výdrž a citlivosť. Negatívny = hlbšia, pomalšia, jemnejšia intimita.</p></div>';
+  html+='<div class="section s-jade"><div class="head"><h3>📊 Biorytmus · reálne cykly</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Fyz. A</span><span class="val">'+Math.round(bioA.physical*100)+'%</span></div><div class="stat-box"><span class="lbl">Emoc. A</span><span class="val">'+Math.round(bioA.emotional*100)+'%</span></div><div class="stat-box"><span class="lbl">Intel. A</span><span class="val">'+Math.round(bioA.intellectual*100)+'%</span></div></div><div class="stat-row"><div class="stat-box"><span class="lbl">Fyz. B</span><span class="val">'+Math.round(bioB.physical*100)+'%</span></div><div class="stat-box"><span class="lbl">Emoc. B</span><span class="val">'+Math.round(bioB.emotional*100)+'%</span></div><div class="stat-box"><span class="lbl">Intel. B</span><span class="val">'+Math.round(bioB.intellectual*100)+'%</span></div></div><p><span class="hl5">'+nA+'</span> — fyzický cyklus <span class="hl">'+bioAState+'</span> ('+bioA.days+' dní od narodenia).</p><p><span class="hl5">'+nB+'</span> — fyzický cyklus <span class="hl">'+bioBState+'</span> ('+bioB.days+' dní od narodenia).</p></div>';
 
-  /* 5 */
   html+='<div class="section s-accent2"><div class="head"><h3>🜂 Prvotná príťažlivosť</h3><span class="hl2">'+nA+' & '+nB+'</span></div><p>'+pick(rng,P_ATTRACT)+'</p><p>'+pick(rng,P_ATTRACT)+'</p><p>'+pick(rng,P_ATTRACT)+'</p></div>';
 
-  /* 6 */
   html+='<div class="section s-purple"><div class="head"><h3>🜄 Sexuálna chémia</h3></div><p>'+pick(rng,P_CHEM)+'</p><p>'+pick(rng,P_CHEM)+'</p></div>';
 
-  /* 7 */
   html+='<div class="section s-gold"><div class="head"><h3>🜁 Živlový profil</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Intenzita</span><span class="val">'+fire+'/9</span></div><div class="stat-box"><span class="lbl">Hĺbka</span><span class="val">'+water+'/9</span></div><div class="stat-box"><span class="lbl">Výdrž</span><span class="val">'+earth+'/9</span></div><div class="stat-box"><span class="lbl">Reč</span><span class="val">'+air+'/9</span></div></div><p>'+pick(rng,P_ELEM)+'</p></div>';
 
-  /* 8 */
   html+='<div class="section s-jade"><div class="head"><h3>🐅 Zvieracie typy (Kámasútra)</h3></div><p><span class="hl2">'+nA+'</span> — <strong>'+animalA+'</strong></p><p><span class="hl3">'+nB+'</span> — <strong>'+animalB+'</strong></p><p>'+pick(rng,P_ANIMALS)+'</p></div>';
 
-  /* 9 */
   html+='<div class="section s-accent2"><div class="head"><h3>💗 Čo cíti '+nB+' (jej telo)</h3></div>'+feelsHer.map(function(t){return '<p>'+t+'</p>';}).join('')+'</div>';
 
-  /* 10 */
   html+='<div class="section s-purple"><div class="head"><h3>💙 Čo cíti '+nA+' (jeho telo)</h3></div>'+feelsHis.map(function(t){return '<p>'+t+'</p>';}).join('')+'</div>';
 
-  /* 11 */
   html+='<div class="section s-red"><div class="head"><h3>🤲 Kde držať '+nB+'</h3></div><ul>'+holdHer.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
 
-  /* 12 */
   html+='<div class="section s-gold"><div class="head"><h3>🤲 Kde '+nB+' drží '+nA+'</h3></div><ul>'+holdHim.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
 
-  /* 13 */
   html+='<div class="section s-purple"><div class="head"><h3>🕯 Rituál predohry</h3></div><p>Inšpirácia: <strong>'+P_RITUAL[rIdx]+'</strong></p><ul>'+ritualSteps.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
 
-  /* 14 */
   html+='<div class="section s-gold"><div class="head"><h3>🛏 Polohy napätia</h3></div>'+pos.map(function(pp){return '<p><strong class="hl4">'+pp.n+'</strong><br>'+pp.d+'</p>';}).join('')+'</div>';
 
-  /* 15 */
-  html+='<div class="section s-accent2"><div class="head"><h3>⏳ Posvätné hodiny</h3></div>'+pickN(rng,P_HOURS,3).map(function(t){return '<p>'+t+'</p>';}).join('')+'<p><span class="hl">Teraz</span>: '+String(now.getHours()).padStart(2,'0')+':00 — planéta <strong>'+livePlanet.hourPlanet+'</strong>, luna <strong>'+liveMoon.e+' '+liveMoon.n+'</strong>. Ideálne pre '+pick(rng,['predohru s olejom','pomalé spojenie','rýchlovku','tantrickú seansu','milovanie v zrkadle','rituál kúpeľa'])+'.</p></div>';
+  html+='<div class="section s-accent2"><div class="head"><h3>⏳ Posvätné hodiny</h3></div>'+pickN(rng,P_HOURS,3).map(function(t){return '<p>'+t+'</p>';}).join('')+'<p><span class="hl">Teraz</span>: '+String(now.getHours()).padStart(2,'0')+':00 — planéta <strong>'+p.hourPlanet+'</strong>, luna <strong>'+moon.e+' '+moon.n+'</strong>.</p></div>';
 
-  /* 16 */
   html+='<div class="section s-jade"><div class="head"><h3>🎭 Hry a experimenty</h3></div><ul>'+exp.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
 
-  /* 17 */
   html+='<div class="section s-purple"><div class="head"><h3>🔮 Karmická sexualita</h3></div><p>'+kLesson[0]+'</p><p>'+kLesson[1]+'</p><ul>'+kPractice.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
 
-  /* 18 */
   html+='<div class="section s-gold"><div class="head"><h3>📈 Cyklus vášne</h3></div><ul>'+cycle.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul><p>'+cycleNote+'</p></div>';
 
-  /* 19 */
-  html+='<div class="section s-red"><div class="head"><h3>⚔ Trenice v posteli</h3></div><ul>'+fric.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul><p>Pravidlo: <em>Nikdy sa nehádajte o sex v posteli. Vždy oblečení, pri čaji.</em></p></div>';
+  html+='<div class="section s-red"><div class="head"><h3>⚔ Trenice v posteli</h3></div><ul>'+fric.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul><p>Pravidlo: <em>Nikdy sa nehádajte o sex v posteli.</em></p></div>';
 
-  /* 20 */
   html+='<div class="section s-jade"><div class="head"><h3>🌟 Učenie sa cez telo</h3></div><ul>'+learn.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul></div>';
 
-  /* 21 */
-  var verdikt=totalIdx>=85?'<span class="hl4">Fenomenálne spojenie.</span> Toto je pár, ktorý starovekí nazývali dvojité plamene — nie preto, že ste rovnakí, ale preto, že horíte jeden od druhého.':totalIdx>=70?'<span class="hl2">Veľmi silná kompatibilita.</span> Máte potenciál pre hlboký, dlhý a intímny vzťah — ak budete rešpektovať svoje odlišnosti.':totalIdx>=55?'<span class="hl3">Dobrá kompatibilita.</span> Nie je to osudové, ale je to krásne. Budete musieť pracovať na komunikácii.':'<span class="hl5">Komplexné spojenie.</span> Nie ste si súdení, ale práve preto je to zaujímavé. Vaša cesta je o učenie, nie o pohodlie.';
+  var verdikt=totalIdx>=85?'<span class="hl4">Fenomenálne spojenie.</span> Pár, ktorý starovekí nazývali dvojité plamene.':totalIdx>=70?'<span class="hl2">Veľmi silná kompatibilita.</span> Hlboký, dlhý a intímny vzťah.':totalIdx>=55?'<span class="hl3">Dobrá kompatibilita.</span> Krásne, ale treba pracovať na komunikácii.':'<span class="hl5">Komplexné spojenie.</span> Cesta je o učenie, nie o pohodlie.';
   html+='<div class="section s-accent2"><div class="head"><h3>🏆 Finálny verdikt</h3></div><div class="stat-row"><div class="stat-box"><span class="lbl">Harmónia</span><span class="val">'+harmonyIdx+'%</span></div><div class="stat-box"><span class="lbl">Energia</span><span class="val">'+energyIdx+'%</span></div><div class="stat-box"><span class="lbl">Intimita</span><span class="val">'+intimacyIdx+'%</span></div><div class="stat-box"><span class="lbl">Celkovo</span><span class="val">'+totalIdx+'%</span></div></div><p>'+verdikt+'</p></div>';
 
   $('out').innerHTML=html;
@@ -878,9 +913,7 @@ $('btnRun').addEventListener('click',function(){
   $('mainScroll').scrollTop=0;
 });
 
-$('btnRestart').addEventListener('click',function(){
-  sClick();$('results').classList.remove('active');$('formSection').style.display='block';$('mainScroll').scrollTop=0;
-});
+$('btnRestart').addEventListener('click',function(){sClick();$('results').classList.remove('active');$('formSection').style.display='block';$('mainScroll').scrollTop=0;});
 $('btnRefresh').addEventListener('click',function(){sClick();$('btnRun').click();});
 
 /* =========================================================
@@ -889,7 +922,7 @@ $('btnRefresh').addEventListener('click',function(){sClick();$('btnRun').click()
 var canvas=$('pdfCanvas'),ctx=canvas.getContext('2d');
 
 (function(){
-  var s=lsGet('kmpt_set_m',null);
+  var s=lsGet('kmpt_set_v6',null);
   if(s){
     if(typeof s.mode==='string')ST.mode=s.mode;
     if(typeof s.autoMin==='number')ST.autoMin=s.autoMin;
@@ -898,11 +931,11 @@ var canvas=$('pdfCanvas'),ctx=canvas.getContext('2d');
     if(typeof s.sound==='boolean')ST.sound=s.sound;
     if(typeof s.startPage==='number')ST.startPage=s.startPage;
   }
-  ST.seen=lsGet('kmpt_seen_m',[]);
-  ST.history=lsGet('kmpt_hist_m',[]);
+  ST.seen=lsGet('kmpt_seen_v6',[]);
+  ST.history=lsGet('kmpt_hist_v6',[]);
 })();
 
-function saveSettings(){lsSet('kmpt_set_m',{mode:ST.mode,autoMin:ST.autoMin,customAuto:ST.customAuto,alternate:ST.alternate,sound:ST.sound,startPage:ST.startPage});}
+function saveSettings(){lsSet('kmpt_set_v6',{mode:ST.mode,autoMin:ST.autoMin,customAuto:ST.customAuto,alternate:ST.alternate,sound:ST.sound,startPage:ST.startPage});}
 
 function updateTurnDisplay(){$('turnDisplay').textContent=ST.turn;$('turnSub').textContent=ST.turn==='ONA'?'Ona vyberá / vedie':'On vyberá / vedie';}
 function updateStatPill(){
@@ -935,7 +968,7 @@ function pickNextPage(){
     for(var i=st;i<=en;i++)all.push(i);
     for(var k=0;k<ST.seen.length;k++)ss[ST.seen[k]]=true;
     var rem=all.filter(function(p){return !ss[p];});
-    if(rem.length===0){ST.seen=[];lsSet('kmpt_seen_m',[]);toast('🎉 Všetky videné!','gold');rem=all.slice();}
+    if(rem.length===0){ST.seen=[];lsSet('kmpt_seen_v6',[]);toast('🎉 Všetky videné!','gold');rem=all.slice();}
     return shuffle(rem)[0];
   }
   return Math.floor(Math.random()*(en-st+1))+st;
@@ -950,9 +983,9 @@ function executeDraw(){
     if(c>=14){
       clearInterval(iv);
       var fp=pickNextPage();renderPage(fp);
-      if(ST.seen.indexOf(fp)===-1){ST.seen.push(fp);lsSet('kmpt_seen_m',ST.seen);}
+      if(ST.seen.indexOf(fp)===-1){ST.seen.push(fp);lsSet('kmpt_seen_v6',ST.seen);}
       ST.history.unshift({page:fp,time:new Date().toISOString(),turn:ST.turn});
-      ST.history=ST.history.slice(0,50);lsSet('kmpt_hist_m',ST.history);
+      ST.history=ST.history.slice(0,50);lsSet('kmpt_hist_v6',ST.history);
       sWin();
       if(ST.alternate){ST.turn=ST.turn==='ONA'?'ON':'ONA';updateTurnDisplay();}
       updateStatPill();ST.drawing=false;
@@ -962,45 +995,60 @@ function executeDraw(){
 $('drawBtn').addEventListener('click',executeDraw);
 $('shuffleTurnBtn').addEventListener('click',function(){sClick();ST.turn=ST.turn==='ONA'?'ON':'ONA';updateTurnDisplay();toast('Na ťahu: '+ST.turn,'accent');});
 
-document.querySelectorAll('#modesRow .chip').forEach(function(c){
+/* MODE cards v nastaveniach */
+document.querySelectorAll('#modeGrid .mode-card').forEach(function(c){
   c.addEventListener('click',function(){
-    sClick();document.querySelectorAll('#modesRow .chip').forEach(function(x){x.classList.remove('active');});c.classList.add('active');
-    ST.mode=c.getAttribute('data-mode');saveSettings();toast('Režim OK','accent');
+    sClick();
+    document.querySelectorAll('#modeGrid .mode-card').forEach(function(x){x.classList.remove('active');});
+    c.classList.add('active');
+    ST.mode=c.getAttribute('data-mode');
+    saveSettings();
+    toast('Režim: '+c.textContent.trim(),'accent');
   });
-  if(c.getAttribute('data-mode')===ST.mode){document.querySelectorAll('#modesRow .chip').forEach(function(x){x.classList.remove('active');});c.classList.add('active');}
+  if(c.getAttribute('data-mode')===ST.mode){document.querySelectorAll('#modeGrid .mode-card').forEach(function(x){x.classList.remove('active');});c.classList.add('active');}
 });
+
+/* AUTO */
 function stopAuto(){if(ST.autoTimer){clearInterval(ST.autoTimer);ST.autoTimer=null;}}
 function startAuto(m){stopAuto();ST.autoTimer=setInterval(executeDraw,m*60*1000);toast('⏱ Auto '+m+' min','jade');}
-document.querySelectorAll('#autoRow .chip').forEach(function(c){
+document.querySelectorAll('#autoGrid .auto-card').forEach(function(c){
   c.addEventListener('click',function(){
-    sClick();document.querySelectorAll('#autoRow .chip').forEach(function(x){x.classList.remove('active');});c.classList.add('active');
+    sClick();
+    document.querySelectorAll('#autoGrid .auto-card').forEach(function(x){x.classList.remove('active');});
+    c.classList.add('active');
     var v=c.getAttribute('data-auto');
     if(v==='0'){ST.autoMin=0;stopAuto();toast('Auto OFF','accent');}
     else if(v==='custom'){ST.autoMin=-1;$('setCustom').focus();}
     else{ST.autoMin=parseInt(v,10);startAuto(ST.autoMin);}
     saveSettings();
   });
-  if(c.getAttribute('data-auto')===String(ST.autoMin)){document.querySelectorAll('#autoRow .chip').forEach(function(x){x.classList.remove('active');});c.classList.add('active');if(ST.autoMin>0)startAuto(ST.autoMin);}
+  if(c.getAttribute('data-auto')===String(ST.autoMin)){document.querySelectorAll('#autoGrid .auto-card').forEach(function(x){x.classList.remove('active');});c.classList.add('active');if(ST.autoMin>0)startAuto(ST.autoMin);}
 });
 
+/* MODALS */
 function openModal(id){$(id).classList.add('open');}
 function closeModal(id){$(id).classList.remove('open');}
 document.querySelectorAll('.modal-close').forEach(function(b){b.addEventListener('click',function(){sClick();closeModal(b.getAttribute('data-close'));});});
 document.querySelectorAll('.modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)m.classList.remove('open');});});
 
 $('settingsBtn').addEventListener('click',function(){
-  sClick();$('setStart').value=ST.startPage;$('setEnd').value=ST.endPage||'';$('setCustom').value=ST.customAuto;
-  $('swSound').classList.toggle('on',ST.sound);$('swAlternate').classList.toggle('on',ST.alternate);
-  updateStatsBox();openModal('modalSettings');
+  sClick();
+  $('setStart').value=ST.startPage;
+  $('setEnd').value=ST.endPage||'';
+  $('setCustom').value=ST.customAuto;
+  $('swSound').classList.toggle('on',ST.sound);
+  $('swAlternate').classList.toggle('on',ST.alternate);
+  updateStatsBox();
+  openModal('modalSettings');
 });
 $('historyBtn').addEventListener('click',function(){sClick();updateHistoryFull();openModal('modalHistory');});
 
 $('setStart').addEventListener('change',function(){var v=parseInt(this.value,10);if(!isNaN(v)&&v>=1&&v<=ST.totalPages){ST.startPage=v;saveSettings();if(ST.pdfDoc)renderPage(Math.max(ST.startPage,Math.min(ST.currentPage||ST.startPage,ST.endPage)));toast('Od '+v,'jade');}});
 $('setEnd').addEventListener('change',function(){var v=parseInt(this.value,10);if(!isNaN(v)&&v>=ST.startPage&&v<=ST.totalPages){ST.endPage=v;toast('Do '+v,'jade');}});
-$('setCustom').addEventListener('change',function(){var v=parseInt(this.value,10);if(!isNaN(v)&&v>=1&&v<=120){ST.customAuto=v;saveSettings();if(ST.autoMin===-1){ST.autoMin=v;startAuto(v);saveSettings();}}});
+$('setCustom').addEventListener('change',function(){var v=parseInt(this.value,10);if(!isNaN(v)&&v>=1&&v<=120){ST.customAuto=v;saveSettings();if(ST.autoMin===-1){ST.autoMin=v;startAuto(v);saveSettings();}toast('Interval: '+v+' min','jade');}});
 $('swSound').addEventListener('click',function(){ST.sound=!ST.sound;this.classList.toggle('on',ST.sound);saveSettings();toast(ST.sound?'🔊 ON':'🔇 OFF','accent');});
 $('swAlternate').addEventListener('click',function(){ST.alternate=!ST.alternate;this.classList.toggle('on',ST.alternate);saveSettings();toast(ST.alternate?'🔄 ON':'⏸ OFF','accent');});
-$('resetHistory').addEventListener('click',function(){sClick();if(!confirm('Vymazať?'))return;ST.seen=[];ST.history=[];lsSet('kmpt_seen_m',[]);lsSet('kmpt_hist_m',[]);updateStatPill();updateStatsBox();updateHistoryFull();toast('🗑 OK','gold');});
+$('resetHistory').addEventListener('click',function(){sClick();if(!confirm('Vymazať?'))return;ST.seen=[];ST.history=[];lsSet('kmpt_seen_v6',[]);lsSet('kmpt_hist_v6',[]);updateStatPill();updateStatsBox();updateHistoryFull();toast('🗑 OK','gold');});
 
 function updateStatsBox(){
   var t=ST.endPage-ST.startPage+1,s=0;
@@ -1014,6 +1062,7 @@ function updateHistoryFull(){
   $('historyListFull').innerHTML=ST.history.map(function(it){return '<div class="h-item"><span>Strana <span class="p">'+it.page+'</span></span><span>'+fmtTime(it.time)+' · '+(it.turn||'—')+'</span></div>';}).join('');
 }
 
+/* LOAD PDF */
 function applyLoaded(doc){
   ST.pdfDoc=doc;ST.totalPages=doc.numPages;
   if(ST.totalPages<8){$('loadMsg').textContent='PDF má menej ako 8 strán';$('loadErr').textContent='Potrebné aspoň 8.';$('loadErr').style.display='block';$('fallbackBox').style.display='block';return;}
